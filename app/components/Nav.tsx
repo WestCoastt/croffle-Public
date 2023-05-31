@@ -57,6 +57,9 @@ const SelectBox = styled.div`
       }
     }
   }
+  .up {
+    transform: rotate(180deg);
+  }
 `;
 
 const SearchBox = styled.div`
@@ -118,13 +121,13 @@ export default function Nav() {
     const clickOutside = (e: any) => {
       selectRef.current && !selectRef.current.contains(e.target)
         ? setDropdown(false)
-        : setDropdown(true);
+        : setDropdown(!dropdown);
     };
     document.addEventListener("click", clickOutside);
     return () => {
       document.removeEventListener("click", clickOutside);
     };
-  }, [selectRef]);
+  }, [selectRef, dropdown]);
 
   const handleClick = (path: string) => {
     router.push(`/${path}`);
@@ -138,6 +141,7 @@ export default function Nav() {
           <img src="/img/logo.svg" alt="logo" />
         </Link>
         <SelectBox ref={selectRef}>
+          {/* transition effect needed */}
           <div className="select">{selected}</div>
           {dropdown && (
             <div className="list">
@@ -155,7 +159,11 @@ export default function Nav() {
             </div>
           )}
 
-          <img src="/img/arrow_drop_down.svg" alt="category-select" />
+          <img
+            className={dropdown ? "up" : ""}
+            src="/img/arrow_drop_down.svg"
+            alt="category-select"
+          />
         </SelectBox>
 
         <SearchBox>
