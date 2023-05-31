@@ -134,7 +134,7 @@ export default function Nav() {
     <NavBar>
       <Container>
         <img className="menu" src="/img/hamburger.svg" alt="menu" />
-        <Link href="/" as={"image"}>
+        <Link href="/">
           <img src="/img/logo.svg" alt="logo" />
         </Link>
         <SelectBox ref={selectRef}>
