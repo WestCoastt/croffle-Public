@@ -1,11 +1,9 @@
-"use client";
-import styled from "@emotion/styled";
-
-const Container = styled.div`
-  background-color: #ebe9e9;
-  height: 500px;
-`;
+import Carousel from "./components/Carousel";
 
 export default function Home() {
-  return <Container></Container>;
+  return (
+    <div>
+      <Carousel />
+    </div>
+  );
 }
