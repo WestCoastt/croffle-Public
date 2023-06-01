@@ -1,5 +1,11 @@
 import Nav from "./components/Nav";
 import "./globals.css";
+import { Noto_Sans_KR } from "next/font/google";
+
+const notoSansKr = Noto_Sans_KR({
+  subsets: ["latin"],
+  weight: ["100", "300", "400", "700", "900"],
+});
 
 export const metadata = {
   title: "크로플",
@@ -14,7 +20,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ko">
-      <body suppressHydrationWarning={true}>
+      <body suppressHydrationWarning={true} className={notoSansKr.className}>
         <Nav />
         {children}
       </body>

@@ -37,26 +37,14 @@ position: relative;
   .left {
     right: 50%;
     margin: auto 640px auto 0px;
-    background: rgba(196, 196, 196, 0.2) url("/img/arrow_left.svg") no-repeat center;
+    background: rgba(196, 196, 196, 0.2) url("/assets/img/arrow_left.svg") no-repeat center;
   }
   .right {
     left: 50%;
     margin: auto 0px auto 640px;
-    background: rgba(196, 196, 196, 0.2) url("/img/arrow_right.svg") no-repeat center;
+    background: rgba(196, 196, 196, 0.2) url("/assets/img/arrow_right.svg") no-repeat center;
   }
   }
-
-  // .carousel {
-  //   position: absolute;
-  //   left: 50%;
-  //   right: 50%;
-  //   bottom: 20px;
-  //   width: 60px;
-  //   height: 28px;
-  //   text-align: center;
-  //   border-radius: 100px;
-  //   background-color: rgba(0, 0, 0, 0.5);
-  // }
 `;
 
 const PaginationBox = styled.div`
@@ -114,9 +102,9 @@ export default function Carousel() {
   const [carousel, setCarousel] = useState(1);
   const [pause, setPause] = useState(false);
   const banners = [
-    "/img/main_banner_sample.jpg",
-    "/img/main_banner_sample1.jpg",
-    "/img/main_banner_sample2.jpg",
+    "/assets/img/main_banner_sample.jpg",
+    "/assets/img/main_banner_sample1.jpg",
+    "/assets/img/main_banner_sample2.jpg",
   ];
 
   const handleCarousel = (e: any) => {
