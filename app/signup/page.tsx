@@ -57,6 +57,9 @@ export default function SignUp() {
       <BoxContainer>
         <CheckBox label="전체 동의합니다." />
       </BoxContainer>
+      <CheckBox sm={true} label="이용약관 동의(필수)" />
+      <CheckBox sm={true} label="개인정보 수집 이용 동의(필수)" />
+      <CheckBox sm={true} label="개인정보 수집 이용 동의(선택)" />
       <Button bg={primary} content="가입하기" />
     </Container>
   );
