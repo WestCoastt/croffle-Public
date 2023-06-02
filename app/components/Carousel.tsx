@@ -53,7 +53,7 @@ const PaginationBox = styled.div`
   width: 100px;
   position: absolute;
   left: 50%;
-  right: 50%;
+  margin-left: -80px;
   bottom: 20px;
 `;
 

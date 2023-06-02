@@ -30,6 +30,28 @@ const ConfirmInput = styled(Input)`
   margin: 0 6px 0 0;
 `;
 
+const CheckBoxContainer = styled(BoxContainer)<{ mg?: string }>`
+  margin: ${(props) => (props.mg ? props.mg : "0")};
+
+  .terms {
+    font-size: 13px;
+    color: #0074fc;
+    text-decoration-line: underline;
+    cursor: pointer;
+  }
+`;
+
+const TermsBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 140px;
+  margin-bottom: 40px;
+  padding: 20px;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+`;
+
 export default function SignUp() {
   return (
     <Container>
@@ -54,12 +76,23 @@ export default function SignUp() {
         <Button wd="138px" bg={light} content="인증번호 확인" />
       </ConfirmBox>
 
-      <BoxContainer>
+      <CheckBoxContainer mg="30px 0 10px 0">
         <CheckBox label="전체 동의합니다." />
-      </BoxContainer>
-      <CheckBox sm={true} label="이용약관 동의(필수)" />
-      <CheckBox sm={true} label="개인정보 수집 이용 동의(필수)" />
-      <CheckBox sm={true} label="개인정보 수집 이용 동의(선택)" />
+      </CheckBoxContainer>
+      <TermsBox>
+        <CheckBoxContainer>
+          <CheckBox sm={true} label="이용약관 동의(필수)" />
+          <div className="terms">약관보기 {">"}</div>
+        </CheckBoxContainer>
+        <CheckBoxContainer>
+          <CheckBox sm={true} label="개인정보 수집 이용 동의(필수)" />
+          <div className="terms">약관보기 {">"}</div>
+        </CheckBoxContainer>
+        <CheckBoxContainer>
+          <CheckBox sm={true} label="개인정보 수집 이용 동의(선택)" />
+          <div className="terms">약관보기 {">"}</div>
+        </CheckBoxContainer>
+      </TermsBox>
       <Button bg={primary} content="가입하기" />
     </Container>
   );

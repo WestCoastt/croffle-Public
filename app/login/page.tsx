@@ -7,6 +7,7 @@ import { primary } from "../styles/color";
 export const Container = styled.div`
   margin: auto;
   margin-top: 40px;
+  margin-bottom: 80px;
   width: 500px;
 
   .title {
@@ -21,7 +22,7 @@ export const Input = styled.input`
   height: 48px;
   margin-top: 16px;
   padding: 14px 18px;
-  border: 1px solid #000000;
+  border: 1px solid #c9c9c9;
   border-radius: 5px;
   outline: none;
   &:focus {
