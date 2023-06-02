@@ -2,7 +2,6 @@
 import styled from "@emotion/styled";
 import Button from "../components/Button";
 import CheckBox from "../components/CheckBox";
-import { primary } from "../styles/color";
 
 export const Container = styled.div`
   margin: auto;
@@ -26,7 +25,7 @@ export const Input = styled.input`
   border-radius: 5px;
   outline: none;
   &:focus {
-    border: 1px solid ${primary};
+    border: 1px solid var(--primary);
   }
 `;
 
@@ -79,8 +78,8 @@ export default function Login() {
         </div>
       </BoxContainer>
       <BtnBox>
-        <Button bg={primary} content="로그인" />
-        <Button clr={primary} content="회원가입" bg="#fff" />
+        <Button bg="var(--primary)" content="로그인" />
+        <Button clr="var(--primary)" content="회원가입" bg="#fff" />
       </BtnBox>
     </Container>
   );

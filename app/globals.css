@@ -2,6 +2,11 @@
   box-sizing: border-box;
 }
 
+:root {
+  --primary: #1d24dd;
+  --light: #cccccc;
+}
+
 body {
   margin: 0;
 }

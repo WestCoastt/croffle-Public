@@ -1,6 +1,8 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "@emotion/styled";
+import { useAtom } from "jotai";
+import { checkBoxAtom } from "../signup/page";
 
 const Check = styled.input<{ check: boolean; sm?: boolean }>`
   width: ${(props) => (props.sm ? "20px" : "24px")};
@@ -34,21 +36,66 @@ const Label = styled.label<{ sm?: boolean }>`
 interface CheckBoxProps {
   label: string;
   sm?: boolean;
+  idx?: number;
 }
 
-export default function CheckBox({ label, sm }: CheckBoxProps) {
+export default function CheckBox({ label, sm, idx }: CheckBoxProps) {
   //if(label === "로그인 상태 유지" && checked) { const [cookies, setCookie, removeCookie] = useCookies()}
   const [checked, setChecked] = useState(false);
+  const [check, setCheck] = useAtom(checkBoxAtom);
+  const [termCheck, setTermCheck] = useState(idx !== undefined && check[idx]);
+
+  const handleCheck = (idx: number) => {
+    let data = [...check];
+    data[idx] = termCheck;
+    setCheck(data);
+  };
+
+  useEffect(() => {
+    idx !== undefined && handleCheck(idx);
+  }, [termCheck]);
+
+  const handleFullAgreement = () => {
+    setChecked(!checked);
+    setCheck([!checked, !checked, !checked]);
+  };
+
+  const handleChange = () => {
+    if (idx !== undefined) {
+      setTermCheck(!termCheck);
+      return;
+    }
+    if (idx === undefined && label === "전체 동의합니다.") {
+      handleFullAgreement();
+      return;
+    }
+    if (idx === undefined) setChecked(!checked);
+  };
+
+  useEffect(() => {
+    idx !== undefined && setTermCheck(check[idx]);
+    if (
+      check.every((value) => value === true) &&
+      label === "전체 동의합니다."
+    ) {
+      setChecked(true);
+    }
+    if (
+      check.some((value) => value === false) &&
+      label === "전체 동의합니다."
+    ) {
+      setChecked(false);
+    }
+  }, [check]);
+
   return (
     <div>
       <Check
         id={label}
         type="checkbox"
-        check={checked}
+        check={idx !== undefined ? termCheck : checked}
         sm={sm}
-        onChange={() => {
-          setChecked(!checked);
-        }}
+        onChange={handleChange}
       />
       <Label sm={sm} htmlFor={label}>
         {label}

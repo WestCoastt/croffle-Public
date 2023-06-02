@@ -50,7 +50,7 @@ const SelectBox = styled.div`
       padding: 6px 0;
 
       &:hover {
-        color: #1d24dd;
+        color: var(--primary);
         font-weight: 700;
       }
     }
