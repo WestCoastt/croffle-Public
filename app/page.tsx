@@ -50,7 +50,9 @@ export default function Home() {
       <Carousel />
       <div
         style={{
-          margin: "80px 160px",
+          margin: "auto",
+          marginTop: "80px",
+          maxWidth: "1180px",
           display: "flex",
           justifyContent: "space-between",
         }}
