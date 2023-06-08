@@ -2,7 +2,8 @@
 import styled from "@emotion/styled";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import { useRouter } from "next/navigation";
+import Category from "./Category";
+import { list } from "../category";
 
 const NavBar = styled.div`
   display: flex;
@@ -15,10 +16,13 @@ const Container = styled.div`
   width: fit-content;
   margin: auto;
 
-  .menu {
-    width: 42px;
-    margin-right: 48px;
+  .menu-category {
     cursor: pointer;
+    padding: 20px 30px 20px 30px;
+  }
+
+  .menu-img {
+    width: 42px;
   }
 `;
 
@@ -40,13 +44,15 @@ const SelectBox = styled.div`
     position: absolute;
     top: 91px;
     z-index: 10;
+    margin: 0;
     width: 118px;
     background: #fff;
     font-size: 14px;
     padding: 10px;
     box-shadow: 0 4px 5px rgba(0, 0, 0, 0.3);
 
-    div {
+    li {
+      list-style: none;
       padding: 6px 0;
 
       &:hover {
@@ -84,6 +90,11 @@ const BtnContainer = styled.div`
   justify-content: space-between;
   width: 300px;
   margin-left: 48px;
+
+  a {
+    text-decoration: none;
+    color: #000;
+  }
 `;
 
 const BtnBox = styled.div`
@@ -94,26 +105,12 @@ const BtnBox = styled.div`
   font-size: 14px;
 `;
 
-const category = [
-  "전체",
-  "패션의류",
-  "뷰티",
-  "출산/유아동",
-  "식품",
-  "생활/주방",
-  "가구/인테리어",
-  "가전/디지털",
-  "스포츠/레저",
-  "자동차용품",
-  "문구/도서/취미",
-  "반려동물용품",
-];
-
 export default function Nav() {
+  const category = ["전체", ...Object.keys(list)];
   const [selected, setSelected] = useState(category[0]);
   const [dropdown, setDropdown] = useState(false);
+  const [hover, setHover] = useState(false);
   const selectRef = useRef<HTMLDivElement>(null);
-  const router = useRouter();
 
   useEffect(() => {
     const clickOutside = (e: any) => {
@@ -127,23 +124,34 @@ export default function Nav() {
     };
   }, [selectRef, dropdown]);
 
-  const handleClick = (path: string) => {
-    router.push(`/${path}`);
-  };
-
   return (
     <NavBar>
       <Container>
-        <img className="menu" src="/assets/img/hamburger.svg" alt="menu" />
+        <div
+          className="menu-category"
+          onMouseOver={() => {
+            setHover(true);
+          }}
+          onMouseOut={() => {
+            setHover(false);
+          }}
+        >
+          <img
+            className="menu-img"
+            src="/assets/img/hamburger.svg"
+            alt="menu"
+          />
+          <Category hover={hover} />
+        </div>
         <Link href="/">
           <img src="/assets/img/logo.svg" alt="logo" />
         </Link>
         <SelectBox ref={selectRef}>
           <div className="select">{selected}</div>
           {dropdown && (
-            <div className="list">
+            <ul className="list">
               {category.map((item) => (
-                <div
+                <li
                   key={item}
                   onClick={() => {
                     setSelected(item);
@@ -151,9 +159,9 @@ export default function Nav() {
                   }}
                 >
                   {item}
-                </div>
+                </li>
               ))}
-            </div>
+            </ul>
           )}
 
           <img
@@ -173,22 +181,30 @@ export default function Nav() {
         </SearchBox>
 
         <BtnContainer>
-          <BtnBox onClick={() => handleClick("login")}>
-            <img src="/assets/img/login.svg" alt="login" />
-            <div>로그인</div>
-          </BtnBox>
-          <BtnBox onClick={() => handleClick("mypage")}>
-            <img src="/assets/img/person.svg" alt="mypage" />
-            <div>마이페이지</div>
-          </BtnBox>
-          <BtnBox onClick={() => handleClick("cart")}>
-            <img src="/assets/img/bag.svg" alt="cart" />
-            <div>장바구니</div>
-          </BtnBox>
-          <BtnBox onClick={() => handleClick("support")}>
-            <img src="/assets/img/support.svg" alt="support" />
-            <div>고객센터</div>
-          </BtnBox>
+          <Link href="/login">
+            <BtnBox>
+              <img src="/assets/img/login.svg" alt="login" />
+              <div>로그인</div>
+            </BtnBox>
+          </Link>
+          <Link href="/mypage">
+            <BtnBox>
+              <img src="/assets/img/person.svg" alt="mypage" />
+              <div>마이페이지</div>
+            </BtnBox>
+          </Link>
+          <Link href="/cart">
+            <BtnBox>
+              <img src="/assets/img/bag.svg" alt="cart" />
+              <div>장바구니</div>
+            </BtnBox>
+          </Link>
+          <Link href="/support">
+            <BtnBox>
+              <img src="/assets/img/support.svg" alt="support" />
+              <div>고객센터</div>
+            </BtnBox>
+          </Link>
         </BtnContainer>
       </Container>
     </NavBar>

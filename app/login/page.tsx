@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 import styled from "@emotion/styled";
 import Button from "../components/Button";
 import CheckBox from "../components/CheckBox";
@@ -79,7 +80,9 @@ export default function Login() {
       </BoxContainer>
       <BtnBox>
         <Button bg="var(--primary)" content="로그인" />
-        <Button clr="var(--primary)" content="회원가입" bg="#fff" />
+        <Link href="/signup">
+          <Button clr="var(--primary)" content="회원가입" bg="#fff" />
+        </Link>
       </BtnBox>
     </Container>
   );
