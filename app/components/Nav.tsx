@@ -2,6 +2,7 @@
 import styled from "@emotion/styled";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import { atom, useSetAtom } from "jotai";
 import Category from "./Category";
 import { list } from "../category";
 
@@ -105,12 +106,15 @@ const BtnBox = styled.div`
   font-size: 14px;
 `;
 
+export const depthAtom = atom(["", ""]);
+
 export default function Nav() {
   const category = ["전체", ...Object.keys(list)];
   const [selected, setSelected] = useState(category[0]);
   const [dropdown, setDropdown] = useState(false);
   const [hover, setHover] = useState(false);
   const selectRef = useRef<HTMLDivElement>(null);
+  const setDepth = useSetAtom(depthAtom);
 
   useEffect(() => {
     const clickOutside = (e: any) => {
@@ -129,11 +133,12 @@ export default function Nav() {
       <Container>
         <div
           className="menu-category"
-          onMouseOver={() => {
+          onMouseEnter={() => {
             setHover(true);
           }}
-          onMouseOut={() => {
+          onMouseLeave={() => {
             setHover(false);
+            setDepth(["", ""]);
           }}
         >
           <img

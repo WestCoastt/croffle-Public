@@ -26,12 +26,24 @@ const ConfirmBox = styled.div`
   }
 `;
 
-const ConfirmInput = styled(Input)`
+const ConfirmInput = styled.input`
   flex: 1;
   margin: 0 6px 0 0;
+  width: 100%;
+  height: 48px;
+  padding: 14px 18px;
+  border: 1px solid #c9c9c9;
+  border-radius: 5px;
+  outline: none;
+  &:focus {
+    border: 1px solid var(--primary);
+  }
 `;
 
-const CheckBoxContainer = styled(BoxContainer)<{ mg?: string }>`
+const CheckBoxContainer = styled.div<{ mg?: string }>`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin: ${(props) => (props.mg ? props.mg : "0")};
 
   .terms {

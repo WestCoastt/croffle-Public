@@ -1,6 +1,6 @@
 "use client";
-import Link from "next/link";
 import styled from "@emotion/styled";
+import Link from "next/link";
 import Button from "../components/Button";
 import CheckBox from "../components/CheckBox";
 
