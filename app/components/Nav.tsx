@@ -1,7 +1,8 @@
 "use client";
 import styled from "@emotion/styled";
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useRef, useState, KeyboardEvent } from "react";
 import { atom, useSetAtom } from "jotai";
 import Category from "./Category";
 import { list } from "../category";
@@ -14,12 +15,13 @@ const NavBar = styled.div`
 const Container = styled.div`
   display: flex;
   align-items: center;
-  width: fit-content;
+  justify-content: space-between;
+  width: 1200px;
   margin: auto;
 
   .menu-category {
     cursor: pointer;
-    padding: 20px 30px 20px 30px;
+    padding: 20px 0;
   }
 
   .menu-img {
@@ -27,13 +29,18 @@ const Container = styled.div`
   }
 `;
 
+const BoxWrapper = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
 const SelectBox = styled.div`
   display: flex;
   align-items: center;
   width: 120px;
   height: 48px;
+  margin-left: 20px;
   font-size: 15px;
-  margin-left: 48px;
   border-bottom: 1px solid #000;
   cursor: pointer;
 
@@ -75,14 +82,26 @@ const SearchBox = styled.div`
   margin: 14px;
   border-bottom: 1px solid #000;
 
+  form {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+  }
+
   input {
     width: 360px;
     border: 0;
     outline: none;
   }
-  img {
+
+  button {
     width: 30px;
-    margin: auto;
+    height: 30px;
+    border: none;
+    background: url("/assets/img/lens.svg") no-repeat center;
+    background-size: cover;
+    cursor: pointer;
   }
 `;
 
@@ -90,7 +109,7 @@ const BtnContainer = styled.div`
   display: flex;
   justify-content: space-between;
   width: 300px;
-  margin-left: 48px;
+  margin-left: 8px;
 
   a {
     text-decoration: none;
@@ -109,10 +128,13 @@ const BtnBox = styled.div`
 export const depthAtom = atom(["", ""]);
 
 export default function Nav() {
+  const router = useRouter();
+  const searchParams = useSearchParams().get("keyword");
   const category = ["전체", ...Object.keys(list)];
   const [selected, setSelected] = useState(category[0]);
   const [dropdown, setDropdown] = useState(false);
   const [hover, setHover] = useState(false);
+  const [keyword, setKeyword] = useState(searchParams ? searchParams : "");
   const selectRef = useRef<HTMLDivElement>(null);
   const setDepth = useSetAtom(depthAtom);
 
@@ -127,6 +149,10 @@ export default function Nav() {
       document.removeEventListener("click", clickOutside);
     };
   }, [selectRef, dropdown]);
+
+  const handleSearch = (keyword: string) => {
+    if (keyword) router.push(`/search?keyword=${keyword}`);
+  };
 
   return (
     <NavBar>
@@ -148,42 +174,55 @@ export default function Nav() {
           />
           <Category hover={hover} />
         </div>
-        <Link href="/">
+        <Link href={"/"}>
           <img src="/assets/img/logo.svg" alt="logo" />
         </Link>
-        <SelectBox ref={selectRef}>
-          <div className="select">{selected}</div>
-          {dropdown && (
-            <ul className="list">
-              {category.map((item) => (
-                <li
-                  key={item}
-                  onClick={() => {
-                    setSelected(item);
-                    setDropdown(false);
-                  }}
-                >
-                  {item}
-                </li>
-              ))}
-            </ul>
-          )}
+        <BoxWrapper>
+          <SelectBox ref={selectRef}>
+            <div className="select">{selected}</div>
+            {dropdown && (
+              <ul className="list">
+                {category.map((item) => (
+                  <li
+                    key={item}
+                    onClick={() => {
+                      setSelected(item);
+                      setDropdown(false);
+                    }}
+                  >
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            )}
 
-          <img
-            className={dropdown ? "up" : ""}
-            src="/assets/img/arrow_drop_down.svg"
-            alt="category-select"
-          />
-        </SelectBox>
+            <img
+              className={dropdown ? "up" : ""}
+              src="/assets/img/arrow_drop_down.svg"
+              alt="category-select"
+            />
+          </SelectBox>
 
-        <SearchBox>
-          <input type="text" placeholder="상품을 검색해보세요!" />
-          <img
-            style={{ cursor: "pointer" }}
-            src="/assets/img/lens.svg"
-            alt="search"
-          />
-        </SearchBox>
+          <SearchBox>
+            <form
+              action=""
+              onSubmit={(e: any) => {
+                e.preventDefault();
+                handleSearch(keyword);
+              }}
+            >
+              <input
+                type="text"
+                value={keyword}
+                placeholder="상품을 검색해보세요!"
+                onChange={(e) => {
+                  setKeyword(e.target.value);
+                }}
+              />
+              <button />
+            </form>
+          </SearchBox>
+        </BoxWrapper>
 
         <BtnContainer>
           <Link href="/login">

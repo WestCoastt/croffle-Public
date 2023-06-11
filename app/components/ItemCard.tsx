@@ -4,8 +4,10 @@ import Image from "next/image";
 import Link from "next/link";
 
 const Container = styled.div`
+  display: flex;
+  flex-direction: column;
   width: 228px;
-  height: 362px;
+  height: 370px;
   padding: 14px 14px;
   border-radius: 10px;
 
@@ -23,6 +25,14 @@ const Container = styled.div`
   }
 `;
 
+const ContentBox = styled.div`
+  flex: 1;
+  display: flex;
+  margin-top: 14px;
+  flex-direction: column;
+  justify-content: space-between;
+`;
+
 const Name = styled.span`
   display: block;
   width: 200px;
@@ -33,6 +43,7 @@ const Name = styled.span`
 
 const PriceBox = styled.div`
   display: flex;
+  align-items: center;
 
   .reg {
     display: block;
@@ -47,12 +58,6 @@ const PriceBox = styled.div`
   }
 `;
 
-const RegPrice = styled.span`
-  display: block;
-  color: #999999;
-  text-decoration: line-through;
-`;
-
 const DisPrice = styled.span`
   display: block;
   font-size: 16px;
@@ -60,6 +65,27 @@ const DisPrice = styled.span`
   em {
     font-style: normal;
     font-size: 18px;
+  }
+`;
+
+const Grade = styled.div`
+  display: flex;
+  align-items: center;
+
+  span {
+    margin-left: 4px;
+    font-size: 12px;
+  }
+`;
+
+const StarBox = styled.div`
+  display: flex;
+  justify-content: space-between;
+  width: 88px;
+
+  img {
+    width: 18px;
+    height: 18px;
   }
 `;
 
@@ -79,6 +105,14 @@ export default function ItemCard({ item }: ItemCardProps) {
     (1 - item.total_price / item.regular_price) * 100
   );
 
+  const fill =
+    item.stars % 1 > 0.5
+      ? new Array(Math.round(item.stars)).fill("")
+      : new Array(Math.floor(item.stars)).fill("");
+  const half = 0 < item.stars % 1 && item.stars % 1 <= 0.5;
+  const empty =
+    5 - item.stars >= 1 ? new Array(Math.floor(5 - item.stars)).fill("") : null;
+
   return (
     <Link
       href="/item"
@@ -87,16 +121,37 @@ export default function ItemCard({ item }: ItemCardProps) {
     >
       <Container>
         <Image src={item.src} alt={item.name} width={200} height={200} />
-        <Name>{item.name}</Name>
-        {item.regular_price !== item.total_price && (
-          <PriceBox>
-            <span className="reg">{item.regular_price.toLocaleString()}원</span>
-            <span className="rate">{discount_rate}%</span>
-          </PriceBox>
-        )}
-        <DisPrice>
-          <em>{item.total_price.toLocaleString()}</em>원
-        </DisPrice>
+        <ContentBox>
+          <div>
+            <Name>{item.name}</Name>
+            {item.regular_price !== item.total_price && (
+              <PriceBox>
+                <span className="reg">
+                  {item.regular_price.toLocaleString()}원
+                </span>
+                <span className="rate">{discount_rate}%</span>
+              </PriceBox>
+            )}
+            <DisPrice>
+              <em>{item.total_price.toLocaleString()}</em>원
+            </DisPrice>
+          </div>
+
+          <Grade>
+            <StarBox>
+              {fill.map((a, i) => (
+                <img key={i} src="/assets/img/star_fill.svg" alt="star" />
+              ))}
+              {half && <img src="/assets/img/star_half.svg" alt="star" />}
+              {empty &&
+                empty.map((a, i) => (
+                  <img key={i} src="/assets/img/star_empty.svg" alt="star" />
+                ))}
+            </StarBox>
+            <span>{item.stars}</span>
+            <span>(리뷰 {item.reviews.toLocaleString()}개)</span>
+          </Grade>
+        </ContentBox>
       </Container>
     </Link>
   );

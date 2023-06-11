@@ -1,9 +1,10 @@
 "use client";
 import { useEffect, useState } from "react";
 import styled from "@emotion/styled";
+import Link from "next/link";
 
 const Container = styled.div<{ url: string }>`
-position: relative;
+  position: relative;
   background-color: #ebe9e9;
   // height: 500px;
   height: 450px;
@@ -102,9 +103,10 @@ export default function Carousel() {
   const [carousel, setCarousel] = useState(1);
   const [pause, setPause] = useState(false);
   const banners = [
-    "/assets/img/main_banner_sample.jpg",
+    "/assets/img/main_banner_sample0.png",
     "/assets/img/main_banner_sample1.jpg",
     "/assets/img/main_banner_sample2.jpg",
+    "/assets/img/main_banner_sample3.jpg",
   ];
 
   const handleCarousel = (e: any) => {
@@ -133,8 +135,11 @@ export default function Carousel() {
   }, [carousel, pause]);
 
   return (
-    <Container url={banners[carousel]}>
-      <div className="banner">
+    <>
+      <Container url={banners[carousel]}>
+        <Link href="/배너">
+          <div className="banner" />
+        </Link>
         <button className="arrow left" onClick={handleCarousel}></button>
         <button className="arrow right" onClick={handleCarousel}></button>
         <PaginationBox>
@@ -145,7 +150,7 @@ export default function Carousel() {
             <span className="current">{carousel + 1}</span> / {banners.length}
           </Pagination>
         </PaginationBox>
-      </div>
-    </Container>
+      </Container>
+    </>
   );
 }

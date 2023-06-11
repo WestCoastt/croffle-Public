@@ -65,25 +65,27 @@ const BtnBox = styled.div`
 export default function Login() {
   return (
     <Container>
-      <div className="title">로그인</div>
-      <Input placeholder="아이디(이메일)" type="text" />
-      {/* <Warning>아이디(이메일)는 이메일 형식으로 입력해주세요.</Warning> */}
-      <Input placeholder="비밀번호" type="password" />
-      {/* <Warning>{message}</Warning> */}
-      <BoxContainer>
-        <CheckBox label="로그인 상태 유지" />
-        <div>
-          <span className="find">아이디 찾기</span>
-          <span className="divider" />
-          <span className="find">비밀번호 찾기</span>
-        </div>
-      </BoxContainer>
-      <BtnBox>
-        <Button bg="var(--primary)" content="로그인" />
-        <Link href="/signup">
-          <Button clr="var(--primary)" content="회원가입" bg="#fff" />
-        </Link>
-      </BtnBox>
+      <form action="">
+        <div className="title">로그인</div>
+        <Input placeholder="아이디(이메일)" type="text" />
+        {/* <Warning>아이디(이메일)는 이메일 형식으로 입력해주세요.</Warning> */}
+        <Input placeholder="비밀번호" type="password" />
+        {/* <Warning>{message}</Warning> */}
+        <BoxContainer>
+          <CheckBox label="로그인 상태 유지" />
+          <div>
+            <span className="find">아이디 찾기</span>
+            <span className="divider" />
+            <span className="find">비밀번호 찾기</span>
+          </div>
+        </BoxContainer>
+        <BtnBox>
+          <Button bg="var(--primary)" content="로그인" />
+          <Link href="/signup">
+            <Button clr="var(--primary)" content="회원가입" bg="#fff" />
+          </Link>
+        </BtnBox>
+      </form>
     </Container>
   );
 }
