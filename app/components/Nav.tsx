@@ -2,7 +2,7 @@
 import styled from "@emotion/styled";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useRef, useState, KeyboardEvent } from "react";
+import { useEffect, useRef, useState } from "react";
 import { atom, useSetAtom } from "jotai";
 import Category from "./Category";
 import { list } from "../category";
@@ -77,7 +77,8 @@ const SelectBox = styled.div`
 const SearchBox = styled.div`
   display: flex;
   align-items: center;
-  width: 400px;
+  // width: 400px;
+  width: 500px;
   height: 48px;
   margin: 14px;
   border-bottom: 1px solid #000;
@@ -177,7 +178,7 @@ export default function Nav() {
         <Link href={"/"}>
           <img src="/assets/img/logo.svg" alt="logo" />
         </Link>
-        <BoxWrapper>
+        {/* <BoxWrapper>
           <SelectBox ref={selectRef}>
             <div className="select">{selected}</div>
             {dropdown && (
@@ -202,27 +203,27 @@ export default function Nav() {
               alt="category-select"
             />
           </SelectBox>
+        </BoxWrapper> */}
 
-          <SearchBox>
-            <form
-              action=""
-              onSubmit={(e: any) => {
-                e.preventDefault();
-                handleSearch(keyword);
+        <SearchBox>
+          <form
+            action=""
+            onSubmit={(e: any) => {
+              e.preventDefault();
+              handleSearch(keyword);
+            }}
+          >
+            <input
+              type="text"
+              value={keyword}
+              placeholder="상품을 검색해보세요!"
+              onChange={(e) => {
+                setKeyword(e.target.value);
               }}
-            >
-              <input
-                type="text"
-                value={keyword}
-                placeholder="상품을 검색해보세요!"
-                onChange={(e) => {
-                  setKeyword(e.target.value);
-                }}
-              />
-              <button />
-            </form>
-          </SearchBox>
-        </BoxWrapper>
+            />
+            <button />
+          </form>
+        </SearchBox>
 
         <BtnContainer>
           <Link href="/login">

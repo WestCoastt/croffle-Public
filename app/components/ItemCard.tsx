@@ -6,9 +6,9 @@ import Link from "next/link";
 const Container = styled.div`
   display: flex;
   flex-direction: column;
-  width: 228px;
-  height: 370px;
-  padding: 14px 14px;
+  width: 230px;
+  height: 380px;
+  padding: 18px 14px;
   border-radius: 10px;
 
   img {

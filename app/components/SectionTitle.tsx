@@ -3,7 +3,7 @@ import styled from "@emotion/styled";
 
 const Container = styled.div`
   margin: auto;
-  width: 215px;
+  width: 238px;
 `;
 
 const H1 = styled.h1`
