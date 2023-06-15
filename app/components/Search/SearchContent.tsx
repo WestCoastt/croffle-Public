@@ -4,8 +4,10 @@ import styled from "@emotion/styled";
 import Sort from "./Sort";
 import { ItemList } from "@/app/Items";
 import ItemCard from "../ItemCard";
+import { Suspense } from "react";
+import SkeletonCard from "./SkeletonCard";
 
-const Container = styled.div`
+export const Container = styled.div`
   width: 960px;
   padding: 40px 0 0 20px;
 
@@ -14,7 +16,7 @@ const Container = styled.div`
   }
 `;
 
-const CardContainer = styled.div`
+export const CardContainer = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fill, 230px);
   gap: 30px 6px;

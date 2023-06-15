@@ -2,6 +2,8 @@
 import styled from "@emotion/styled";
 import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
+import Rating from "./Rating";
 
 const Container = styled.div`
   display: flex;
@@ -19,10 +21,35 @@ const Container = styled.div`
     transition: box-shadow 0.2s ease;
 
     img {
-      transform: scale(1.02);
+      transform: scale(1.03);
       transition: transform 0.2s ease-in;
     }
   }
+
+
+  .skeleton {
+    position: absolute;
+    width: 200px;
+    height: 200px;
+    animation: skeleton-gradient 1.5s infinite ease-in-out;
+    border-radius: 10px;
+
+    @keyframes skeleton-gradient {
+      0% {
+        background-color: rgba(165, 165, 165, 0.1);
+      }
+      50% {
+        background-color: rgba(165, 165, 165, 0.3);
+      }
+      100% {
+        background-color: rgba(165, 165, 165, 0.1);
+      }
+    }
+`;
+
+const ImageBox = styled.div`
+  border-radius: 10px;
+  overflow: hidden;
 `;
 
 const ContentBox = styled.div`
@@ -68,29 +95,9 @@ const DisPrice = styled.span`
   }
 `;
 
-const Grade = styled.div`
-  display: flex;
-  align-items: center;
-
-  span {
-    margin-left: 4px;
-    font-size: 12px;
-  }
-`;
-
-const StarBox = styled.div`
-  display: flex;
-  justify-content: space-between;
-  width: 88px;
-
-  img {
-    width: 18px;
-    height: 18px;
-  }
-`;
-
 interface ItemCardProps {
   item: {
+    product_id: number;
     name: string;
     regular_price: number;
     total_price: number;
@@ -101,26 +108,29 @@ interface ItemCardProps {
 }
 
 export default function ItemCard({ item }: ItemCardProps) {
+  const [loaded, setLoaded] = useState(false);
+
   const discount_rate = Math.floor(
     (1 - item.total_price / item.regular_price) * 100
   );
 
-  const fill =
-    item.stars % 1 > 0.5
-      ? new Array(Math.round(item.stars)).fill("")
-      : new Array(Math.floor(item.stars)).fill("");
-  const half = 0 < item.stars % 1 && item.stars % 1 <= 0.5;
-  const empty =
-    5 - item.stars >= 1 ? new Array(Math.floor(5 - item.stars)).fill("") : null;
-
   return (
     <Link
-      href="/item"
+      href={`/products/${item.product_id}`}
       target="_blank"
       style={{ textDecoration: "none", color: "#000" }}
     >
       <Container>
-        <Image src={item.src} alt={item.name} width={200} height={200} />
+        {!loaded && <div className="skeleton" />}
+        <ImageBox>
+          <Image
+            onLoad={() => setLoaded(true)}
+            src={item.src}
+            alt={item.name}
+            width={200}
+            height={200}
+          />
+        </ImageBox>
         <ContentBox>
           <div>
             <Name>{item.name}</Name>
@@ -137,20 +147,7 @@ export default function ItemCard({ item }: ItemCardProps) {
             </DisPrice>
           </div>
 
-          <Grade>
-            <StarBox>
-              {fill.map((a, i) => (
-                <img key={i} src="/assets/img/star_fill.svg" alt="star" />
-              ))}
-              {half && <img src="/assets/img/star_half.svg" alt="star" />}
-              {empty &&
-                empty.map((a, i) => (
-                  <img key={i} src="/assets/img/star_empty.svg" alt="star" />
-                ))}
-            </StarBox>
-            <span>{item.stars}</span>
-            <span>(리뷰 {item.reviews.toLocaleString()}개)</span>
-          </Grade>
+          <Rating stars={item.stars} reviews={item.reviews} />
         </ContentBox>
       </Container>
     </Link>

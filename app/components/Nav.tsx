@@ -11,6 +11,7 @@ const NavBar = styled.div`
   display: flex;
   align-items: center;
   height: 134px;
+  box-shadow: rgba(0, 0, 0, 0.07) 0px 3px 4px 0px;
 `;
 const Container = styled.div`
   display: flex;
@@ -132,7 +133,7 @@ export default function Nav() {
   const router = useRouter();
   const searchParams = useSearchParams().get("keyword");
   const category = ["전체", ...Object.keys(list)];
-  const [selected, setSelected] = useState(category[0]);
+  // const [selected, setSelected] = useState(category[0]);
   const [dropdown, setDropdown] = useState(false);
   const [hover, setHover] = useState(false);
   const [keyword, setKeyword] = useState(searchParams ? searchParams : "");

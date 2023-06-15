@@ -1,5 +1,6 @@
 export const ItemList = [
   {
+    product_id: 1,
     name: "삼성전자 그랑데 드럼세탁기 WF21T6000KV 21kg 방문설치 블랙 케비어",
     regular_price: 989620,
     total_price: 784920,
@@ -8,6 +9,7 @@ export const ItemList = [
     src: "https://github.com/westcoast-dev/nextjs-course/assets/117972001/a31bff93-ea88-40cd-bb7c-3c5a6e49f246",
   },
   {
+    product_id: 2,
     name: "건강한 생유산균 100억",
     regular_price: 87100,
     total_price: 56870,
@@ -16,6 +18,7 @@ export const ItemList = [
     src: "https://github.com/westcoast-dev/nextjs-course/assets/117972001/e6a5615c-9962-4e8d-b07d-308af302230b",
   },
   {
+    product_id: 3,
     name: "앱코 축교환 레인보우 무빙 LED 기계식 키보드 갈축",
     regular_price: 35300,
     total_price: 32150,
@@ -24,6 +27,7 @@ export const ItemList = [
     src: "https://github.com/westcoast-dev/nextjs-course/assets/117972001/81e85626-1b9b-4a16-b646-07a406b77d19",
   },
   {
+    product_id: 4,
     name: "시몽 테르미크 150ml 듀오 세트",
     regular_price: 120000,
     total_price: 68530,
@@ -32,6 +36,7 @@ export const ItemList = [
     src: "https://github.com/westcoast-dev/nextjs-course/assets/117972001/cea03368-c953-4a69-972c-b321dee8d44f",
   },
   {
+    product_id: 5,
     name: "허먼밀러 뉴 에어론 풀 의자 B 방문설치, 미네랄",
     regular_price: 2680000,
     total_price: 2280000,
@@ -40,6 +45,7 @@ export const ItemList = [
     src: "https://github.com/westcoast-dev/nextjs-course/assets/117972001/3a61cce6-0c0c-4a80-a51d-a5ffa53c67dd",
   },
   {
+    product_id: 6,
     name: "탬버린즈 퍼퓸 솝 비누",
     regular_price: 49290,
     total_price: 36700,
@@ -48,6 +54,7 @@ export const ItemList = [
     src: "https://github.com/westcoast-dev/nextjs-course/assets/117972001/fde3989f-bc08-4909-8298-ed4322be612d",
   },
   {
+    product_id: 7,
     name: "내추럴발란스 강아지 LI 닭 & 고구마 레시피 사료 작은알갱이, 1개, 11.8kg",
     regular_price: 132580,
     total_price: 127760,
@@ -56,6 +63,7 @@ export const ItemList = [
     src: "https://github.com/westcoast-dev/nextjs-course/assets/117972001/db01766c-b345-43f6-bd27-d8f7ac6ebba8",
   },
   {
+    product_id: 8,
     name: "이탈리아 델타살로티 네오 코너 확장형 천연가죽소파",
     regular_price: 20170000,
     total_price: 16136000,
@@ -64,6 +72,7 @@ export const ItemList = [
     src: "https://github.com/westcoast-dev/nextjs-course/assets/117972001/41782276-8d74-4de6-9198-2c66133c695d",
   },
   {
+    product_id: 9,
     name: "양반 진국사골곰탕 500g",
     regular_price: 3390,
     total_price: 1620,
@@ -72,6 +81,7 @@ export const ItemList = [
     src: "https://github.com/westcoast-dev/nextjs-course/assets/117972001/dd0d1733-1d6f-46f4-9985-ff4d3e070d25",
   },
   {
+    product_id: 10,
     name: "스노우라인 새턴쉘터라이트 텐트, 탄, 4인용",
     regular_price: 716400,
     total_price: 716400,
@@ -80,6 +90,7 @@ export const ItemList = [
     src: "https://github.com/westcoast-dev/nextjs-course/assets/117972001/b489de61-2afe-4ed9-a016-0cd0ca06531d",
   },
   {
+    product_id: 11,
     name: "아라크네 네츄럴 듀얼쉐이드 콤비블라인드 롤스크린 2p, 주문후 2주내 배송",
     regular_price: 70000,
     total_price: 70000,
