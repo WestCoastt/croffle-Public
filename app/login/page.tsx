@@ -12,6 +12,7 @@ export const Container = styled.div`
 
   .title {
     font-size: 32px;
+    font-weight: 500;
     text-align: center;
     margin-bottom: 24px;
   }
@@ -45,6 +46,8 @@ export const BoxContainer = styled.div`
   .find {
     font-size: 14px;
     cursor: pointer;
+    text-decoration: none;
+    color: initial;
   }
   .divider {
     display: inline-block;
@@ -54,7 +57,7 @@ export const BoxContainer = styled.div`
     background-color: #dddddd;
   }
 `;
-const BtnBox = styled.div`
+export const BtnBox = styled.div`
   height: 106px;
   display: flex;
   flex-direction: column;
@@ -74,9 +77,13 @@ export default function Login() {
         <BoxContainer>
           <CheckBox label="로그인 상태 유지" />
           <div>
-            <span className="find">아이디 찾기</span>
+            <Link href="/login/find/id" className="find">
+              아이디 찾기
+            </Link>
             <span className="divider" />
-            <span className="find">비밀번호 찾기</span>
+            <Link href="/login/find/password" className="find">
+              비밀번호 찾기
+            </Link>
           </div>
         </BoxContainer>
         <BtnBox>

@@ -5,6 +5,7 @@ import Button from "../components/Button";
 import CheckBox from "../components/CheckBox";
 import { Container, Input, BoxContainer, Warning } from "../login/page";
 import { useEffect } from "react";
+import PhoneAuth from "../components/PhoneAuth";
 
 const ConfirmBox = styled.div`
   width: 100%;
@@ -89,7 +90,7 @@ export default function SignUp() {
       {/* <Warning>{message}</Warning> */}
       <Input placeholder="이름" type="text" />
 
-      <ConfirmBox>
+      {/* <ConfirmBox>
         <ConfirmInput placeholder="휴대폰 번호" type="text" />
         <Button wd="138px" bg="var(--primary)" content="인증번호 받기" />
       </ConfirmBox>
@@ -99,7 +100,9 @@ export default function SignUp() {
           <span>03:00</span>
         </div>
         <Button wd="138px" bg="var(--light)" content="인증번호 확인" />
-      </ConfirmBox>
+      </ConfirmBox> */}
+
+      <PhoneAuth />
 
       <CheckBoxContainer mg="30px 0 10px 0">
         <CheckBox label="전체 동의합니다." />
