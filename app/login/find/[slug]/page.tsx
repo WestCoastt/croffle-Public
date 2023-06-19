@@ -1,8 +1,9 @@
+"use client";
 import PhoneAuth from "@/app/components/PhoneAuth";
 import { Container, Input } from "../../page";
 import Button from "@/app/components/Button";
 
-export default async function Find(props: { params: { slug: string } }) {
+export default function Find(props: { params: { slug: string } }) {
   if (props.params.slug === "id") {
     return (
       <Container>

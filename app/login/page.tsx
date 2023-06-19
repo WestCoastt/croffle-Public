@@ -77,11 +77,11 @@ export default function Login() {
         <BoxContainer>
           <CheckBox label="로그인 상태 유지" />
           <div>
-            <Link href="/login/find/id" className="find">
+            <Link href="/login/find/authenticate/id" className="find">
               아이디 찾기
             </Link>
             <span className="divider" />
-            <Link href="/login/find/password" className="find">
+            <Link href="/login/find/authenticate/password" className="find">
               비밀번호 찾기
             </Link>
           </div>

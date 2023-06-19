@@ -1,7 +1,7 @@
 "use client";
 import styled from "@emotion/styled";
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import Rating from "../Rating";
 
 const Container = styled.div`
@@ -84,7 +84,7 @@ const PriceBox = styled.div`
 const CoinWarpper = styled.div`
   color: var(--primary);
   font-size: 14px;
-  font-weight: 700;
+  font-weight: 500;
   span {
     font-size: 20px;
   }
@@ -107,6 +107,9 @@ const ShippingContainer = styled.div`
     span:first-child {
       margin-right: 52px;
     }
+  }
+  strong {
+    font-weight: 500;
   }
 `;
 
@@ -166,6 +169,36 @@ const SelectBox = styled.div<{ dropdown: boolean }>`
   }
 `;
 
+const QuantityContainer = styled.div`
+  background: #fafafa;
+  border-radius: 5px;
+  margin-top: 12px;
+  padding: 20px 18px;
+
+  div {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+  }
+  .option_name {
+    color: #555555;
+    width: 460px;
+    max-height: 46px;
+    overflow: hidden;
+  }
+
+  button {
+    height: 14px;
+    padding: 0;
+    border: none;
+    background: initial;
+    cursor: pointer;
+  }
+  .QuantityBox {
+    margin-top: 24px;
+  }
+`;
+
 const images = [
   "https://github.com/westcoast-dev/RNCourse-Game/assets/117972001/55e8c950-06b6-45fd-8abd-cd8e23628eb9",
   "https://github.com/westcoast-dev/RNCourse-Game/assets/117972001/e41bf8d5-cd5b-44cd-8988-fe591ae58cc7",
@@ -183,7 +216,7 @@ const detail = {
   reviews: 6178,
   src: "https://github.com/westcoast-dev/nextjs-course/assets/117972001/fde3989f-bc08-4909-8298-ed4322be612d",
   shipping_fee: 3000,
-  estimated_time: "Sat Jul 1 2023 10:23:29 GMT+0900",
+  estimated_time: "Sun Jul 2 2023 10:23:29 GMT+0900",
   option: [
     "옵션1. 훌라훌라 훌라춤을 춘다 탬버린 비누",
     "옵션2. 손 세정제",
@@ -194,21 +227,41 @@ const detail = {
   ],
 };
 
-const days = ["일", "월", "화", "수", "목", "금", "토"];
-const date = new Date(detail.estimated_time).toLocaleString().split(". ");
-const day = new Date(detail.estimated_time).getDay();
-const eta = `${date[1] + "/" + date[2]}` + `(${days[day]})`;
+const getETA = () => {
+  const days = ["일", "월", "화", "수", "목", "금", "토"];
+  const date = new Date(detail.estimated_time).toLocaleString().split(". ");
+  const day = new Date(detail.estimated_time).getDay();
+  const eta = `${date[1] + "/" + date[2]}` + `(${days[day]})`;
+  return eta;
+};
 
 export default function TopContents() {
   const [mainImg, setMainImg] = useState(images[0]);
   const [selected, setSelected] = useState("선택하세요.");
+  const [selArr, setSelArr] = useState<string[]>([]);
   const [dropdown, setDropdown] = useState(false);
+  const [eta, setEta] = useState("");
+  const optionRef = useRef<HTMLDivElement>(null);
 
   const discount_rate = Math.floor(
     (1 - detail.total_price / detail.regular_price) * 100
   );
 
-  console.log(eta);
+  useEffect(() => {
+    const clickOutside = (e: any) => {
+      optionRef.current && !optionRef.current.contains(e.target)
+        ? setDropdown(false)
+        : setDropdown(!dropdown);
+    };
+    document.addEventListener("click", clickOutside);
+    return () => {
+      document.removeEventListener("click", clickOutside);
+    };
+  }, [optionRef, dropdown]);
+
+  useEffect(() => {
+    setEta(getETA());
+  }, [detail.estimated_time]);
 
   return (
     <Container>
@@ -268,7 +321,8 @@ export default function TopContents() {
           </div>
         </ShippingContainer>
 
-        <SelectBox dropdown={dropdown}>
+        {/* {detail.option &&} */}
+        <SelectBox ref={optionRef} dropdown={dropdown}>
           <div
             className="select"
             onClick={() => {
@@ -290,6 +344,11 @@ export default function TopContents() {
                   key={item}
                   onClick={() => {
                     setSelected(item);
+                    if (selArr.includes(item)) {
+                      alert("이미 선택한 옵션입니다.");
+                      return;
+                    }
+                    setSelArr([...selArr, item]);
                     setDropdown(false);
                   }}
                 >
@@ -299,6 +358,32 @@ export default function TopContents() {
             </ul>
           )}
         </SelectBox>
+
+        {/* 컴포넌트화해서 수량 initial value = 1 setValue 독립적으로 쓸 것 */}
+        {selArr.length !== 0 &&
+          selArr.map((item, i) => (
+            <QuantityContainer key={item}>
+              <div>
+                <span className="option_name">{item}</span>
+                <button
+                  onClick={() => {
+                    selArr.splice(i, 1);
+                    setSelArr([...selArr]);
+                  }}
+                >
+                  <img src="/assets/img/close.svg" alt="delete_item" />
+                </button>
+              </div>
+              <div className="QuantityBox">
+                <div>
+                  <button>-</button>
+                  <input type="text" />
+                  <button>+</button>
+                </div>
+                <span>32,000원</span>
+              </div>
+            </QuantityContainer>
+          ))}
       </InfoContainer>
     </Container>
   );

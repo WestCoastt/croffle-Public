@@ -10,7 +10,7 @@ const MemberCard = styled.div`
   width: 500px;
   border: 1px solid #eeeeee;
   border-radius: 5px;
-  padding: 34px 80px;
+  padding: 98px 84px;
 
   .name {
     margin: 0;
@@ -26,15 +26,17 @@ const MemberCard = styled.div`
 const BtnBox = styled.div`
   display: flex;
   justify-content: space-between;
-  width: 450px;
+  width: 500px;
   margin: auto;
-  margin-top: 40px;
+  margin-top: 50px;
 `;
 
 export default function Completed() {
   return (
     <Container>
-      <div className="title">회원가입 완료</div>
+      <div style={{ marginBottom: "40px" }} className="title">
+        회원가입 완료
+      </div>
       <MemberCard>
         <img src="/assets/img/user.svg" alt="user" />
         <div>
@@ -47,16 +49,16 @@ export default function Completed() {
       </MemberCard>
 
       <BtnBox>
-        <Link href="/login">
+        <Link href="/">
           <Button
             clr="var(--primary)"
-            wd="170px"
+            wd="196px"
             bg="#fff"
             content="메인으로"
           />
         </Link>
-        <Link href="/">
-          <Button bg="var(--primary)" wd="260px" content="로그인" />
+        <Link href="/login">
+          <Button bg="var(--primary)" wd="290px" content="로그인" />
         </Link>
       </BtnBox>
     </Container>
