@@ -2,7 +2,10 @@
 import styled from "@emotion/styled";
 import Image from "next/image";
 import { useState, useEffect, useRef } from "react";
+import { atom, useAtom } from "jotai";
 import Rating from "../Rating";
+import Quantity from "./Quantity";
+import Button from "../Button";
 
 const Container = styled.div`
   width: 1200px;
@@ -169,34 +172,43 @@ const SelectBox = styled.div<{ dropdown: boolean }>`
   }
 `;
 
-const QuantityContainer = styled.div`
-  background: #fafafa;
+const TPContainer = styled.div<{ opt: number }>`
+  margin-top: ${(props) => (props.opt === 0 ? "94px" : "20px")};
+`;
+
+const TotalPrice = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  font-size: 14px;
+  line-height: 34px;
+
+  .total {
+    margin-left: 12px;
+    color: #e50000;
+    font-weight: 700;
+  }
+  strong {
+    font-size: 24px;
+  }
+`;
+
+const BtnContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+`;
+
+const HeartBtn = styled.button<{ like: boolean }>`
+  width: 50px;
+  height: 48px;
+  border: 1px solid #1d24dd;
   border-radius: 5px;
-  margin-top: 12px;
-  padding: 20px 18px;
-
-  div {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-  }
-  .option_name {
-    color: #555555;
-    width: 460px;
-    max-height: 46px;
-    overflow: hidden;
-  }
-
-  button {
-    height: 14px;
-    padding: 0;
-    border: none;
-    background: initial;
-    cursor: pointer;
-  }
-  .QuantityBox {
-    margin-top: 24px;
-  }
+  background: url(${(props) =>
+      props.like ? "/assets/img/heart_filled.svg" : "/assets/img/heart.svg"})
+    no-repeat;
+  background-position: center;
+  cursor: pointer;
 `;
 
 const images = [
@@ -207,39 +219,58 @@ const images = [
   "https://github.com/westcoast-dev/RNCourse-Game/assets/117972001/69c51164-00b5-485c-b83d-626695886b8e",
 ];
 
-const detail = {
-  product_id: 6,
-  name: "탬버린즈 퍼퓸 솝 비누",
-  regular_price: 49290,
-  total_price: 36700,
-  stars: 3.4,
-  reviews: 6178,
-  src: "https://github.com/westcoast-dev/nextjs-course/assets/117972001/fde3989f-bc08-4909-8298-ed4322be612d",
-  shipping_fee: 3000,
-  estimated_time: "Sun Jul 2 2023 10:23:29 GMT+0900",
-  option: [
-    "옵션1. 훌라훌라 훌라춤을 춘다 탬버린 비누",
-    "옵션2. 손 세정제",
-    "옵션3. 탬버린즈 버블버블 액션빔",
-    "옵션4. 핸드크림",
-    "옵션5. 딥디크 시그니엘 시그니쳐 바디로션",
-    "옵션6. 짱구는 못말려 부리부리부리부리 대마왕의 자라나라 머리머리 머머리 탈모 방지 샴푸",
-  ],
-};
+interface Option {
+  name: string;
+  price: number;
+  qty: number;
+}
 
-const getETA = () => {
-  const days = ["일", "월", "화", "수", "목", "금", "토"];
-  const date = new Date(detail.estimated_time).toLocaleString().split(". ");
-  const day = new Date(detail.estimated_time).getDay();
-  const eta = `${date[1] + "/" + date[2]}` + `(${days[day]})`;
-  return eta;
-};
-
+export const selectedAtom = atom<Option[]>([]);
 export default function TopContents() {
+  const detail = {
+    product_id: 6,
+    name: "탬버린즈 퍼퓸 솝 비누",
+    regular_price: 49290,
+    total_price: 36700,
+    stars: 3.4,
+    reviews: 6178,
+    src: "https://github.com/westcoast-dev/nextjs-course/assets/117972001/fde3989f-bc08-4909-8298-ed4322be612d",
+    shipping_fee: 3000,
+    estimated_time: "Sun Jul 2 2023 10:23:29 GMT+0900",
+    option: [
+      {
+        name: "옵션1. 훌라훌라 훌라춤을 춘다 탬버린 비누",
+        price: 32000,
+        qty: 1,
+      },
+      { name: "옵션2. 손 세정제", price: 7900, qty: 1 },
+      { name: "옵션3. 탬버린즈 버블버블 액션빔", price: 18900, qty: 1 },
+      { name: "옵션4. 핸드크림", price: 11400, qty: 1 },
+      {
+        name: "옵션5. 딥디크 시그니엘 시그니쳐 어메니티 세트",
+        price: 179000,
+        qty: 1,
+      },
+      {
+        name: "옵션6. 짱구는 못말려 부리부리부리부리 대마왕의 자라나라 머리머리 머머리 탈모 방지 샴푸",
+        price: 338400,
+        qty: 1,
+      },
+    ],
+  };
+  const getETA = () => {
+    const days = ["일", "월", "화", "수", "목", "금", "토"];
+    const date = new Date(detail.estimated_time).toLocaleString().split(". ");
+    const day = new Date(detail.estimated_time).getDay();
+    const eta = `${date[1] + "/" + date[2]}` + `(${days[day]})`;
+    return eta;
+  };
+
   const [mainImg, setMainImg] = useState(images[0]);
   const [selected, setSelected] = useState("선택하세요.");
-  const [selArr, setSelArr] = useState<string[]>([]);
+  const [selArr, setSelArr] = useAtom(selectedAtom);
   const [dropdown, setDropdown] = useState(false);
+  const [like, setLike] = useState(false);
   const [eta, setEta] = useState("");
   const optionRef = useRef<HTMLDivElement>(null);
 
@@ -341,10 +372,10 @@ export default function TopContents() {
             <ul className="list">
               {detail.option.map((item) => (
                 <li
-                  key={item}
+                  key={item.name}
                   onClick={() => {
-                    setSelected(item);
-                    if (selArr.includes(item)) {
+                    setSelected(item.name);
+                    if (selArr.map((el) => el.name).includes(item.name)) {
                       alert("이미 선택한 옵션입니다.");
                       return;
                     }
@@ -352,38 +383,49 @@ export default function TopContents() {
                     setDropdown(false);
                   }}
                 >
-                  {item}
+                  {item.name}
                 </li>
               ))}
             </ul>
           )}
         </SelectBox>
 
-        {/* 컴포넌트화해서 수량 initial value = 1 setValue 독립적으로 쓸 것 */}
         {selArr.length !== 0 &&
           selArr.map((item, i) => (
-            <QuantityContainer key={item}>
-              <div>
-                <span className="option_name">{item}</span>
-                <button
-                  onClick={() => {
-                    selArr.splice(i, 1);
-                    setSelArr([...selArr]);
-                  }}
-                >
-                  <img src="/assets/img/close.svg" alt="delete_item" />
-                </button>
-              </div>
-              <div className="QuantityBox">
-                <div>
-                  <button>-</button>
-                  <input type="text" />
-                  <button>+</button>
-                </div>
-                <span>32,000원</span>
-              </div>
-            </QuantityContainer>
+            <Quantity key={item.name} item={item} idx={i} />
           ))}
+        {/* 옵션없는 상품이면 && <수량선택/> */}
+        <TPContainer opt={selArr.length}>
+          <TotalPrice>
+            <span>합계</span>
+            <span className="total">
+              <strong>
+                {selArr.length === 0
+                  ? "0"
+                  : selArr
+                      .map((item) => item.price * item.qty)
+                      .reduce((a, b) => a + b)
+                      .toLocaleString()}
+              </strong>
+              원
+            </span>
+          </TotalPrice>
+          <BtnContainer>
+            <HeartBtn
+              like={like}
+              onClick={() => {
+                setLike(!like);
+              }}
+            />
+            <Button
+              clr="var(--primary)"
+              wd="185px"
+              content="장바구니 담기"
+              bg="#fff"
+            />
+            <Button bg="var(--primary)" wd="275px" content="바로구매" />
+          </BtnContainer>
+        </TPContainer>
       </InfoContainer>
     </Container>
   );
