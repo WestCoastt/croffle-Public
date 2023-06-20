@@ -3,7 +3,7 @@ import styled from "@emotion/styled";
 
 const Container = styled.div`
   margin: auto;
-  width: 238px;
+  width: fit-content;
 `;
 
 const H1 = styled.h1`
@@ -14,6 +14,10 @@ const H1 = styled.h1`
   justify-content: space-between;
   align-items: center;
   font-size: 36px;
+
+  span {
+    margin-right: 12px;
+  }
 `;
 
 import React from "react";
@@ -22,8 +26,8 @@ export default function SectionTitle() {
   return (
     <Container>
       <H1>
-        <span>크로플 추천</span>
-        <img src="/assets/img/thumbs_up.svg" alt="recommand" />
+        <span>주간 인기 상품</span>
+        <img src="/assets/img/fire.svg" alt="weekly-hot-items" />
       </H1>
     </Container>
   );

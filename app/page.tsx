@@ -12,7 +12,7 @@ export default function Home() {
         style={{
           margin: "auto",
           marginTop: "40px",
-          marginBottom: "100px",
+          marginBottom: "70px",
           maxWidth: "1200px",
           display: "flex",
           justifyContent: "space-between",
@@ -21,6 +21,9 @@ export default function Home() {
         {ItemList.splice(0, 5).map((item) => (
           <ItemCard key={item.name} item={item} />
         ))}
+      </div>
+      <div style={{ margin: "auto", width: "1200px" }}>
+        <img src="/assets/img/middle_banner.svg" alt="middle_banner" />
       </div>
     </div>
   );
