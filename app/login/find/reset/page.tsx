@@ -1,6 +1,6 @@
 "use client";
 import Button from "@/app/components/Button";
-import { Container, Input } from "../../page";
+import { Container, Input } from "../../../components/Login";
 import Link from "next/link";
 
 export default function page() {

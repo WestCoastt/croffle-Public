@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import Button from "@/app/components/Button";
-import { BtnBox, Container } from "@/app/login/page";
+import { BtnBox, Container } from "../../../../components/Login";
 import styled from "@emotion/styled";
 
 const Title = styled.div`

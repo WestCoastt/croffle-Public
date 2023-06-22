@@ -1,9 +1,9 @@
 "use client";
-import { atom, useSetAtom } from "jotai";
+import { useSetAtom } from "jotai";
 import styled from "@emotion/styled";
 import Button from "../components/Button";
-import CheckBox from "../components/CheckBox";
-import { Container, Input, BoxContainer, Warning } from "../login/page";
+import CheckBox, { checkBoxAtom } from "../components/CheckBox";
+import { Container, Input, BoxContainer, Warning } from "../components/Login";
 import { useEffect } from "react";
 import PhoneAuth from "../components/PhoneAuth";
 import Link from "next/link";
@@ -67,7 +67,6 @@ const TermsBox = styled.div`
   background-color: #f9f9f9;
 `;
 
-export const checkBoxAtom = atom([false, false, false]);
 export default function SignUp() {
   const terms = [
     "이용약관 동의(필수)",

@@ -1,7 +1,7 @@
 "use client";
 import styled from "@emotion/styled";
 import Button from "../components/Button";
-import { Warning } from "../login/page";
+import { Warning } from "../components/Login";
 
 const ConfirmBox = styled.div`
   width: 100%;

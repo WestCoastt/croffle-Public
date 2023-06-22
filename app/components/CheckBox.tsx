@@ -1,9 +1,9 @@
 "use client";
 import { useEffect, useState } from "react";
 import styled from "@emotion/styled";
-import { useAtom } from "jotai";
-import { checkBoxAtom } from "../signup/page";
+import { atom, useAtom } from "jotai";
 
+export const checkBoxAtom = atom([false, false, false]);
 const Check = styled.input<{ check: boolean; sm?: boolean }>`
   width: ${(props) => (props.sm ? "20px" : "24px")};
   height: ${(props) => (props.sm ? "20px" : "24px")};

@@ -308,7 +308,7 @@ export default function TopContents() {
 
   return (
     <Container>
-      <ZoomViewer src={mainImg} />
+      {/* <ZoomViewer src={mainImg} /> */}
       <div className="wrap">
         <ImageContainer>
           {images.map((item, i) => (

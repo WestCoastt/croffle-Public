@@ -1,6 +1,6 @@
 "use client";
 import PhoneAuth from "@/app/components/PhoneAuth";
-import { Container, Input } from "../../page";
+import { Container, Input } from "../../../components/Login";
 import Button from "@/app/components/Button";
 import Link from "next/link";
 

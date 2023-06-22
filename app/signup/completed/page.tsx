@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import Button from "@/app/components/Button";
-import { Container } from "@/app/login/page";
+import { Container } from "../../components/Login";
 import styled from "@emotion/styled";
 
 const MemberCard = styled.div`
