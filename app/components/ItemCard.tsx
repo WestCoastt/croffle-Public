@@ -28,7 +28,6 @@ const Container = styled.div`
 
 
   .skeleton {
-    position: absolute;
     width: 200px;
     height: 200px;
     animation: skeleton-gradient 1.5s infinite ease-in-out;
@@ -121,8 +120,7 @@ export default function ItemCard({ item }: ItemCardProps) {
       style={{ textDecoration: "none", color: "#000" }}
     >
       <Container>
-        {!loaded && <div className="skeleton" />}
-        <ImageBox>
+        <ImageBox className={!loaded ? "skeleton" : ""}>
           <Image
             onLoad={() => setLoaded(true)}
             src={item.src}

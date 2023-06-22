@@ -6,6 +6,7 @@ import CheckBox from "../components/CheckBox";
 import { Container, Input, BoxContainer, Warning } from "../login/page";
 import { useEffect } from "react";
 import PhoneAuth from "../components/PhoneAuth";
+import Link from "next/link";
 
 const ConfirmBox = styled.div`
   width: 100%;
@@ -115,7 +116,9 @@ export default function SignUp() {
           </CheckBoxContainer>
         ))}
       </TermsBox>
-      <Button bg="var(--primary)" content="가입하기" />
+      <Link href="/signup/completed">
+        <Button bg="var(--primary)" content="가입하기" />
+      </Link>
     </Container>
   );
 }

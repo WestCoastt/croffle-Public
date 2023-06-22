@@ -6,6 +6,7 @@ import { atom, useAtom } from "jotai";
 import Rating from "../Rating";
 import Quantity from "./Quantity";
 import Button from "../Button";
+import ZoomViewer from "./ZoomViewer";
 
 const Container = styled.div`
   width: 1200px;
@@ -44,7 +45,7 @@ const ImageWrapper = styled.div<{ selected?: boolean }>`
 
 const InfoContainer = styled.div`
   width: 530px;
-  height: 500px;
+  height: auto;
 
   h2 {
     margin: 0;
@@ -208,6 +209,17 @@ const HeartBtn = styled.button<{ like: boolean }>`
       props.like ? "/assets/img/heart_filled.svg" : "/assets/img/heart.svg"})
     no-repeat;
   background-position: center;
+
+  @keyframes scaleBackgroundImage {
+    0% {
+      background-size: 10%;
+    }
+    100% {
+      background-size: 62%;
+    }
+  }
+  animation: ${(props) => props.like && "scaleBackgroundImage 0.15s ease"};
+
   cursor: pointer;
 `;
 
@@ -296,6 +308,7 @@ export default function TopContents() {
 
   return (
     <Container>
+      <ZoomViewer src={mainImg} />
       <div className="wrap">
         <ImageContainer>
           {images.map((item, i) => (
@@ -410,6 +423,7 @@ export default function TopContents() {
               원
             </span>
           </TotalPrice>
+          {/* 옵션없는 상품이면 위치 조정 필요*/}
           <BtnContainer>
             <HeartBtn
               like={like}
