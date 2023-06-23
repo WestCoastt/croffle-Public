@@ -50,8 +50,9 @@ const Container = styled.div<{ url: string }>`
 
 const PaginationBox = styled.div`
   display: flex;
+  align-items: center;
   justify-content: space-between;
-  width: 100px;
+  width: 94px;
   position: absolute;
   left: 50%;
   margin-left: -80px;
@@ -85,13 +86,14 @@ const Pause = styled.div`
 `;
 
 const Pagination = styled.div`
-  width: 60px;
+  width: 50px;
   height: 28px;
-  line-height: 26px;
+  line-height: 27px;
   text-align: center;
   border-radius: 100px;
   font-weight: 500;
   color: rgba(255, 255, 255, 0.5);
+  font-size: 14px;
   background-color: rgba(0, 0, 0, 0.5);
 
   .current {

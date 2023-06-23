@@ -8,17 +8,18 @@ const Container = styled.div`
   span {
     margin-left: 4px;
     font-size: 12px;
+    letter-spacing: -0.5px;
   }
 `;
 
 const StarBox = styled.div`
   display: flex;
   justify-content: space-between;
-  width: 88px;
+  width: 84px;
 
   img {
-    width: 18px;
-    height: 18px;
+    width: 16px;
+    height: 16px;
   }
 `;
 

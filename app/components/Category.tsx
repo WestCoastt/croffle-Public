@@ -8,7 +8,7 @@ import { depthAtom } from "./Nav";
 const Container = styled.div<{ hover: boolean }>`
   display: ${(props) => (props.hover ? "block" : "none")};
   position: absolute;
-  top: 110px;
+  top: 86px;
   z-index: 10;
   font-size: 14px;
 

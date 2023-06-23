@@ -75,11 +75,14 @@ const PriceBox = styled.div`
     display: block;
     margin-right: 6px;
     color: #999999;
+    font-size: 13px;
+    letter-spacing: -0.5px;
     text-decoration: line-through;
   }
   .rate {
     font-weight: 700;
     font-size: 18px;
+    letter-spacing: -1px;
     color: var(--primary);
   }
 `;
@@ -88,6 +91,7 @@ const DisPrice = styled.span`
   display: block;
   font-size: 16px;
   font-weight: 700;
+  letter-spacing: -1px;
   em {
     font-style: normal;
     font-size: 18px;

@@ -10,7 +10,7 @@ import { list } from "../category";
 const NavBar = styled.div`
   display: flex;
   align-items: center;
-  height: 134px;
+  height: 110px;
   box-shadow: rgba(0, 0, 0, 0.07) 0px 3px 4px 0px;
 `;
 const Container = styled.div`
@@ -95,6 +95,8 @@ const SearchBox = styled.div`
     width: 360px;
     border: 0;
     outline: none;
+    font-size: 16px;
+    letter-spacing: -1px;
   }
 
   button {
@@ -125,6 +127,7 @@ const BtnBox = styled.div`
   align-items: center;
   cursor: pointer;
   font-size: 14px;
+  letter-spacing: -0.5px;
 `;
 
 export const depthAtom = atom(["", ""]);
