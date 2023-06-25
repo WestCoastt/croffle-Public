@@ -1,5 +1,6 @@
 "use client";
 import styled from "@emotion/styled";
+import { atom, useSetAtom } from "jotai";
 import { useEffect, useRef, useState } from "react";
 
 const Container = styled.div`
@@ -47,9 +48,17 @@ const ShowMore = styled.div<{ hgt: boolean }>`
 
 const image =
   "https://github.com/westcoast-dev/RNCourse-Game/assets/117972001/ea577a55-6c8a-4ad6-b4c3-2b59904632fc";
+
+export const detailAtom = atom(0);
 export default function DetailContents() {
   const [masking, setMasking] = useState(false);
   const imgRef = useRef<HTMLDivElement>(null);
+  const detailRef = useRef<HTMLDivElement>(null);
+  const setReviewTop = useSetAtom(detailAtom);
+
+  useEffect(() => {
+    detailRef.current && setReviewTop(detailRef.current?.offsetTop);
+  }, [detailRef]);
 
   useEffect(() => {
     if (imgRef.current && imgRef.current?.offsetHeight >= 3000) {
@@ -58,7 +67,7 @@ export default function DetailContents() {
   }, [imgRef]);
 
   return (
-    <Container>
+    <Container ref={detailRef}>
       <ImageContainer hgt={masking} ref={imgRef}>
         <img src={image} alt="product_detail" />
       </ImageContainer>

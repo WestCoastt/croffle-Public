@@ -1,6 +1,9 @@
 "use client";
 import styled from "@emotion/styled";
+import { useAtomValue } from "jotai";
 import { useEffect, useRef, useState } from "react";
+import { reviewAtom } from "./ReviewContents";
+import { detailAtom } from "./DetailContents";
 
 const Container = styled.ul<{ fixed: boolean }>`
   position: ${(props) => props.fixed && "fixed"};
@@ -47,29 +50,45 @@ const Container = styled.ul<{ fixed: boolean }>`
 
 export default function TabMenu() {
   const [fixed, setFixed] = useState(false);
+  const [tab, setTab] = useState("detail");
   const tabRef = useRef<HTMLUListElement>(null);
-  const [defaultTop, setDefaultTop] = useState();
+  const [defaultTop, setDefaultTop] = useState(0);
+  const detailTop = useAtomValue(detailAtom);
+  const reviewTop = useAtomValue(reviewAtom);
 
-  // const handleScroll = () => {
-  //   if (tabRef.current?.offsetTop) {
-  //     if (window.scrollY > tabRef.current?.offsetTop) {
-  //       setFixed(true);
-  //     }
-  //     if (window.scrollY <= tabRef.current?.offsetTop) setFixed(false);
-  //   }
-  // };
+  const handleScroll = () => {
+    if (tabRef.current) {
+      tabRef.current?.offsetTop > 0 && setDefaultTop(tabRef.current?.offsetTop);
+      window.scrollY > tabRef.current?.offsetTop && setFixed(true);
+    }
+    if (window.scrollY <= defaultTop) setFixed(false);
+  };
 
-  // useEffect(() => {
-  //   window.addEventListener("scroll", handleScroll);
-  //   return () => {
-  //     window.removeEventListener("scroll", handleScroll);
-  //   };
-  // }, []);
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [defaultTop]);
+
+  const handleTab = (top: number) => {
+    window.scrollTo(0, top);
+  };
 
   return (
     <Container fixed={fixed} ref={tabRef}>
-      <li className="underline">상품 상세정보</li>
-      <li>리뷰</li>
+      <li
+        className={tab === "detail" ? "underline" : ""}
+        onClick={() => handleTab(detailTop)}
+      >
+        상품 상세정보
+      </li>
+      <li
+        className={tab === "review" ? "underline" : ""}
+        onClick={() => handleTab(reviewTop)}
+      >
+        리뷰
+      </li>
       <li>Q&A</li>
       <li>배송/반품/교환 안내</li>
     </Container>

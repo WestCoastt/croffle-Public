@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import styled from "@emotion/styled";
 import { atom, useAtom } from "jotai";
 
-export const checkBoxAtom = atom([false, false, false]);
 const Check = styled.input<{ check: boolean; sm?: boolean }>`
   width: ${(props) => (props.sm ? "20px" : "24px")};
   height: ${(props) => (props.sm ? "20px" : "24px")};
@@ -39,6 +38,7 @@ interface CheckBoxProps {
   idx?: number;
 }
 
+export const checkBoxAtom = atom([false, false, false]);
 export default function CheckBox({ label, sm, idx }: CheckBoxProps) {
   //if(label === "로그인 상태 유지" && checked) { const [cookies, setCookie, removeCookie] = useCookies()}
   const [checked, setChecked] = useState(false);
