@@ -73,7 +73,7 @@ export default function Login() {
         <Input placeholder="아이디(이메일)" type="text" />
         {/* <Warning>아이디(이메일)는 이메일 형식으로 입력해주세요.</Warning> */}
         <Input placeholder="비밀번호" type="password" />
-        {/* <Warning>{message}</Warning> */}
+        {/* <Warning>이메일 또는 비밀번호가 올바르지 않습니다. 다시 확인해주세요.</Warning> */}
         <BoxContainer>
           <CheckBox label="로그인 상태 유지" />
           <div>

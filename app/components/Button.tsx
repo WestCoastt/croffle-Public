@@ -1,8 +1,7 @@
 "use client";
-import { useRouter } from "next/navigation";
 import styled from "@emotion/styled";
 
-const Btn = styled.button<{
+export const Btn = styled.button<{
   bg?: string;
   clr?: string;
   wd?: string;
@@ -28,13 +27,8 @@ interface ButtonProps {
 }
 
 export default function Button({ content, bg, clr, wd, mt }: ButtonProps) {
-  const router = useRouter();
-  const handleClick = () => {
-    if (content === "회원가입") router.push("/signup");
-  };
-
   return (
-    <Btn bg={bg} clr={clr} wd={wd} mt={mt} onClick={handleClick}>
+    <Btn bg={bg} clr={clr} wd={wd} mt={mt}>
       {content}
     </Btn>
   );

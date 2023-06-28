@@ -32,6 +32,8 @@ const BtnBox = styled.div`
 `;
 
 export default function Completed() {
+  const name = sessionStorage.getItem("user");
+
   return (
     <Container>
       <div style={{ marginBottom: "40px" }} className="title">
@@ -40,7 +42,7 @@ export default function Completed() {
       <MemberCard>
         <img src="/assets/img/user.svg" alt="user" />
         <div>
-          <p className="name">이우찬님!</p>
+          <p className="name">{name}님!</p>
           <span>
             크로플의 회원이 되셨습니다. <br /> 지금 바로 다양한 상품을
             둘러보세요.
