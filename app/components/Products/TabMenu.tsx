@@ -4,6 +4,7 @@ import { useAtomValue } from "jotai";
 import { useEffect, useRef, useState } from "react";
 import { reviewAtom } from "./ReviewContents";
 import { detailAtom } from "./DetailContents";
+import { qnaAtom } from "./QnAContents";
 
 const Container = styled.ul<{ fixed: boolean }>`
   position: ${(props) => props.fixed && "fixed"};
@@ -55,8 +56,12 @@ export default function TabMenu() {
   const [defaultTop, setDefaultTop] = useState(0);
   const detailTop = useAtomValue(detailAtom);
   const reviewTop = useAtomValue(reviewAtom);
+  const qnaTop = useAtomValue(qnaAtom);
 
   const handleScroll = () => {
+    if (window.scrollY < reviewTop) setTab("detail");
+    else if (window.scrollY < qnaTop) setTab("review");
+    else setTab("qna");
     if (tabRef.current) {
       tabRef.current?.offsetTop > 0 && setDefaultTop(tabRef.current?.offsetTop);
       window.scrollY > tabRef.current?.offsetTop && setFixed(true);
@@ -69,7 +74,7 @@ export default function TabMenu() {
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
-  }, [defaultTop]);
+  }, [defaultTop, reviewTop]);
 
   const handleTab = (top: number) => {
     window.scrollTo(0, top);
@@ -89,7 +94,12 @@ export default function TabMenu() {
       >
         리뷰
       </li>
-      <li>Q&A</li>
+      <li
+        className={tab === "qna" ? "underline" : ""}
+        onClick={() => handleTab(qnaTop)}
+      >
+        Q&A
+      </li>
       <li>배송/반품/교환 안내</li>
     </Container>
   );

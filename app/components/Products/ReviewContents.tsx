@@ -1,23 +1,28 @@
 "use client";
 import styled from "@emotion/styled";
-import { atom, useSetAtom } from "jotai";
+import { atom, useAtomValue, useSetAtom } from "jotai";
 import { useEffect, useRef } from "react";
+import { maskingAtom } from "./DetailContents";
+import { selectedAtom } from "./TopContents";
 
 const Container = styled.div`
   width: 1200px;
   margin: auto;
-  margin-bottom: 1000px;
+  padding: 100px 0 50px;
+  // margin-top: 100px;
+  margin-bottom: 600px;
 `;
 
 export const reviewAtom = atom(0);
 export default function ReviewContents() {
   const reviewRef = useRef<HTMLDivElement>(null);
   const setReviewTop = useSetAtom(reviewAtom);
+  const masking = useAtomValue(maskingAtom);
+  const selArr = useAtomValue(selectedAtom);
 
   useEffect(() => {
-    reviewRef.current && setReviewTop(reviewRef.current?.offsetTop);
-  }, [reviewRef]);
-  // reviewRef.current && setReviewTop(reviewRef.current?.offsetTop);
+    reviewRef.current && setReviewTop(reviewRef.current?.offsetTop - 120);
+  }, [reviewRef, masking, selArr]);
 
   return (
     <Container ref={reviewRef}>

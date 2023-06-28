@@ -1,7 +1,7 @@
 "use client";
 import { useSearchParams } from "next/navigation";
 import styled from "@emotion/styled";
-import Link from "next/link";
+import SortLink from "./SortLink";
 
 const Container = styled.ul`
   display: flex;
@@ -12,14 +12,16 @@ const Container = styled.ul`
   font-size: 14px;
   list-style: none;
 
+  a {
+    color: #555555;
+    text-decoration: none;
+  }
+
   li {
     white-space: nowrap;
     padding: 0 10px;
     cursor: pointer;
-    a {
-      color: #555555;
-      text-decoration: none;
-    }
+
     img {
       margin-right: 4px;
       display: none;
@@ -42,7 +44,6 @@ const Container = styled.ul`
 `;
 
 export default function Sort() {
-  const keyword = useSearchParams().get("keyword");
   const sorted_type = Number(useSearchParams().get("sorted_type"));
   const sort = [
     "크로플 랭킹순",
@@ -63,10 +64,7 @@ export default function Sort() {
           }
           key={item}
         >
-          <Link href={`/search?keyword=${keyword}&sorted_type=${i}`}>
-            <img src="/assets/img/check_mark.svg" alt="check_mark" />
-            {item}
-          </Link>
+          <SortLink item={item} sorted_type={i} />
         </li>
       ))}
     </Container>

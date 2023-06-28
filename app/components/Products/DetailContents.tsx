@@ -1,14 +1,15 @@
 "use client";
 import styled from "@emotion/styled";
-import { atom, useSetAtom } from "jotai";
-import { useEffect, useRef, useState } from "react";
+import { atom, useAtom, useSetAtom, useAtomValue } from "jotai";
+import { useEffect, useRef } from "react";
+import { selectedAtom } from "./TopContents";
 
 const Container = styled.div`
   position: relative;
   width: 1200px;
   margin: auto;
   margin-top: 40px;
-  margin-bottom: 100px;
+  // margin-bottom: 60px;
 `;
 
 const ImageContainer = styled.div<{ hgt: boolean }>`
@@ -22,10 +23,10 @@ const ImageContainer = styled.div<{ hgt: boolean }>`
 `;
 
 const ShowMore = styled.div<{ hgt: boolean }>`
-  position: absolute;
+  // position: absolute;
   display: flex;
   justify-content: center;
-  bottom: ${(props) => (props.hgt ? "26px" : "-60px")};
+  // bottom: ${(props) => (props.hgt ? "26px" : "-60px")};
   z-index: 20;
   width: 100%;
 
@@ -50,15 +51,17 @@ const image =
   "https://github.com/westcoast-dev/RNCourse-Game/assets/117972001/ea577a55-6c8a-4ad6-b4c3-2b59904632fc";
 
 export const detailAtom = atom(0);
+export const maskingAtom = atom(false);
 export default function DetailContents() {
-  const [masking, setMasking] = useState(false);
+  const [masking, setMasking] = useAtom(maskingAtom);
   const imgRef = useRef<HTMLDivElement>(null);
   const detailRef = useRef<HTMLDivElement>(null);
   const setReviewTop = useSetAtom(detailAtom);
+  const selArr = useAtomValue(selectedAtom);
 
   useEffect(() => {
     detailRef.current && setReviewTop(detailRef.current?.offsetTop);
-  }, [detailRef]);
+  }, [detailRef, selArr]);
 
   useEffect(() => {
     if (imgRef.current && imgRef.current?.offsetHeight >= 3000) {
