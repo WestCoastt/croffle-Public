@@ -23,6 +23,18 @@ const Container = styled.div<{ hover: boolean }>`
     box-shadow: 1px 4px 5px rgba(0, 0, 0, 0.3);
   }
 
+  .focus {
+    a {
+      color: var(--primary);
+      font-weight: bold;
+      text-decoration: underline;
+    }
+
+    .arrow {
+      display: inline-block;
+    }
+  }
+
   a {
     display: flex;
     justify-content: space-between;
@@ -40,16 +52,6 @@ const Container = styled.div<{ hover: boolean }>`
       filter: invert(18%) sepia(92%) saturate(7475%) hue-rotate(243deg)
         brightness(86%) contrast(102%);
       background: url("/assets/img/arrow_drop_down.svg") no-repeat center;
-    }
-
-    &:hover {
-      color: var(--primary);
-      font-weight: bold;
-      text-decoration: underline;
-
-      .arrow {
-        display: inline-block;
-      }
     }
   }
 `;
@@ -79,6 +81,12 @@ const ThirdDepth = styled(SecondDepth)<{ display?: string }>`
 
   .link {
     padding: 5px 0;
+
+    &:hover {
+      color: var(--primary);
+      font-weight: bold;
+      text-decoration: underline;
+    }
   }
 `;
 
@@ -102,6 +110,7 @@ export default function Category({ hover }: CategoryProps) {
         {Object.keys(item_list).map((item) => (
           <li
             key={item}
+            className={depth[0] === item ? "focus" : ""}
             onMouseOver={() => {
               setDepth([item, ""]);
             }}
@@ -118,6 +127,7 @@ export default function Category({ hover }: CategoryProps) {
           Object.keys(item_list[depth[0]]).map((item) => (
             <li
               key={item}
+              className={depth[1] === item ? "focus" : ""}
               onMouseOver={() => {
                 let arr = [...depth];
                 arr[1] = item;
