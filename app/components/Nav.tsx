@@ -131,7 +131,6 @@ const BtnBox = styled.div`
 `;
 
 export const depthAtom = atom(["", ""]);
-
 export default function Nav() {
   const router = useRouter();
   const searchParams = useSearchParams().get("keyword");
@@ -158,6 +157,8 @@ export default function Nav() {
   const handleSearch = (keyword: string) => {
     if (keyword) router.push(`/search?keyword=${keyword}`);
   };
+
+  //todo: 로그아웃 아이콘 추가
 
   return (
     <NavBar>
