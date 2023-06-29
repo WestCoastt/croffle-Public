@@ -3,10 +3,11 @@ import styled from "@emotion/styled";
 import Link from "next/link";
 import CryptoJS from "crypto-js";
 import Button, { Btn } from "../components/Button";
-import CheckBox from "../components/CheckBox";
+import CheckBox, { rememberMeAtom } from "../components/CheckBox";
 import { KeyboardEvent, ChangeEvent, useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import { useAtomValue } from "jotai";
 
 export const Container = styled.div`
   margin: auto;
@@ -78,6 +79,7 @@ export default function Login() {
     account_password: "",
   });
   const [validId, setValidId] = useState(false);
+  const rememberMe = useAtomValue(rememberMeAtom);
 
   const regex =
     /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -101,7 +103,9 @@ export default function Login() {
     try {
       const res = await axios.post("/v1/auths/login", input);
       if (res.data.code === 0) {
-        localStorage.setItem("tk", res.data.data.access_token);
+        rememberMe
+          ? localStorage.setItem("tk", res.data.data.access_token)
+          : sessionStorage.setItem("tk", res.data.data.access_token);
         router.push("/");
       }
     } catch (e: any) {

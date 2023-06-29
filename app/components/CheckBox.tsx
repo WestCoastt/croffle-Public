@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import styled from "@emotion/styled";
-import { atom, useAtom } from "jotai";
+import { atom, useAtom, useSetAtom } from "jotai";
 
 const Check = styled.input<{ check: boolean; sm?: boolean }>`
   width: ${(props) => (props.sm ? "20px" : "24px")};
@@ -39,10 +39,11 @@ interface CheckBoxProps {
 }
 
 export const checkBoxAtom = atom([false, false, false]);
+export const rememberMeAtom = atom(false);
 export default function CheckBox({ label, sm, idx }: CheckBoxProps) {
-  //if(label === "로그인 상태 유지" && checked) { const [cookies, setCookie, removeCookie] = useCookies()}
   const [checked, setChecked] = useState(false);
   const [check, setCheck] = useAtom(checkBoxAtom);
+  const setRememberMe = useSetAtom(rememberMeAtom);
   const [termCheck, setTermCheck] = useState(idx !== undefined && check[idx]);
 
   const handleCheck = (idx: number) => {
@@ -87,6 +88,10 @@ export default function CheckBox({ label, sm, idx }: CheckBoxProps) {
       setChecked(false);
     }
   }, [check]);
+
+  useEffect(() => {
+    if (label === "로그인 상태 유지" && checked) setRememberMe(true);
+  }, [checked]);
 
   return (
     <div>

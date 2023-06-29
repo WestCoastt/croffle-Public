@@ -1,6 +1,6 @@
 "use client";
 import styled from "@emotion/styled";
-import { atom, useAtom, useSetAtom, useAtomValue } from "jotai";
+import { atom, useAtom, useAtomValue } from "jotai";
 import { useEffect, useRef } from "react";
 import { selectedAtom } from "./TopContents";
 
@@ -56,28 +56,31 @@ export default function DetailContents() {
   const [masking, setMasking] = useAtom(maskingAtom);
   const imgRef = useRef<HTMLDivElement>(null);
   const detailRef = useRef<HTMLDivElement>(null);
-  const setReviewTop = useSetAtom(detailAtom);
+  const [detailTop, setDetailTop] = useAtom(detailAtom);
   const selArr = useAtomValue(selectedAtom);
 
   useEffect(() => {
-    detailRef.current && setReviewTop(detailRef.current?.offsetTop);
-  }, [detailRef, selArr]);
-
-  useEffect(() => {
-    if (imgRef.current && imgRef.current?.offsetHeight >= 3000) {
-      setMasking(true);
+    if (imgRef.current) {
+      setMasking(imgRef.current?.offsetHeight >= 3000);
     }
   }, [imgRef]);
 
+  useEffect(() => {
+    if (detailRef.current) {
+      setDetailTop(detailRef.current?.offsetTop);
+    }
+  }, [imgRef, detailRef, selArr]);
+
   return (
     <Container ref={detailRef}>
-      <ImageContainer hgt={masking} ref={imgRef}>
+      <ImageContainer ref={imgRef} hgt={masking}>
         <img src={image} alt="product_detail" />
       </ImageContainer>
       <ShowMore hgt={masking}>
         <button
           onClick={() => {
             setMasking(!masking);
+            masking === false && scrollTo(0, detailTop);
           }}
         >
           <span>{masking ? "상품정보 더보기" : "상품정보 접기"}</span>

@@ -100,7 +100,7 @@ const ShippingContainer = styled.div`
   font-size: 14px;
 
   .shipping_info {
-    span:first-child {
+    span:first-of-type {
       margin-right: 38px;
     }
   }
@@ -108,7 +108,7 @@ const ShippingContainer = styled.div`
   .shipping_fee {
     margin-top: 10px;
 
-    span:first-child {
+    span:first-of-type {
       margin-right: 52px;
     }
   }

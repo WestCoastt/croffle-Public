@@ -5,7 +5,6 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { atom, useSetAtom } from "jotai";
 import Category from "./Category";
-import { list } from "../category";
 
 const NavBar = styled.div`
   display: flex;
@@ -134,8 +133,8 @@ export const depthAtom = atom(["", ""]);
 export default function Nav() {
   const router = useRouter();
   const searchParams = useSearchParams().get("keyword");
-  const category = ["전체", ...Object.keys(list)];
-  // const [selected, setSelected] = useState(category[0]);
+  const ltk = typeof window !== "undefined" && localStorage.getItem("tk");
+  const stk = typeof window !== "undefined" && sessionStorage.getItem("tk");
   const [dropdown, setDropdown] = useState(false);
   const [hover, setHover] = useState(false);
   const [keyword, setKeyword] = useState(searchParams ? searchParams : "");
@@ -157,8 +156,6 @@ export default function Nav() {
   const handleSearch = (keyword: string) => {
     if (keyword) router.push(`/search?keyword=${keyword}`);
   };
-
-  //todo: 로그아웃 아이콘 추가
 
   return (
     <NavBar>
@@ -183,32 +180,6 @@ export default function Nav() {
         <Link href={"/"}>
           <img src="/assets/img/logo.svg" alt="logo" />
         </Link>
-        {/* <BoxWrapper>
-          <SelectBox ref={selectRef}>
-            <div className="select">{selected}</div>
-            {dropdown && (
-              <ul className="list">
-                {category.map((item) => (
-                  <li
-                    key={item}
-                    onClick={() => {
-                      setSelected(item);
-                      setDropdown(false);
-                    }}
-                  >
-                    {item}
-                  </li>
-                ))}
-              </ul>
-            )}
-
-            <img
-              className={dropdown ? "up" : ""}
-              src="/assets/img/arrow_drop_down.svg"
-              alt="category-select"
-            />
-          </SelectBox>
-        </BoxWrapper> */}
 
         <SearchBox>
           <form
@@ -231,12 +202,21 @@ export default function Nav() {
         </SearchBox>
 
         <BtnContainer>
-          <Link href="/login">
-            <BtnBox>
-              <img src="/assets/img/login.svg" alt="login" />
-              <div>로그인</div>
-            </BtnBox>
-          </Link>
+          {ltk || stk ? (
+            <Link href="/" onClick={() => localStorage.removeItem("tk")}>
+              <BtnBox>
+                <img src="/assets/img/logout.svg" alt="logout" />
+                <div>로그아웃</div>
+              </BtnBox>
+            </Link>
+          ) : (
+            <Link href="/login">
+              <BtnBox>
+                <img src="/assets/img/login.svg" alt="login" />
+                <div>로그인</div>
+              </BtnBox>
+            </Link>
+          )}
           <Link href="/mypage">
             <BtnBox>
               <img src="/assets/img/person.svg" alt="mypage" />
