@@ -109,7 +109,8 @@ export default function Login() {
         router.push("/");
       }
     } catch (e: any) {
-      alert(e.response.data.message);
+      if (e.response.data.code === 11001)
+        alert("이메일 또는 비밀번호가 일치하지 않습니다. 다시 확인해주세요.");
     }
   };
 
