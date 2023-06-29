@@ -1,7 +1,7 @@
 "use client";
 import styled from "@emotion/styled";
 import { atom, useAtom, useAtomValue } from "jotai";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { selectedAtom } from "./TopContents";
 
 const Container = styled.div`
@@ -54,27 +54,33 @@ export const detailAtom = atom(0);
 export const maskingAtom = atom(false);
 export default function DetailContents() {
   const [masking, setMasking] = useAtom(maskingAtom);
-  const imgRef = useRef<HTMLDivElement>(null);
-  const detailRef = useRef<HTMLDivElement>(null);
   const [detailTop, setDetailTop] = useAtom(detailAtom);
+  const [loaded, setLoaded] = useState(false);
+  const imgRef = useRef<HTMLImageElement>(null);
+  const detailRef = useRef<HTMLDivElement>(null);
   const selArr = useAtomValue(selectedAtom);
 
   useEffect(() => {
     if (imgRef.current) {
       setMasking(imgRef.current?.offsetHeight >= 3000);
     }
-  }, [imgRef]);
+  }, [loaded]);
 
   useEffect(() => {
     if (detailRef.current) {
       setDetailTop(detailRef.current?.offsetTop);
     }
-  }, [imgRef, detailRef, selArr]);
+  }, [detailRef, selArr]);
 
   return (
     <Container ref={detailRef}>
-      <ImageContainer ref={imgRef} hgt={masking}>
-        <img src={image} alt="product_detail" />
+      <ImageContainer hgt={masking}>
+        <img
+          src={image}
+          alt="product_detail"
+          ref={imgRef}
+          onLoad={() => setLoaded(true)}
+        />
       </ImageContainer>
       <ShowMore hgt={masking}>
         <button
