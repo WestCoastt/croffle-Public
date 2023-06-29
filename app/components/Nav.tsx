@@ -134,7 +134,7 @@ export default function Nav() {
   const router = useRouter();
   const searchParams = useSearchParams().get("keyword");
   const ltk = typeof window !== "undefined" && localStorage.getItem("tk");
-  const stk = typeof window !== "undefined" && sessionStorage.getItem("tk");
+  const [sck, setSck] = useState("");
   const [dropdown, setDropdown] = useState(false);
   const [hover, setHover] = useState(false);
   const [keyword, setKeyword] = useState(searchParams ? searchParams : "");
@@ -153,9 +153,16 @@ export default function Nav() {
     };
   }, [selectRef, dropdown]);
 
+  useEffect(() => {
+    const sck = typeof document !== "undefined" ? document.cookie : "";
+    setSck(sck);
+  }, [document.cookie]);
+
   const handleSearch = (keyword: string) => {
     if (keyword) router.push(`/search?keyword=${keyword}`);
   };
+
+  //Todo: refactoring? // error fix(console)
 
   return (
     <NavBar>
@@ -202,14 +209,35 @@ export default function Nav() {
         </SearchBox>
 
         <BtnContainer>
-          {ltk || stk ? (
-            <Link href="/" onClick={() => localStorage.removeItem("tk")}>
+          {sck && (
+            <Link
+              href="/"
+              onClick={() => {
+                document.cookie = "sck=; expires=Sat, 01 Jan 1972 00:00:00 GMT";
+              }}
+            >
               <BtnBox>
                 <img src="/assets/img/logout.svg" alt="logout" />
                 <div>로그아웃</div>
               </BtnBox>
             </Link>
-          ) : (
+          )}
+
+          {ltk && (
+            <Link
+              href="/"
+              onClick={() => {
+                localStorage.removeItem("tk");
+              }}
+            >
+              <BtnBox>
+                <img src="/assets/img/logout.svg" alt="logout" />
+                <div>로그아웃</div>
+              </BtnBox>
+            </Link>
+          )}
+
+          {!ltk && !sck && (
             <Link href="/login">
               <BtnBox>
                 <img src="/assets/img/login.svg" alt="login" />

@@ -105,7 +105,7 @@ export default function Login() {
       if (res.data.code === 0) {
         rememberMe
           ? localStorage.setItem("tk", res.data.data.access_token)
-          : sessionStorage.setItem("tk", res.data.data.access_token);
+          : (document.cookie = `sck=${res.data.data.access_token}`);
         router.push("/");
       }
     } catch (e: any) {
@@ -119,8 +119,6 @@ export default function Login() {
       handleLogin();
     }
   };
-
-  //todo : 로그인 유지 기능(true: localStorage 저장, false: sessionStorage  저장)
 
   return (
     <Container>
