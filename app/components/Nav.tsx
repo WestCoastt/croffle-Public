@@ -155,11 +155,6 @@ export default function Nav() {
     };
   }, [selectRef, dropdown]);
 
-  useEffect(() => {
-    const sck = typeof document !== "undefined" ? document.cookie : "";
-    setSck(sck);
-  }, [document.cookie]);
-
   const handleSearch = (keyword: string) => {
     if (keyword) router.push(`/search?keyword=${keyword}`);
   };
