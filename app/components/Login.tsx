@@ -7,7 +7,8 @@ import CheckBox, { rememberMeAtom } from "../components/CheckBox";
 import { KeyboardEvent, ChangeEvent, useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
-import { useAtomValue } from "jotai";
+import { useAtomValue, useSetAtom } from "jotai";
+import { ltkAtom, sckAtom } from "./Nav";
 
 export const Container = styled.div`
   margin: auto;
@@ -80,6 +81,8 @@ export default function Login() {
   });
   const [validId, setValidId] = useState(false);
   const rememberMe = useAtomValue(rememberMeAtom);
+  const setSck = useSetAtom(sckAtom);
+  const setLtk = useSetAtom(ltkAtom);
 
   const regex =
     /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -103,9 +106,13 @@ export default function Login() {
     try {
       const res = await axios.post("/v1/auths/login", input);
       if (res.data.code === 0) {
-        rememberMe
-          ? localStorage.setItem("tk", res.data.data.access_token)
-          : (document.cookie = `sck=${res.data.data.access_token}`);
+        if (rememberMe) {
+          localStorage.setItem("tk", res.data.data.access_token);
+          setLtk(res.data.data.access_token);
+        } else {
+          document.cookie = `sck=${res.data.data.access_token}`;
+          setSck(`sck=${res.data.data.access_token}`);
+        }
         router.push("/");
       }
     } catch (e: any) {
@@ -139,7 +146,6 @@ export default function Login() {
         onChange={handleInput}
         onKeyDown={onKeyDown}
       />
-      {/* <Warning>이메일 또는 비밀번호가 올바르지 않습니다. 다시 확인해주세요.</Warning> */}
       <BoxContainer>
         <CheckBox label="로그인 상태 유지" />
         <div>

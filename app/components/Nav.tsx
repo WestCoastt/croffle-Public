@@ -3,7 +3,7 @@ import styled from "@emotion/styled";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { atom, useSetAtom } from "jotai";
+import { atom, useAtom, useSetAtom } from "jotai";
 import Category from "./Category";
 
 const NavBar = styled.div`
@@ -130,11 +130,13 @@ const BtnBox = styled.div`
 `;
 
 export const depthAtom = atom(["", ""]);
+export const ltkAtom = atom("");
+export const sckAtom = atom("");
 export default function Nav() {
   const router = useRouter();
   const searchParams = useSearchParams().get("keyword");
-  const ltk = typeof window !== "undefined" && localStorage.getItem("tk");
-  const [sck, setSck] = useState("");
+  const [ltk, setLtk] = useAtom(ltkAtom) as any;
+  const [sck, setSck] = useAtom(sckAtom);
   const [dropdown, setDropdown] = useState(false);
   const [hover, setHover] = useState(false);
   const [keyword, setKeyword] = useState(searchParams ? searchParams : "");
@@ -162,7 +164,10 @@ export default function Nav() {
     if (keyword) router.push(`/search?keyword=${keyword}`);
   };
 
-  //Todo: refactoring? // error fix(console)
+  useEffect(() => {
+    setSck(document.cookie);
+    setLtk(localStorage.getItem("tk"));
+  }, []);
 
   return (
     <NavBar>
@@ -214,6 +219,7 @@ export default function Nav() {
               href="/"
               onClick={() => {
                 document.cookie = "sck=; expires=Sat, 01 Jan 1972 00:00:00 GMT";
+                setSck("");
               }}
             >
               <BtnBox>
@@ -228,6 +234,7 @@ export default function Nav() {
               href="/"
               onClick={() => {
                 localStorage.removeItem("tk");
+                setLtk("");
               }}
             >
               <BtnBox>
@@ -237,7 +244,7 @@ export default function Nav() {
             </Link>
           )}
 
-          {!ltk && !sck && (
+          {!sck && !ltk && (
             <Link href="/login">
               <BtnBox>
                 <img src="/assets/img/login.svg" alt="login" />
