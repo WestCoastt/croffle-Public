@@ -129,7 +129,7 @@ const BtnBox = styled.div`
   letter-spacing: -0.5px;
 `;
 
-export const depthAtom = atom(["", ""]);
+export const depthAtom = atom([0, 0]);
 export const ltkAtom = atom("");
 export const sckAtom = atom("");
 export default function Nav() {
@@ -174,7 +174,7 @@ export default function Nav() {
           }}
           onMouseLeave={() => {
             setHover(false);
-            setDepth(["", ""]);
+            setDepth([0, 0]);
           }}
         >
           <img

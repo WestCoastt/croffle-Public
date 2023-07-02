@@ -2,8 +2,9 @@
 import styled from "@emotion/styled";
 import Link from "next/link";
 import { useAtom } from "jotai";
-import { list } from "../category";
 import { depthAtom } from "./Nav";
+import { cat } from "../cateogry";
+import { useState } from "react";
 
 const Container = styled.div<{ hover: boolean }>`
   display: ${(props) => (props.hover ? "block" : "none")};
@@ -56,7 +57,8 @@ const Container = styled.div<{ hover: boolean }>`
   }
 `;
 
-const SecondDepth = styled.ul<{ display?: string }>`
+// const SecondDepth = styled.ul<{ display?: string }>`
+const SecondDepth = styled.ul<{ display?: boolean }>`
   display: ${(props) => (props.display ? "block" : "none")};
   position: absolute;
   background: #fff;
@@ -76,7 +78,7 @@ const SecondDepth = styled.ul<{ display?: string }>`
   }
 `;
 
-const ThirdDepth = styled(SecondDepth)<{ display?: string }>`
+const ThirdDepth = styled(SecondDepth)<{ display?: boolean }>`
   left: 340px;
 
   .link {
@@ -94,62 +96,79 @@ interface CategoryProps {
   hover: boolean;
 }
 
-interface List {
-  [key: string]: {
-    [key: string]: string[];
-  };
+interface Child2 {
+  name: string;
+  id: number;
+  child: {
+    name: string;
+    id: number;
+  }[];
+}
+
+interface Child3 {
+  name: string;
+  id: number;
 }
 
 export default function Category({ hover }: CategoryProps) {
-  const item_list: List = list;
   const [depth, setDepth] = useAtom(depthAtom);
+  const [child2, setChild2] = useState<Child2[]>([]);
+  const [child3, setChild3] = useState<Child3[]>([]);
 
   return (
     <Container hover={hover}>
       <ul>
-        {Object.keys(item_list).map((item) => (
+        {cat.map((item) => (
           <li
-            key={item}
-            className={depth[0] === item ? "focus" : ""}
+            key={item.name}
+            className={item.id === depth[0] ? "focus" : ""}
             onMouseOver={() => {
-              setDepth([item, ""]);
+              setDepth([item.id, 0]);
+              setChild2(item.child);
             }}
           >
-            <Link href={`${item}`}>
-              {item}
+            <Link href={`/categories/${item.id}`}>
+              {item.name}
               <i className="arrow" />
             </Link>
           </li>
         ))}
       </ul>
-      <SecondDepth display={depth[0]}>
-        {depth[0] !== "" &&
-          Object.keys(item_list[depth[0]]).map((item) => (
-            <li
-              key={item}
-              className={depth[1] === item ? "focus" : ""}
-              onMouseOver={() => {
-                let arr = [...depth];
-                arr[1] = item;
-                setDepth(arr);
-              }}
+      <SecondDepth display={child2.length > 0}>
+        {child2.map((item) => (
+          <li
+            key={item.name}
+            className={item.id === depth[1] ? "focus" : ""}
+            onMouseOver={() => {
+              let arr = [...depth];
+              arr[1] = item.id;
+              setDepth(arr);
+              setChild3(item.child);
+            }}
+          >
+            <Link
+              className="link"
+              href={`/categories/${depth[0].toString() + item.id.toString()}`}
             >
-              <Link className="link" href={`${item}`}>
-                {item}
-                <i className="arrow" />
-              </Link>
-            </li>
-          ))}
+              {item.name}
+              <i className="arrow" />
+            </Link>
+          </li>
+        ))}
       </SecondDepth>
-      <ThirdDepth display={depth[1]}>
-        {depth[1] !== "" &&
-          item_list[depth[0]][depth[1]].map((item) => (
-            <li key={item}>
-              <Link className="link" href={`${item}`}>
-                {item}
-              </Link>
-            </li>
-          ))}
+      <ThirdDepth display={child3.length > 0}>
+        {child3.map((item) => (
+          <li key={item.name}>
+            <Link
+              className="link"
+              href={`/categories/${
+                depth[0].toString() + depth[1].toString() + item.id.toString()
+              }`}
+            >
+              {item.name}
+            </Link>
+          </li>
+        ))}
       </ThirdDepth>
     </Container>
   );
