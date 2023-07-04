@@ -516,7 +516,7 @@ export const cat = [
           { name: "식탁", id: 40 },
           { name: "홈바/아일랜드식탁", id: 41 },
           { name: "바테이블", id: 42 },
-          { name: "홈마의자", id: 43 },
+          { name: "홈바의자", id: 43 },
           { name: "주방수납장", id: 44 },
           { name: "레인지대", id: 45 },
           { name: "싱크대", id: 46 },
