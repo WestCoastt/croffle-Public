@@ -3,7 +3,7 @@ import styled from "@emotion/styled";
 import Link from "next/link";
 import { useAtom } from "jotai";
 import { depthAtom } from "./Nav";
-import { cat } from "../cateogry";
+import { cat } from "../category";
 import { useState } from "react";
 
 const Container = styled.div<{ hover: boolean }>`
@@ -58,8 +58,8 @@ const Container = styled.div<{ hover: boolean }>`
 `;
 
 // const SecondDepth = styled.ul<{ display?: string }>`
-const SecondDepth = styled.ul<{ display?: boolean }>`
-  display: ${(props) => (props.display ? "block" : "none")};
+const SecondDepth = styled.ul<{ dp?: boolean }>`
+  display: ${(props) => (props.dp ? "block" : "none")};
   position: absolute;
   background: #fff;
   top: 0;
@@ -78,7 +78,7 @@ const SecondDepth = styled.ul<{ display?: boolean }>`
   }
 `;
 
-const ThirdDepth = styled(SecondDepth)<{ display?: boolean }>`
+const ThirdDepth = styled(SecondDepth)<{ dp?: boolean }>`
   left: 340px;
 
   .link {
@@ -134,7 +134,7 @@ export default function Category({ hover }: CategoryProps) {
           </li>
         ))}
       </ul>
-      <SecondDepth display={child2.length > 0}>
+      <SecondDepth dp={child2.length > 0}>
         {child2.map((item) => (
           <li
             key={item.name}
@@ -156,7 +156,7 @@ export default function Category({ hover }: CategoryProps) {
           </li>
         ))}
       </SecondDepth>
-      <ThirdDepth display={child3.length > 0}>
+      <ThirdDepth dp={child3.length > 0}>
         {child3.map((item) => (
           <li key={item.name}>
             <Link
