@@ -1,7 +1,7 @@
 "use client";
 import styled from "@emotion/styled";
 import { atom, useAtomValue, useSetAtom } from "jotai";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { maskingAtom } from "./DetailContents";
 import { selectedAtom } from "./TopContents";
@@ -80,12 +80,54 @@ const SortContainer = styled.div`
   border-bottom: 1px solid #000;
 `;
 
+const SortBox = styled.div<{ dropdown: boolean }>`
+  position: relative;
+  width: 140px;
+  cursor: pointer;
+  font-size: 14px;
+  letter-spacing: -0.7px;
+
+  ul {
+    width: 140px;
+    position: absolute;
+    left: 0;
+    top: 28px;
+    padding: 0;
+    z-index: 9;
+    list-style: none;
+    border: 1px solid #000;
+    border-radius: 5px;
+    border-top-left-radius: ${(props) => props.dropdown && "0"};
+    border-top-right-radius: ${(props) => props.dropdown && "0"};
+    background-color: #fff;
+    overflow: hidden;
+  }
+  li {
+    padding: 14px 18px;
+    &:hover {
+      background-color: #f6f7f9;
+    }
+  }
+  .select {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 18px;
+    border: 1px solid #000;
+    border-radius: 5px;
+  }
+  .up {
+    transform: rotate(180deg);
+  }
+`;
+
 const ReviewsContainer = styled.div`
   padding: 24px 24px 0;
 `;
 
 export const reviewAtom = atom(0);
 export default function ReviewContents() {
+  const sort_by = ["추천순", "최신순", "평점높은순", "평점낮은순"];
   const detail = {
     product_id: 6,
     name: "탬버린즈 퍼퓸 솝 비누",
@@ -121,10 +163,25 @@ export default function ReviewContents() {
   const setReviewTop = useSetAtom(reviewAtom);
   const masking = useAtomValue(maskingAtom);
   const selArr = useAtomValue(selectedAtom);
+  const [dropdown, setDropdown] = useState(false);
+  const [sort, setSort] = useState("추천순");
+  const sortRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     reviewRef.current && setReviewTop(reviewRef.current?.offsetTop - 120);
   }, [reviewRef, masking, selArr]);
+
+  useEffect(() => {
+    const clickOutside = (e: any) => {
+      sortRef.current && !sortRef.current.contains(e.target)
+        ? setDropdown(false)
+        : setDropdown(!dropdown);
+    };
+    document.addEventListener("click", clickOutside);
+    return () => {
+      document.removeEventListener("click", clickOutside);
+    };
+  }, [sortRef, dropdown]);
 
   return (
     <Container ref={reviewRef}>
@@ -188,12 +245,36 @@ export default function ReviewContents() {
         </ImageContainer>
 
         <SortContainer>
-          <select name="sort">
-            <option value="">추천순</option>
-            <option value="">최신순</option>
-            <option value="">평점높은순</option>
-            <option value="">평점낮은순</option>
-          </select>
+          <SortBox ref={sortRef} dropdown={dropdown}>
+            <div
+              className="select"
+              onClick={() => {
+                setDropdown(!dropdown);
+              }}
+            >
+              <span>{sort}</span>
+              <img
+                className={dropdown ? "up" : ""}
+                src="/assets/img/option_arrow.svg"
+                alt="sort_by"
+              />
+            </div>
+            {dropdown && (
+              <ul>
+                {sort_by.map((item: string) => (
+                  <li
+                    key={item}
+                    onClick={() => {
+                      setSort(item);
+                      setDropdown(false);
+                    }}
+                  >
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </SortBox>
         </SortContainer>
       </div>
       <ReviewsContainer>
