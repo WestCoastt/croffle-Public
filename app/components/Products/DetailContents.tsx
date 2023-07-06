@@ -93,7 +93,7 @@ export default function DetailContents() {
           <img
             className={masking ? "" : "up"}
             src="/assets/img/option_arrow.svg"
-            alt="category-select"
+            alt="show_more"
           />
         </button>
       </ShowMore>

@@ -6,13 +6,14 @@ import Image from "next/image";
 import { maskingAtom } from "./DetailContents";
 import { selectedAtom } from "./TopContents";
 import Rating from "../Rating";
+import { timeStamp } from "console";
 
 const Container = styled.div`
   width: 1200px;
   margin: auto;
   padding: 100px 0 50px;
   // margin-top: 100px;
-  margin-bottom: 600px;
+  margin-bottom: 60px;
 
   h1 {
     font-size: 24px;
@@ -58,6 +59,7 @@ const ReveiwsHeader = styled.div`
   .more {
     font-size: 15px;
     letter-spacing: -0.75px;
+    cursor: pointer;
   }
 `;
 
@@ -68,6 +70,27 @@ const ImageContainer = styled.div`
 
   img {
     cursor: pointer;
+  }
+
+  div {
+    position: relative;
+  }
+  .more_img {
+    position: absolute;
+    z-index: 9;
+    top: 0;
+    left: 0;
+    width: 162px;
+    height: 146px;
+    padding-top: 64px;
+    text-align: center;
+    background: rgba(17, 17, 17, 0.65);
+    cursor: pointer;
+  }
+  span {
+    color: #fff;
+    font-weight: 500;
+    font-size: 16px;
   }
 `;
 
@@ -91,7 +114,7 @@ const SortBox = styled.div<{ dropdown: boolean }>`
     width: 140px;
     position: absolute;
     left: 0;
-    top: 28px;
+    top: 32px;
     padding: 0;
     z-index: 9;
     list-style: none;
@@ -123,11 +146,62 @@ const SortBox = styled.div<{ dropdown: boolean }>`
 
 const ReviewsContainer = styled.div`
   padding: 24px 24px 0;
+
+  .no_review {
+    padding: 40px 0;
+    text-align: center;
+  }
+`;
+
+const ReviewCard = styled.div`
+  padding: 24px 0;
+  border-bottom: 1px solid #e5e5e5;
+
+  .contents {
+    margin-top: 10px;
+    font-size: 15px;
+    letter-spacing: -0.75px;
+  }
+
+  .thumbnail {
+    margin-top: 18px;
+    cursor: pointer;
+  }
+`;
+const CardHeader = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 200px;
+
+  div {
+    display: flex;
+    align-items: center;
+
+    font-size: 16px;
+    font-weight: 500;
+    letter-spacing: -0.8px;
+  }
+  img {
+    width: 18px;
+    height: 18px;
+    margin-right: 4px;
+  }
+  .label {
+    width: 70px;
+    padding: 0 10px;
+    height: 18px;
+    border-left: 1px solid #eeeeee;
+  }
+  span {
+    color: #777;
+    font-size: 14px;
+  }
 `;
 
 export const reviewAtom = atom(0);
 export default function ReviewContents() {
-  const sort_by = ["추천순", "최신순", "평점높은순", "평점낮은순"];
+  const sort_by = ["평점높은순", "평점낮은순", "최신순"];
   const detail = {
     product_id: 6,
     name: "탬버린즈 퍼퓸 솝 비누",
@@ -159,12 +233,81 @@ export default function ReviewContents() {
       },
     ],
   };
+
+  const reviews = [
+    {
+      user_id: "westcoast",
+      timestamp: "Thu Jul 06 2023 10:23:29 GMT+0900",
+      stars: 5.0,
+      contents:
+        "아주 좋아요!! 아주 좋아요!! 아주 좋아요!! 아주 좋아요!! 아주 좋아요!! 아주 좋아요!! 아주 좋아요!! 아주 좋아요!! 아주 좋아요!! 아주 좋아요!! 아주 좋아요!! 아주 좋아요!! 아주 좋아요!! 아주 좋아요!! 아주 좋아요!! 아주 좋아요!! 아주 좋아요!! 아주 좋아요!! 아주 좋아요!! 아주 좋아요!! 아주 좋아요!! 아주 좋아요!! 아주 좋아요!! 아주 좋아요!! 아주 좋아요!!",
+      photo:
+        "https://github.com/westcoast-dev/RNCourse-Game/assets/117972001/55e8c950-06b6-45fd-8abd-cd8e23628eb9",
+    },
+    {
+      user_id: "abcd1234",
+      timestamp: "Wed Jul 05 2023 10:23:29 GMT+0900",
+      stars: 3.5,
+      contents: "리뷰 내용입니다. 1111",
+      photo:
+        "https://github.com/westcoast-dev/RNCourse-Game/assets/117972001/55e8c950-06b6-45fd-8abd-cd8e23628eb9",
+    },
+    {
+      user_id: "croffle1111",
+      timestamp: "Mon Jul 03 2023 10:23:29 GMT+0900",
+      stars: 4.0,
+      contents: "리뷰 내용입니다. 2222",
+    },
+    {
+      user_id: "testtest",
+      timestamp: "Thu Jul 06 2023 10:23:29 GMT+0900",
+      stars: 3.0,
+      contents: "리뷰 내용입니다. abcd",
+    },
+    {
+      user_id: "abcdefg",
+      timestamp: "Wed Jul 05 2023 10:23:29 GMT+0900",
+      stars: 5.0,
+      contents: "리뷰 내용입니다. zzzz",
+    },
+    {
+      user_id: "helloworld",
+      timestamp: "Tue Jul 04 2023 10:23:29 GMT+0900",
+      stars: 4.0,
+      contents: "리뷰 내용입니다. 굳",
+    },
+    {
+      user_id: "croffle",
+      timestamp: "Thu Jul 06 2023 10:23:29 GMT+0900",
+      stars: 4.0,
+      contents: "리뷰 내용입니다.",
+    },
+    {
+      user_id: "test",
+      timestamp: "Tue Jul 04 2023 10:23:29 GMT+0900",
+      stars: 4.5,
+      contents: "리뷰 내용입니다.",
+    },
+    {
+      user_id: "randomId",
+      timestamp: "Thu Jul 06 2023 10:23:29 GMT+0900",
+      stars: 2.5,
+      contents: "쓰레기네요.",
+    },
+    {
+      user_id: "hater",
+      timestamp: "Sun Jul 02 2023 10:23:29 GMT+0900",
+      stars: 3.0,
+      contents: "별로에요.",
+    },
+  ];
+
   const reviewRef = useRef<HTMLDivElement>(null);
   const setReviewTop = useSetAtom(reviewAtom);
   const masking = useAtomValue(maskingAtom);
   const selArr = useAtomValue(selectedAtom);
   const [dropdown, setDropdown] = useState(false);
-  const [sort, setSort] = useState("추천순");
+  const [sort, setSort] = useState(sort_by[0]);
   const sortRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -183,6 +326,11 @@ export default function ReviewContents() {
     };
   }, [sortRef, dropdown]);
 
+  const handleDate = (timestamp: string) => {
+    const date = new Date(timestamp);
+    return date.toISOString().split("T")[0].replaceAll("-", ".");
+  };
+
   return (
     <Container ref={reviewRef}>
       <h1>고객리뷰({detail.reviews})</h1>
@@ -199,6 +347,7 @@ export default function ReviewContents() {
           <span className="title">포토&동영상 리뷰(12)</span>
           <span className="more">더보기 {">"}</span>
         </ReveiwsHeader>
+
         <ImageContainer>
           <Image
             src="https://github.com/westcoast-dev/RNCourse-Game/assets/117972001/55e8c950-06b6-45fd-8abd-cd8e23628eb9"
@@ -236,12 +385,17 @@ export default function ReviewContents() {
             width={162}
             height={146}
           />
-          <Image
-            src="https://github.com/westcoast-dev/RNCourse-Game/assets/117972001/55e8c950-06b6-45fd-8abd-cd8e23628eb9"
-            alt="review"
-            width={162}
-            height={146}
-          />
+          <div>
+            <Image
+              src="https://github.com/westcoast-dev/RNCourse-Game/assets/117972001/55e8c950-06b6-45fd-8abd-cd8e23628eb9"
+              alt="review"
+              width={162}
+              height={146}
+            />
+            <div className="more_img">
+              <span>+ 더보기</span>
+            </div>
+          </div>
         </ImageContainer>
 
         <SortContainer>
@@ -278,15 +432,36 @@ export default function ReviewContents() {
         </SortContainer>
       </div>
       <ReviewsContainer>
-        <div>리뷰1 입니다.</div>
-        <div>리뷰2 입니다.</div>
-        <div>리뷰3 입니다.</div>
-        <div>리뷰4 입니다.</div>
-        <div>리뷰5 입니다.</div>
-        <div>리뷰6 입니다.</div>
-        <div>리뷰7 입니다.</div>
-        <div>리뷰8 입니다.</div>
-        <div>리뷰9 입니다.</div>
+        {detail.reviews === 0 ? (
+          <div className="no_review">등록된 리뷰가 없습니다.</div>
+        ) : (
+          <div>
+            {reviews.map((item) => (
+              <ReviewCard key={item.user_id}>
+                <CardHeader>
+                  <div>
+                    <img src="/assets/img/star_bk_fill.svg" alt="star" />
+                    {item.stars}
+                  </div>
+                  <span className="label">
+                    {item.user_id.slice(0, 3)}******
+                  </span>
+                  <span className="label">{handleDate(item.timestamp)}</span>
+                </CardHeader>
+                <div className="contents">{item.contents}</div>
+                {item.photo && (
+                  <Image
+                    className="thumbnail"
+                    src="https://github.com/westcoast-dev/RNCourse-Game/assets/117972001/55e8c950-06b6-45fd-8abd-cd8e23628eb9"
+                    alt="review image thumbnail"
+                    width={120}
+                    height={120}
+                  />
+                )}
+              </ReviewCard>
+            ))}
+          </div>
+        )}
       </ReviewsContainer>
     </Container>
   );

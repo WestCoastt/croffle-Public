@@ -377,7 +377,7 @@ export default function TopContents() {
             <img
               className={dropdown ? "up" : ""}
               src="/assets/img/option_arrow.svg"
-              alt="category-select"
+              alt="option_select"
             />
           </div>
 
