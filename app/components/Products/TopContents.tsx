@@ -1,12 +1,13 @@
 "use client";
 import styled from "@emotion/styled";
 import Image from "next/image";
-import { useState, useEffect, useRef } from "react";
-import { atom, useAtom } from "jotai";
+import { useState, useEffect, useRef, MouseEvent } from "react";
+import { atom, useAtom, useSetAtom } from "jotai";
 import Rating from "../Rating";
 import Quantity from "./Quantity";
 import Button from "../Button";
 import ZoomViewer from "./ZoomViewer";
+import { reviewAtom } from "./ReviewContents";
 
 const Container = styled.div`
   width: 1200px;
@@ -27,6 +28,10 @@ const ImageContainer = styled.div`
   flex-direction: column;
   justify-content: space-between;
   height: 500px;
+`;
+
+const MainImage = styled.div`
+  position: relative;
 `;
 
 const ImageWrapper = styled.div<{ selected?: boolean }>`
@@ -223,6 +228,18 @@ const HeartBtn = styled.button<{ like: boolean }>`
   cursor: pointer;
 `;
 
+const ZoomLens = styled.div<{ left: number; top: number }>`
+  border: 1.5px solid rgb(255, 255, 255);
+  background-color: rgba(255, 255, 255, 0.4);
+  position: absolute;
+  left: ${(props) =>
+    props.left <= 0 ? "0" : props.left > 250 ? "250px" : props.left + "px"};
+  top: ${(props) =>
+    props.top <= 0 ? "0" : props.top > 250 ? "250px" : props.top + "px"};
+  width: 250px;
+  height: 250px;
+`;
+
 const images = [
   "https://github.com/westcoast-dev/RNCourse-Game/assets/117972001/55e8c950-06b6-45fd-8abd-cd8e23628eb9",
   "https://github.com/westcoast-dev/RNCourse-Game/assets/117972001/e41bf8d5-cd5b-44cd-8988-fe591ae58cc7",
@@ -237,6 +254,7 @@ interface Option {
   qty: number;
 }
 
+export const reviewsAtom = atom(0);
 export const selectedAtom = atom<Option[]>([]);
 export default function TopContents() {
   const detail = {
@@ -248,7 +266,7 @@ export default function TopContents() {
     reviews: 6178,
     src: "https://github.com/westcoast-dev/nextjs-course/assets/117972001/fde3989f-bc08-4909-8298-ed4322be612d",
     shipping_fee: 3000,
-    estimated_time: "Sun Jul 2 2023 10:23:29 GMT+0900",
+    estimated_time: "Thu Aug 10 2023",
     option: [
       {
         name: "옵션1. 훌라훌라 훌라춤을 춘다 탬버린 비누",
@@ -281,10 +299,20 @@ export default function TopContents() {
   const [mainImg, setMainImg] = useState(images[0]);
   const [selected, setSelected] = useState("선택하세요.");
   const [selArr, setSelArr] = useAtom(selectedAtom);
+  const setReviews = useSetAtom(reviewsAtom);
   const [dropdown, setDropdown] = useState(false);
   const [like, setLike] = useState(false);
   const [eta, setEta] = useState("");
   const optionRef = useRef<HTMLDivElement>(null);
+  const [zoom, setZoom] = useState(false);
+  const [coord, setCoord] = useState({ cursorX: 0, cursorY: 0 });
+  const zoomRef = useRef<HTMLDivElement>(null);
+
+  const handleCoordinate = (e: MouseEvent<HTMLDivElement>) => {
+    // console.log("x:", e.pageX - 523, "y:", e.pageY - 274);
+    //398,149
+    setCoord({ cursorX: e.pageX - 523, cursorY: e.pageY - 274 });
+  };
 
   const discount_rate = Math.floor(
     (1 - detail.total_price / detail.regular_price) * 100
@@ -304,11 +332,14 @@ export default function TopContents() {
 
   useEffect(() => {
     setEta(getETA());
-  }, [detail.estimated_time]);
+    setReviews(detail.reviews);
+  }, [detail]);
 
   return (
     <Container>
-      {/* <ZoomViewer src={mainImg} /> */}
+      {zoom && mainImg && (
+        <ZoomViewer src={mainImg} left={coord.cursorX} top={coord.cursorY} />
+      )}
       <div className="wrap">
         <ImageContainer>
           {images.map((item, i) => (
@@ -325,7 +356,18 @@ export default function TopContents() {
             </ImageWrapper>
           ))}
         </ImageContainer>
-        <Image src={mainImg} alt="main_image" width={500} height={500} />
+        <MainImage
+          ref={zoomRef}
+          onMouseOver={() => setZoom(true)}
+          onMouseMove={handleCoordinate}
+          onMouseLeave={() => {
+            setZoom(false);
+          }}
+        >
+          {/* <ZoomLens left={coord.cursorX} top={coord.cursorY} /> */}
+          {zoom && <ZoomLens left={coord.cursorX} top={coord.cursorY} />}
+          <Image src={mainImg} alt="main_image" width={500} height={500} />
+        </MainImage>
       </div>
       <InfoContainer>
         <h2>{detail.name}</h2>

@@ -158,26 +158,21 @@ const ReviewCard = styled.div`
   border-bottom: 1px solid #e5e5e5;
 
   .contents {
-    margin-top: 10px;
+    margin-top: 12px;
     font-size: 15px;
     letter-spacing: -0.75px;
-  }
-
-  .thumbnail {
-    margin-top: 18px;
-    cursor: pointer;
   }
 `;
 const CardHeader = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  width: 200px;
+  width: fit-content;
 
   div {
     display: flex;
     align-items: center;
-
+    padding-right: 12px;
     font-size: 16px;
     font-weight: 500;
     letter-spacing: -0.8px;
@@ -188,14 +183,25 @@ const CardHeader = styled.div`
     margin-right: 4px;
   }
   .label {
-    width: 70px;
-    padding: 0 10px;
+    width: 90px;
+    padding: 0 12px;
     height: 18px;
+    text-align: center;
     border-left: 1px solid #eeeeee;
   }
   span {
     color: #777;
     font-size: 14px;
+  }
+`;
+
+const PhotoContainer = styled.div`
+  display: flex;
+  gap: 4px;
+
+  .thumbnail {
+    margin-top: 18px;
+    cursor: pointer;
   }
 `;
 
@@ -238,66 +244,70 @@ export default function ReviewContents() {
     {
       user_id: "westcoast",
       timestamp: "Thu Jul 06 2023 10:23:29 GMT+0900",
-      stars: 5.0,
+      stars: 5,
       contents:
         "아주 좋아요!! 아주 좋아요!! 아주 좋아요!! 아주 좋아요!! 아주 좋아요!! 아주 좋아요!! 아주 좋아요!! 아주 좋아요!! 아주 좋아요!! 아주 좋아요!! 아주 좋아요!! 아주 좋아요!! 아주 좋아요!! 아주 좋아요!! 아주 좋아요!! 아주 좋아요!! 아주 좋아요!! 아주 좋아요!! 아주 좋아요!! 아주 좋아요!! 아주 좋아요!! 아주 좋아요!! 아주 좋아요!! 아주 좋아요!! 아주 좋아요!!",
-      photo:
+      photo: [
         "https://github.com/westcoast-dev/RNCourse-Game/assets/117972001/55e8c950-06b6-45fd-8abd-cd8e23628eb9",
+        "https://github.com/westcoast-dev/RNCourse-Game/assets/117972001/55e8c950-06b6-45fd-8abd-cd8e23628eb9",
+        "https://github.com/westcoast-dev/RNCourse-Game/assets/117972001/55e8c950-06b6-45fd-8abd-cd8e23628eb9",
+      ],
     },
     {
       user_id: "abcd1234",
-      timestamp: "Wed Jul 05 2023 10:23:29 GMT+0900",
-      stars: 3.5,
+      timestamp: "Sat Dec 28 2022 10:23:29 GMT+0900",
+      stars: 3,
       contents: "리뷰 내용입니다. 1111",
-      photo:
+      photo: [
         "https://github.com/westcoast-dev/RNCourse-Game/assets/117972001/55e8c950-06b6-45fd-8abd-cd8e23628eb9",
+      ],
     },
     {
       user_id: "croffle1111",
       timestamp: "Mon Jul 03 2023 10:23:29 GMT+0900",
-      stars: 4.0,
+      stars: 4,
       contents: "리뷰 내용입니다. 2222",
     },
     {
       user_id: "testtest",
       timestamp: "Thu Jul 06 2023 10:23:29 GMT+0900",
-      stars: 3.0,
+      stars: 3,
       contents: "리뷰 내용입니다. abcd",
     },
     {
       user_id: "abcdefg",
       timestamp: "Wed Jul 05 2023 10:23:29 GMT+0900",
-      stars: 5.0,
+      stars: 5,
       contents: "리뷰 내용입니다. zzzz",
     },
     {
       user_id: "helloworld",
       timestamp: "Tue Jul 04 2023 10:23:29 GMT+0900",
-      stars: 4.0,
+      stars: 4,
       contents: "리뷰 내용입니다. 굳",
     },
     {
       user_id: "croffle",
       timestamp: "Thu Jul 06 2023 10:23:29 GMT+0900",
-      stars: 4.0,
+      stars: 4,
       contents: "리뷰 내용입니다.",
     },
     {
       user_id: "test",
       timestamp: "Tue Jul 04 2023 10:23:29 GMT+0900",
-      stars: 4.5,
+      stars: 3,
       contents: "리뷰 내용입니다.",
     },
     {
       user_id: "randomId",
       timestamp: "Thu Jul 06 2023 10:23:29 GMT+0900",
-      stars: 2.5,
+      stars: 1,
       contents: "쓰레기네요.",
     },
     {
       user_id: "hater",
       timestamp: "Sun Jul 02 2023 10:23:29 GMT+0900",
-      stars: 3.0,
+      stars: 2,
       contents: "별로에요.",
     },
   ];
@@ -333,12 +343,12 @@ export default function ReviewContents() {
 
   return (
     <Container ref={reviewRef}>
-      <h1>고객리뷰({detail.reviews})</h1>
+      <h1>고객리뷰({detail.reviews.toLocaleString()})</h1>
       <RateContainer>
         <div className="stars">{detail.stars}</div>
         <div className="wrapper">
           <Rating bk={true} stars={detail.stars} reviews={detail.reviews} />
-          <p>총 {detail.reviews}건 리뷰</p>
+          <p>총 {detail.reviews.toLocaleString()}건 리뷰</p>
         </div>
       </RateContainer>
 
@@ -443,21 +453,23 @@ export default function ReviewContents() {
                     <img src="/assets/img/star_bk_fill.svg" alt="star" />
                     {item.stars}
                   </div>
-                  <span className="label">
-                    {item.user_id.slice(0, 3)}******
-                  </span>
+                  <span className="label">{item.user_id.slice(0, 4)}*****</span>
                   <span className="label">{handleDate(item.timestamp)}</span>
                 </CardHeader>
                 <div className="contents">{item.contents}</div>
-                {item.photo && (
-                  <Image
-                    className="thumbnail"
-                    src="https://github.com/westcoast-dev/RNCourse-Game/assets/117972001/55e8c950-06b6-45fd-8abd-cd8e23628eb9"
-                    alt="review image thumbnail"
-                    width={120}
-                    height={120}
-                  />
-                )}
+                <PhotoContainer>
+                  {item.photo &&
+                    item.photo.map((img, i) => (
+                      <Image
+                        className="thumbnail"
+                        key={i}
+                        src={img}
+                        alt="review image thumbnail"
+                        width={120}
+                        height={120}
+                      />
+                    ))}
+                </PhotoContainer>
               </ReviewCard>
             ))}
           </div>

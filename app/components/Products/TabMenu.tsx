@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { reviewAtom } from "./ReviewContents";
 import { detailAtom } from "./DetailContents";
 import { qnaAtom } from "./QnAContents";
+import { reviewsAtom } from "./TopContents";
 
 const Container = styled.ul<{ fixed: boolean }>`
   position: ${(props) => props.fixed && "fixed"};
@@ -56,6 +57,7 @@ export default function TabMenu() {
   const [defaultTop, setDefaultTop] = useState(0);
   const detailTop = useAtomValue(detailAtom);
   const reviewTop = useAtomValue(reviewAtom);
+  const reviews = useAtomValue(reviewsAtom);
   const qnaTop = useAtomValue(qnaAtom);
 
   const handleScroll = () => {
@@ -92,7 +94,7 @@ export default function TabMenu() {
         className={tab === "review" ? "underline" : ""}
         onClick={() => handleTab(reviewTop)}
       >
-        리뷰
+        {reviews ? `리뷰(${reviews.toLocaleString()})` : "리뷰"}
       </li>
       <li
         className={tab === "qna" ? "underline" : ""}
