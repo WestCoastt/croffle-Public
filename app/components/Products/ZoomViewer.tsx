@@ -3,7 +3,7 @@ import styled from "@emotion/styled";
 
 const Container = styled.div<{ url: string; left: number; top: number }>`
   position: absolute;
-  left: 910px;
+  left: 624px;
   z-index: 11;
 
   width: 500px;

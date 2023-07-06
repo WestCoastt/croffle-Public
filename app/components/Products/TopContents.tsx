@@ -7,7 +7,6 @@ import Rating from "../Rating";
 import Quantity from "./Quantity";
 import Button from "../Button";
 import ZoomViewer from "./ZoomViewer";
-import { reviewAtom } from "./ReviewContents";
 
 const Container = styled.div`
   width: 1200px;
@@ -28,6 +27,7 @@ const ImageContainer = styled.div`
   flex-direction: column;
   justify-content: space-between;
   height: 500px;
+  position: relative;
 `;
 
 const MainImage = styled.div`
@@ -232,6 +232,7 @@ const ZoomLens = styled.div<{ left: number; top: number }>`
   border: 1.5px solid rgb(255, 255, 255);
   background-color: rgba(255, 255, 255, 0.4);
   position: absolute;
+  top: ;
   left: ${(props) =>
     props.left <= 0 ? "0" : props.left > 250 ? "250px" : props.left + "px"};
   top: ${(props) =>
@@ -309,9 +310,13 @@ export default function TopContents() {
   const zoomRef = useRef<HTMLDivElement>(null);
 
   const handleCoordinate = (e: MouseEvent<HTMLDivElement>) => {
-    // console.log("x:", e.pageX - 523, "y:", e.pageY - 274);
-    //398,149
-    setCoord({ cursorX: e.pageX - 523, cursorY: e.pageY - 274 });
+    // console.log("x:", e.pageX, "y:", e.pageY);
+    // console.log("offset:", zoomRef.current?.offsetLeft);
+    if (zoomRef.current)
+      setCoord({
+        cursorX: e.pageX - zoomRef.current.offsetLeft - 125,
+        cursorY: e.pageY - zoomRef.current.offsetTop - 125,
+      });
   };
 
   const discount_rate = Math.floor(
@@ -337,11 +342,15 @@ export default function TopContents() {
 
   return (
     <Container>
-      {zoom && mainImg && (
-        <ZoomViewer src={mainImg} left={coord.cursorX} top={coord.cursorY} />
-      )}
       <div className="wrap">
         <ImageContainer>
+          {zoom && mainImg && (
+            <ZoomViewer
+              src={mainImg}
+              left={coord.cursorX}
+              top={coord.cursorY}
+            />
+          )}
           {images.map((item, i) => (
             <ImageWrapper key={item} selected={item === mainImg}>
               <Image
@@ -364,7 +373,6 @@ export default function TopContents() {
             setZoom(false);
           }}
         >
-          {/* <ZoomLens left={coord.cursorX} top={coord.cursorY} /> */}
           {zoom && <ZoomLens left={coord.cursorX} top={coord.cursorY} />}
           <Image src={mainImg} alt="main_image" width={500} height={500} />
         </MainImage>
