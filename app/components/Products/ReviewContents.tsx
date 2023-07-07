@@ -17,6 +17,7 @@ const Container = styled.div`
     font-size: 24px;
     font-weight: 500;
     letter-spacing: -1.2px;
+    margin-bottom: 24px;
   }
 `;
 

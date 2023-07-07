@@ -13,6 +13,9 @@ const Container = styled.div`
 
   h1 {
     margin: 0;
+    font-size: 24px;
+    font-weight: 500;
+    letter-spacing: -1.2px;
   }
 `;
 
