@@ -6,14 +6,12 @@ import Image from "next/image";
 import { maskingAtom } from "./DetailContents";
 import { selectedAtom } from "./TopContents";
 import Rating from "../Rating";
-import { timeStamp } from "console";
+import Pagination from "../Pagination";
 
 const Container = styled.div`
   width: 1200px;
   margin: auto;
-  padding: 100px 0 50px;
-  // margin-top: 100px;
-  margin-bottom: 60px;
+  padding-top: 100px;
 
   h1 {
     font-size: 24px;
@@ -151,6 +149,10 @@ const ReviewsContainer = styled.div`
     padding: 40px 0;
     text-align: center;
   }
+`;
+
+const CardContainer = styled.div`
+  margin-bottom: 40px;
 `;
 
 const ReviewCard = styled.div`
@@ -445,9 +447,9 @@ export default function ReviewContents() {
         {detail.reviews === 0 ? (
           <div className="no_review">등록된 리뷰가 없습니다.</div>
         ) : (
-          <div>
-            {reviews.map((item) => (
-              <ReviewCard key={item.user_id}>
+          <CardContainer>
+            {reviews.map((item, i) => (
+              <ReviewCard key={item.user_id + i}>
                 <CardHeader>
                   <div>
                     <img src="/assets/img/star_bk_fill.svg" alt="star" />
@@ -472,8 +474,9 @@ export default function ReviewContents() {
                 </PhotoContainer>
               </ReviewCard>
             ))}
-          </div>
+          </CardContainer>
         )}
+        <Pagination />
       </ReviewsContainer>
     </Container>
   );

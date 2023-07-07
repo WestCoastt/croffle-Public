@@ -7,6 +7,7 @@ import Rating from "../Rating";
 import Quantity from "./Quantity";
 import Button from "../Button";
 import ZoomViewer from "./ZoomViewer";
+import Link from "next/link";
 
 const Container = styled.div`
   width: 1200px;
@@ -487,7 +488,9 @@ export default function TopContents() {
               content="장바구니 담기"
               bg="#fff"
             />
-            <Button bg="var(--primary)" wd="275px" content="바로구매" />
+            <Link href="/order">
+              <Button bg="var(--primary)" wd="275px" content="바로구매" />
+            </Link>
           </BtnContainer>
         </TPContainer>
       </InfoContainer>

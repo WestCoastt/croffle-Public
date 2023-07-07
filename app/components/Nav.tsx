@@ -210,33 +210,28 @@ export default function Nav() {
 
         <BtnContainer>
           {sck && (
-            <Link
-              href="/"
+            <BtnBox
               onClick={() => {
                 document.cookie = "sck=; expires=Sat, 01 Jan 1972 00:00:00 GMT";
                 setSck("");
+                router.refresh;
               }}
             >
-              <BtnBox>
-                <img src="/assets/img/logout.svg" alt="logout" />
-                <div>로그아웃</div>
-              </BtnBox>
-            </Link>
+              <img src="/assets/img/logout.svg" alt="logout" />
+              <div>로그아웃</div>
+            </BtnBox>
           )}
 
           {ltk && (
-            <Link
-              href="/"
+            <BtnBox
               onClick={() => {
                 localStorage.removeItem("tk");
                 setLtk("");
               }}
             >
-              <BtnBox>
-                <img src="/assets/img/logout.svg" alt="logout" />
-                <div>로그아웃</div>
-              </BtnBox>
-            </Link>
+              <img src="/assets/img/logout.svg" alt="logout" />
+              <div>로그아웃</div>
+            </BtnBox>
           )}
 
           {!sck && !ltk && (
@@ -247,13 +242,13 @@ export default function Nav() {
               </BtnBox>
             </Link>
           )}
-          <Link href="/mypage">
+          <Link href={sck || ltk ? "/mypage" : "/login"}>
             <BtnBox>
               <img src="/assets/img/person.svg" alt="mypage" />
               <div>마이페이지</div>
             </BtnBox>
           </Link>
-          <Link href="/cart">
+          <Link href={sck || ltk ? "/cart" : "/login"}>
             <BtnBox>
               <img src="/assets/img/bag.svg" alt="cart" />
               <div>장바구니</div>
