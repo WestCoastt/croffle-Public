@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import SearchContent from "../components/Search/SearchContent";
 import SearchFilter from "../components/Search/SearchFilter";
 import SearchHeader from "../components/Search/SearchHeader";
