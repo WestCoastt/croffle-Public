@@ -100,13 +100,13 @@ const DisPrice = styled.span`
 
 interface ItemCardProps {
   item: {
-    product_id: number;
+    sq: number;
     name: string;
     regular_price: number;
     total_price: number;
-    stars: number;
-    reviews: number;
-    src: string;
+    star_average: number;
+    review_count: number;
+    product_image: [{ image_url: string }];
   };
 }
 
@@ -119,19 +119,21 @@ export default function ItemCard({ item }: ItemCardProps) {
 
   return (
     <Link
-      href={`/products/${item.product_id}`}
+      href={`/products/${item.sq}`}
       target="_blank"
       style={{ textDecoration: "none", color: "#000" }}
     >
       <Container>
         <ImageBox className={!loaded ? "skeleton" : ""}>
-          <Image
-            onLoad={() => setLoaded(true)}
-            src={item.src}
-            alt={item.name}
-            width={200}
-            height={200}
-          />
+          {item.product_image && (
+            <Image
+              onLoad={() => setLoaded(true)}
+              src={item.product_image[0].image_url}
+              alt={item.name}
+              width={200}
+              height={200}
+            />
+          )}
         </ImageBox>
         <ContentBox>
           <div>
@@ -148,8 +150,12 @@ export default function ItemCard({ item }: ItemCardProps) {
               <em>{item.total_price.toLocaleString()}</em>원
             </DisPrice>
           </div>
-
-          <Rating stars={item.stars} reviews={item.reviews} />
+          {item.star_average && (
+            <Rating
+              stars={Number(item.star_average)}
+              reviews={item.review_count}
+            />
+          )}
         </ContentBox>
       </Container>
     </Link>

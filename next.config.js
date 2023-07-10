@@ -1,7 +1,11 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    domains: ["github.com"],
+    domains: [
+      "github.com",
+      "croffle.gesiaplatform.com",
+      "www.saeroevent.co.kr",
+    ],
   },
   async rewrites() {
     return [

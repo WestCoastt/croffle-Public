@@ -1,6 +1,7 @@
 import Carousel from "./components/Carousel";
 import ItemCard from "./components/ItemCard";
 import SectionTitle from "./components/SectionTitle";
+import Weekly from "./components/Weekly";
 import { ItemList } from "./Items";
 
 export default function Home() {
@@ -8,20 +9,7 @@ export default function Home() {
     <div>
       <Carousel />
       <SectionTitle />
-      <div
-        style={{
-          margin: "auto",
-          marginTop: "40px",
-          marginBottom: "70px",
-          maxWidth: "1200px",
-          display: "flex",
-          justifyContent: "space-between",
-        }}
-      >
-        {ItemList.splice(0, 5).map((item) => (
-          <ItemCard key={item.name} item={item} />
-        ))}
-      </div>
+      <Weekly />
       <div style={{ margin: "auto", width: "1200px" }}>
         <img src="/assets/img/middle_banner.svg" alt="middle_banner" />
       </div>
