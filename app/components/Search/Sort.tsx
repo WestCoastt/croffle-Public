@@ -27,10 +27,10 @@ const Container = styled.ul`
       display: none;
     }
   }
-  li:not(.no_divider) {
+  li:not(:first-of-type) {
     border-left: 1px solid #eee;
   }
-  .no_divider {
+  li:first-of-type {
     padding-left: 0;
   }
   .focus {
@@ -44,27 +44,24 @@ const Container = styled.ul`
 `;
 
 export default function Sort() {
-  const sorted_type = Number(useSearchParams().get("sorted_type"));
-  const sort = [
-    "크로플 랭킹순",
-    "판매량순",
-    "낮은 가격순",
-    "높은 가격순",
-    "리뷰많은순",
-    "등록일순",
+  const sort_type = useSearchParams().get("sort_type");
+  const sorts = [
+    { name: "크로플 랭킹순", code: "RANKING" },
+    { name: "판매량순", code: "SALE" },
+    { name: "낮은 가격순", code: "LOW_PRICE" },
+    { name: "높은 가격순", code: "HIGH_PRICE" },
+    { name: "리뷰 많은순", code: "REVIEW" },
+    { name: "등록일순", code: "DATE" },
   ];
+
+  const selected = sorts.findIndex((el) => el.code === sort_type);
+  const index = selected === -1 ? 0 : selected;
 
   return (
     <Container>
-      {sort.map((item, i) => (
-        <li
-          className={
-            (item === "크로플 랭킹순" ? "no_divider " : "") +
-            (sorted_type === i ? "focus" : "")
-          }
-          key={item}
-        >
-          <SortLink item={item} sorted_type={i} />
+      {sorts.map((item, i) => (
+        <li className={index === i ? "focus" : ""} key={item.name}>
+          <SortLink name={item.name} sort_type={item.code} />
         </li>
       ))}
     </Container>

@@ -34,19 +34,24 @@ interface List {
 
 export default function SearchContent() {
   const keyword = useSearchParams().get("keyword");
+  const sort_type = useSearchParams().get("sort_type");
   const categories = useParams();
   const [itemList, setItemList] = useState<List[]>([]);
 
   const getSearchList = async () => {
     const res = await axios.get(
-      `/v1/products?sort_type=RANKING&product_name=${keyword}&page=1&size=20`
+      `/v1/products?product_name=${keyword}&page=1&size=20${
+        sort_type ? `&sort_type=${sort_type}` : "&sort_type=RANKING"
+      }`
     );
     setItemList(res.data.data.list);
   };
 
   const getCatSearchList = async () => {
     const res = await axios.get(
-      `/v1/categories/${categories.id}/products?sort_type=RANKING&page=1&size=20`
+      `/v1/categories/${categories.id}/products?page=1&size=20${
+        sort_type ? `&sort_type=${sort_type}` : "&sort_type=RANKING"
+      }`
     );
     setItemList(res.data.data.list);
   };
@@ -54,7 +59,7 @@ export default function SearchContent() {
   useEffect(() => {
     if (keyword) getSearchList();
     else getCatSearchList();
-  }, []);
+  }, [keyword, sort_type]);
 
   return (
     <Container keyword={keyword}>
