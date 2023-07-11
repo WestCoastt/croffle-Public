@@ -28,7 +28,7 @@ interface List {
 export default function Weekly() {
   const [itemList, setItemList] = useState<List[]>([]);
   const getSearchList = async () => {
-    const res = await axios.get(`/v1/products?sort_type=WEEKLY&page=1&size=20`);
+    const res = await axios.get(`/v1/products?sort_type=WEEKLY&page=1&size=10`);
     setItemList(res.data.data.list);
   };
 

@@ -1,7 +1,9 @@
 "use client";
 import styled from "@emotion/styled";
 import Link from "next/link";
-import { useState } from "react";
+import { usePathname, useSearchParams } from "next/navigation";
+import path from "path";
+import { use, useEffect, useState } from "react";
 
 const Container = styled.div`
   display: flex;
@@ -47,9 +49,25 @@ const PageNumbers = styled.div`
   }
 `;
 
-export default function Pagination() {
-  const [page, setPage] = useState(1);
-  const total_page = 10;
+interface PaginationProps {
+  total_page: number;
+}
+
+export default function Pagination({ total_page }: PaginationProps) {
+  const page = Number(useSearchParams().get("page"));
+  const [current, setCurrent] = useState(1);
+
+  const pathname = usePathname();
+
+  const getHref = (i: number) => {
+    const URLSearch = new URLSearchParams(location.search);
+    URLSearch.set("page", String(i));
+    return pathname + "?" + URLSearch.toString();
+  };
+
+  useEffect(() => {
+    page === 0 ? setCurrent(1) : setCurrent(page);
+  }, [page]);
 
   return (
     <Container>
@@ -61,16 +79,23 @@ export default function Pagination() {
         />
       </button> */}
       <PageNumbers>
-        {[...Array(total_page)].map((item, i) => (
-          <button
-            className={page === i + 1 ? "focus" : ""}
-            key={i + 1}
-            onClick={() => setPage(i + 1)}
-          >
-            {i + 1}
-          </button>
-        ))}
-
+        {pathname.split("/")[1] === "search" || "categories"
+          ? [...Array(total_page)].map((item, i) => (
+              <Link key={i + 1} href={getHref(i + 1)}>
+                <button className={current === i + 1 ? "focus" : ""}>
+                  {i + 1}
+                </button>
+              </Link>
+            ))
+          : [...Array(total_page)].map((item, i) => (
+              <button
+                className={current === i + 1 ? "focus" : ""}
+                key={i + 1}
+                onClick={() => setCurrent(i + 1)}
+              >
+                {i + 1}
+              </button>
+            ))}
         {/* {[...Array(total_page)].map((item, i) => (
         <Link key={i + 1} href={`/page?=${i + 1}`}>
           <button className={page === i + 1 ? "focus" : ""}>{i + 1}</button>

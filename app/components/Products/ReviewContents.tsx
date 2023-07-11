@@ -477,7 +477,7 @@ export default function ReviewContents() {
             ))}
           </CardContainer>
         )}
-        <Pagination />
+        <Pagination total_page={10} />
       </ReviewsContainer>
     </Container>
   );
