@@ -7,6 +7,8 @@ import { maskingAtom } from "./DetailContents";
 import { selectedAtom } from "./TopContents";
 import Rating from "../Rating";
 import Pagination from "../Pagination";
+import { useParams, usePathname } from "next/navigation";
+import axios from "axios";
 
 const Container = styled.div`
   width: 1200px;
@@ -315,6 +317,7 @@ export default function ReviewContents() {
     },
   ];
 
+  const sq = useParams().id;
   const reviewRef = useRef<HTMLDivElement>(null);
   const setReviewTop = useSetAtom(reviewAtom);
   const masking = useAtomValue(maskingAtom);
@@ -338,6 +341,14 @@ export default function ReviewContents() {
       document.removeEventListener("click", clickOutside);
     };
   }, [sortRef, dropdown]);
+
+  const getReviews = async () => {
+    const res = await axios.get(
+      `/v1/products/${sq}/reviews?sort_type=STAR&page=1&size=10`
+    );
+
+    // user_id가 없음
+  };
 
   const handleDate = (timestamp: string) => {
     const date = new Date(timestamp);

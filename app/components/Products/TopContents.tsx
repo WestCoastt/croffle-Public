@@ -8,6 +8,8 @@ import Quantity from "./Quantity";
 import Button from "../Button";
 import ZoomViewer from "./ZoomViewer";
 import Link from "next/link";
+import axios from "axios";
+import { usePathname } from "next/navigation";
 
 const Container = styled.div`
   width: 1200px;
@@ -256,6 +258,14 @@ interface Option {
   qty: number;
 }
 
+interface Detail {
+  name: string;
+  regular_price: number;
+  review_count: number;
+  star_average: string;
+  total_price: number;
+}
+
 export const reviewsAtom = atom(0);
 export const selectedAtom = atom<Option[]>([]);
 export default function TopContents() {
@@ -290,6 +300,9 @@ export default function TopContents() {
       },
     ],
   };
+
+  const [details, setDetails] = useState<Detail>();
+
   const getETA = () => {
     const days = ["일", "월", "화", "수", "목", "금", "토"];
     const date = new Date(detail.estimated_time).toLocaleString().split(". ");
@@ -297,7 +310,7 @@ export default function TopContents() {
     const eta = `${date[1] + "/" + date[2]}` + `(${days[day]})`;
     return eta;
   };
-
+  const sq = usePathname().split("/")[2];
   const [mainImg, setMainImg] = useState(images[0]);
   const [selected, setSelected] = useState("선택하세요.");
   const [selArr, setSelArr] = useAtom(selectedAtom);
@@ -321,10 +334,23 @@ export default function TopContents() {
   };
 
   const discount_rate = Math.floor(
-    (1 - detail.total_price / detail.regular_price) * 100
+    (1 - Number(details?.total_price) / Number(details?.regular_price)) * 100
   );
 
+  const getDetail = async () => {
+    const res = await axios.get(`/v1/products/${sq}`);
+    const opt_res = await axios.get(`/v1/products/${sq}/options`);
+    const review_res = await axios.get(
+      `/v1/products/${sq}/reviews?sort_type=STAR&page=1&size=10`
+    );
+
+    setDetails(res.data.data);
+    console.log(res.data.data, opt_res.data.data, review_res.data.data);
+  };
+
   useEffect(() => {
+    getDetail();
+
     const clickOutside = (e: any) => {
       optionRef.current && !optionRef.current.contains(e.target)
         ? setDropdown(false)
@@ -379,14 +405,19 @@ export default function TopContents() {
         </MainImage>
       </div>
       <InfoContainer>
-        <h2>{detail.name}</h2>
-        <Rating stars={detail.stars} reviews={detail.reviews} />
+        <h2>{details?.name}</h2>
+        {details && (
+          <Rating
+            stars={Number(details?.star_average)}
+            reviews={Number(details?.review_count)}
+          />
+        )}
         <PriceContainer>
           <PriceWrapper>
             <div>
-              <span>{detail.total_price.toLocaleString()}</span>원
+              <span>{details?.total_price.toLocaleString()}</span>원
             </div>
-            {detail.regular_price && (
+            {details?.regular_price && (
               <PriceBox>
                 <span className="reg">
                   {detail.regular_price.toLocaleString()}원
@@ -396,7 +427,10 @@ export default function TopContents() {
             )}
           </PriceWrapper>
           <CoinWarpper>
-            <span>{(detail.total_price / 1000).toLocaleString()}</span>Croffle
+            <span>
+              {(Number(details?.total_price) / 1000).toLocaleString()}
+            </span>
+            Croffle
           </CoinWarpper>
         </PriceContainer>
         <ShippingContainer>

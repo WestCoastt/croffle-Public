@@ -9,7 +9,6 @@ const Container = styled.div`
   width: 1200px;
   margin: auto;
   padding: 100px 0 50px;
-  margin-bottom: 600px;
 
   h1 {
     margin: 0;

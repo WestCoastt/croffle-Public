@@ -79,7 +79,7 @@ export default function Pagination({ total_page }: PaginationProps) {
         />
       </button> */}
       <PageNumbers>
-        {pathname.split("/")[1] === "search" || "categories"
+        {pathname.split("/")[1] === ("search" || "categories")
           ? [...Array(total_page)].map((item, i) => (
               <Link key={i + 1} href={getHref(i + 1)}>
                 <button className={current === i + 1 ? "focus" : ""}>
