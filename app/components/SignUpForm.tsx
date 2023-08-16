@@ -69,7 +69,7 @@ export default function SignUpForm() {
         onChange={handleInput}
       />
       {inputData.account_email !== "" && !valid.account_email && (
-        <Warning>아이디(이메일)는 이메일 형식으로 입력해주세요.</Warning>
+        <Warning>아이디(이메일)는 이메일 형식으로 입력해 주세요.</Warning>
       )}
       <Input
         name="account_password"
@@ -78,7 +78,7 @@ export default function SignUpForm() {
         onChange={handleInput}
       />
       {inputData.account_password !== "" && !valid.account_password && (
-        <Warning>영문,숫자,특수문자를 조합하여 입력해주세요.(8~20자)</Warning>
+        <Warning>영문,숫자,특수문자를 조합하여 입력해 주세요.(8~20자)</Warning>
       )}
       <Input
         name="pw_confirm"
@@ -96,7 +96,7 @@ export default function SignUpForm() {
         onChange={handleInput}
       />
       {inputData.account_name !== "" && !valid.account_name && (
-        <Warning>이름을 정확히 입력해주세요.</Warning>
+        <Warning>이름을 정확히 입력해 주세요.</Warning>
       )}
       <Input
         onInput={(e: any) =>
@@ -108,7 +108,7 @@ export default function SignUpForm() {
         onChange={handleInput}
       />
       {inputData.account_phone !== "" && !valid.account_phone && (
-        <Warning>휴대폰 번호를 정확히 입력해주세요.</Warning>
+        <Warning>휴대폰 번호를 정확히 입력해 주세요.</Warning>
       )}
     </form>
   );

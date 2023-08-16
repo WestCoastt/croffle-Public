@@ -26,7 +26,6 @@ const Container = styled.div`
     }
   }
 
-
   .skeleton {
     width: 200px;
     height: 200px;
@@ -44,6 +43,7 @@ const Container = styled.div`
         background-color: rgba(165, 165, 165, 0.1);
       }
     }
+  }
 `;
 
 const ImageBox = styled.div`

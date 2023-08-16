@@ -12,6 +12,7 @@ const Container = styled.div<{ url: string }>`
   .banner {
     height: 450px;
     background: url(${(props) => props.url}) no-repeat center;
+    background-size: cover;
     transition: 0.3s ease-in-out 0s;
 
     .arrow {

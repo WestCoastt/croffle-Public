@@ -3,6 +3,8 @@ import styled from "@emotion/styled";
 import { atom, useAtom, useAtomValue } from "jotai";
 import { useEffect, useRef, useState } from "react";
 import { selectedAtom } from "./TopContents";
+import axios from "axios";
+import { useParams } from "next/navigation";
 
 const Container = styled.div`
   position: relative;
@@ -12,7 +14,8 @@ const Container = styled.div`
   // margin-bottom: 60px;
 `;
 
-const ImageContainer = styled.div<{ hgt: boolean }>`
+const ImageContainer = styled.div<{ hgt: boolean; dp: boolean }>`
+  display: ${(props) => !props.dp && "none"};
   width: fit-content;
   height: ${(props) => props.hgt && "3000px"};
   overflow: hidden;
@@ -47,18 +50,27 @@ const ShowMore = styled.div<{ hgt: boolean }>`
   }
 `;
 
-const image =
-  "https://github.com/westcoast-dev/RNCourse-Game/assets/117972001/ea577a55-6c8a-4ad6-b4c3-2b59904632fc";
-
 export const detailAtom = atom(0);
 export const maskingAtom = atom(false);
 export default function DetailContents() {
   const [masking, setMasking] = useAtom(maskingAtom);
   const [detailTop, setDetailTop] = useAtom(detailAtom);
   const [loaded, setLoaded] = useState(false);
+  const [image, setImage] = useState("");
   const imgRef = useRef<HTMLImageElement>(null);
   const detailRef = useRef<HTMLDivElement>(null);
   const selArr = useAtomValue(selectedAtom);
+
+  const params = useParams();
+
+  const getContent = async () => {
+    const res = await axios.get(`/v1/products/${params.id}/contents`);
+    setImage(res.data.data.list[0].content);
+  };
+
+  useEffect(() => {
+    getContent();
+  }, []);
 
   useEffect(() => {
     if (imgRef.current) {
@@ -74,7 +86,7 @@ export default function DetailContents() {
 
   return (
     <Container ref={detailRef}>
-      <ImageContainer hgt={masking}>
+      <ImageContainer hgt={masking} dp={loaded}>
         <img
           src={image}
           alt="product_detail"

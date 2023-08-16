@@ -4,7 +4,7 @@ import { atom, useAtomValue, useSetAtom } from "jotai";
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { maskingAtom } from "./DetailContents";
-import { selectedAtom } from "./TopContents";
+import { reviewsAtom, selectedAtom } from "./TopContents";
 import Rating from "../Rating";
 import Pagination from "../Pagination";
 import { useParams, usePathname } from "next/navigation";
@@ -245,7 +245,7 @@ export default function ReviewContents() {
     ],
   };
 
-  const reviews = [
+  const reviewss = [
     {
       user_id: "westcoast",
       timestamp: "Thu Jul 06 2023 10:23:29 GMT+0900",
@@ -319,6 +319,7 @@ export default function ReviewContents() {
 
   const sq = useParams().id;
   const reviewRef = useRef<HTMLDivElement>(null);
+  const reviews = useAtomValue(reviewsAtom);
   const setReviewTop = useSetAtom(reviewAtom);
   const masking = useAtomValue(maskingAtom);
   const selArr = useAtomValue(selectedAtom);
@@ -357,12 +358,12 @@ export default function ReviewContents() {
 
   return (
     <Container ref={reviewRef}>
-      <h1>고객리뷰({detail.reviews.toLocaleString()})</h1>
+      <h1>고객리뷰({Number(reviews.length).toLocaleString()})</h1>
       <RateContainer>
         <div className="stars">{detail.stars}</div>
         <div className="wrapper">
           <Rating bk={true} stars={detail.stars} reviews={detail.reviews} />
-          <p>총 {detail.reviews.toLocaleString()}건 리뷰</p>
+          <p>총 {Number(reviews.length).toLocaleString()}건 리뷰</p>
         </div>
       </RateContainer>
 
@@ -460,7 +461,7 @@ export default function ReviewContents() {
           <div className="no_review">등록된 리뷰가 없습니다.</div>
         ) : (
           <CardContainer>
-            {reviews.map((item, i) => (
+            {reviewss.map((item, i) => (
               <ReviewCard key={item.user_id + i}>
                 <CardHeader>
                   <div>

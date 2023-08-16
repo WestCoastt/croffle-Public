@@ -94,7 +94,7 @@ export default function TabMenu() {
         className={tab === "review" ? "underline" : ""}
         onClick={() => handleTab(reviewTop)}
       >
-        {reviews ? `리뷰(${reviews.toLocaleString()})` : "리뷰"}
+        {reviews ? `리뷰(${Number(reviews.length).toLocaleString()})` : "리뷰"}
       </li>
       <li
         className={tab === "qna" ? "underline" : ""}
