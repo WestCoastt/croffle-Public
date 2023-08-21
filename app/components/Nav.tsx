@@ -214,7 +214,8 @@ export default function Nav() {
               onClick={() => {
                 document.cookie = "sck=; expires=Sat, 01 Jan 1972 00:00:00 GMT";
                 setSck("");
-                router.refresh;
+                // router.refresh;
+                location.reload();
               }}
             >
               <img src="/assets/img/logout.svg" alt="logout" />

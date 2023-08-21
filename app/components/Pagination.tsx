@@ -2,8 +2,7 @@
 import styled from "@emotion/styled";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
-import path from "path";
-import { use, useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 
 const Container = styled.div`
   display: flex;
@@ -51,9 +50,15 @@ const PageNumbers = styled.div`
 
 interface PaginationProps {
   total_page: number;
+  c_page?: number;
+  setPage?: Dispatch<SetStateAction<number>>;
 }
 
-export default function Pagination({ total_page }: PaginationProps) {
+export default function Pagination({
+  total_page,
+  c_page,
+  setPage,
+}: PaginationProps) {
   const page = Number(useSearchParams().get("page"));
   const [current, setCurrent] = useState(1);
 
@@ -89,9 +94,9 @@ export default function Pagination({ total_page }: PaginationProps) {
             ))
           : [...Array(total_page)].map((item, i) => (
               <button
-                className={current === i + 1 ? "focus" : ""}
+                className={c_page === i + 1 ? "focus" : ""}
                 key={i + 1}
-                onClick={() => setCurrent(i + 1)}
+                onClick={() => setPage && setPage(i + 1)}
               >
                 {i + 1}
               </button>
@@ -102,6 +107,7 @@ export default function Pagination({ total_page }: PaginationProps) {
         </Link>
       ))} */}
       </PageNumbers>
+      {/* 11페이지로 이동 기능 */}
       {total_page > 10 && (
         <button>
           <img

@@ -210,6 +210,15 @@ const PhotoContainer = styled.div`
   }
 `;
 
+interface ReviewItem {
+  account: { email: string };
+  content: string;
+  insert_dttm: string;
+  product_option: any;
+  review_image: [{ image_url: string }];
+  star: number;
+}
+
 export const reviewAtom = atom(0);
 export default function ReviewContents() {
   const sort_by = ["평점높은순", "평점낮은순", "최신순"];
@@ -245,81 +254,13 @@ export default function ReviewContents() {
     ],
   };
 
-  const reviewss = [
-    {
-      user_id: "westcoast",
-      timestamp: "Thu Jul 06 2023 10:23:29 GMT+0900",
-      stars: 5,
-      contents:
-        "아주 좋아요!! 아주 좋아요!! 아주 좋아요!! 아주 좋아요!! 아주 좋아요!! 아주 좋아요!! 아주 좋아요!! 아주 좋아요!! 아주 좋아요!! 아주 좋아요!! 아주 좋아요!! 아주 좋아요!! 아주 좋아요!! 아주 좋아요!! 아주 좋아요!! 아주 좋아요!! 아주 좋아요!! 아주 좋아요!! 아주 좋아요!! 아주 좋아요!! 아주 좋아요!! 아주 좋아요!! 아주 좋아요!! 아주 좋아요!! 아주 좋아요!!",
-      photo: [
-        "https://github.com/westcoast-dev/RNCourse-Game/assets/117972001/55e8c950-06b6-45fd-8abd-cd8e23628eb9",
-        "https://github.com/westcoast-dev/RNCourse-Game/assets/117972001/55e8c950-06b6-45fd-8abd-cd8e23628eb9",
-        "https://github.com/westcoast-dev/RNCourse-Game/assets/117972001/55e8c950-06b6-45fd-8abd-cd8e23628eb9",
-      ],
-    },
-    {
-      user_id: "abcd1234",
-      timestamp: "Sat Dec 28 2022 10:23:29 GMT+0900",
-      stars: 3,
-      contents: "리뷰 내용입니다. 1111",
-      photo: [
-        "https://github.com/westcoast-dev/RNCourse-Game/assets/117972001/55e8c950-06b6-45fd-8abd-cd8e23628eb9",
-      ],
-    },
-    {
-      user_id: "croffle1111",
-      timestamp: "Mon Jul 03 2023 10:23:29 GMT+0900",
-      stars: 4,
-      contents: "리뷰 내용입니다. 2222",
-    },
-    {
-      user_id: "testtest",
-      timestamp: "Thu Jul 06 2023 10:23:29 GMT+0900",
-      stars: 3,
-      contents: "리뷰 내용입니다. abcd",
-    },
-    {
-      user_id: "abcdefg",
-      timestamp: "Wed Jul 05 2023 10:23:29 GMT+0900",
-      stars: 5,
-      contents: "리뷰 내용입니다. zzzz",
-    },
-    {
-      user_id: "helloworld",
-      timestamp: "Tue Jul 04 2023 10:23:29 GMT+0900",
-      stars: 4,
-      contents: "리뷰 내용입니다. 굳",
-    },
-    {
-      user_id: "croffle",
-      timestamp: "Thu Jul 06 2023 10:23:29 GMT+0900",
-      stars: 4,
-      contents: "리뷰 내용입니다.",
-    },
-    {
-      user_id: "test",
-      timestamp: "Tue Jul 04 2023 10:23:29 GMT+0900",
-      stars: 3,
-      contents: "리뷰 내용입니다.",
-    },
-    {
-      user_id: "randomId",
-      timestamp: "Thu Jul 06 2023 10:23:29 GMT+0900",
-      stars: 1,
-      contents: "쓰레기네요.",
-    },
-    {
-      user_id: "hater",
-      timestamp: "Sun Jul 02 2023 10:23:29 GMT+0900",
-      stars: 2,
-      contents: "별로에요.",
-    },
-  ];
-
   const sq = useParams().id;
   const reviewRef = useRef<HTMLDivElement>(null);
-  const reviews = useAtomValue(reviewsAtom);
+  // const reviews = useAtomValue(reviewsAtom);
+  const [reviews, setReviews] = useState<ReviewItem[]>([]);
+  // const [pages, setPages] = useState(0);
+  const [page, setPage] = useState(1);
+  const [total, setTotal] = useState(0);
   const setReviewTop = useSetAtom(reviewAtom);
   const masking = useAtomValue(maskingAtom);
   const selArr = useAtomValue(selectedAtom);
@@ -345,11 +286,15 @@ export default function ReviewContents() {
 
   const getReviews = async () => {
     const res = await axios.get(
-      `/v1/products/${sq}/reviews?sort_type=STAR&page=1&size=10`
+      `/v1/products/${sq}/reviews?sort_type=STAR&page=${page}&size=10`
     );
-
-    // user_id가 없음
+    setReviews(res.data.data.list);
+    setTotal(res.data.data.total_count);
   };
+
+  useEffect(() => {
+    getReviews();
+  }, [page]);
 
   const handleDate = (timestamp: string) => {
     const date = new Date(timestamp);
@@ -358,12 +303,12 @@ export default function ReviewContents() {
 
   return (
     <Container ref={reviewRef}>
-      <h1>고객리뷰({Number(reviews.length).toLocaleString()})</h1>
+      {/* <h1>고객리뷰({Number(reviews.length).toLocaleString()})</h1> */}
       <RateContainer>
         <div className="stars">{detail.stars}</div>
         <div className="wrapper">
           <Rating bk={true} stars={detail.stars} reviews={detail.reviews} />
-          <p>총 {Number(reviews.length).toLocaleString()}건 리뷰</p>
+          {/* <p>총 {Number(reviews.length).toLocaleString()}건 리뷰</p> */}
         </div>
       </RateContainer>
 
@@ -461,24 +406,26 @@ export default function ReviewContents() {
           <div className="no_review">등록된 리뷰가 없습니다.</div>
         ) : (
           <CardContainer>
-            {reviewss.map((item, i) => (
-              <ReviewCard key={item.user_id + i}>
+            {reviews.map((item, i) => (
+              <ReviewCard key={item.account.email + i}>
                 <CardHeader>
                   <div>
                     <img src="/assets/img/star_bk_fill.svg" alt="star" />
-                    {item.stars}
+                    {item.star}
                   </div>
-                  <span className="label">{item.user_id.slice(0, 4)}*****</span>
-                  <span className="label">{handleDate(item.timestamp)}</span>
+                  <span className="label">
+                    {item.account.email.slice(0, 4)}*****
+                  </span>
+                  <span className="label">{handleDate(item.insert_dttm)}</span>
                 </CardHeader>
-                <div className="contents">{item.contents}</div>
+                <div className="contents">{item.content}</div>
                 <PhotoContainer>
-                  {item.photo &&
-                    item.photo.map((img, i) => (
+                  {item.review_image &&
+                    item.review_image.map((el, i) => (
                       <Image
                         className="thumbnail"
                         key={i}
-                        src={img}
+                        src={el.image_url}
                         alt="review image thumbnail"
                         width={120}
                         height={120}
@@ -489,7 +436,11 @@ export default function ReviewContents() {
             ))}
           </CardContainer>
         )}
-        <Pagination total_page={10} />
+        <Pagination
+          total_page={Math.ceil(total / 10)}
+          c_page={page}
+          setPage={setPage}
+        />
       </ReviewsContainer>
     </Container>
   );

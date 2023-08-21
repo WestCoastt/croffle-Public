@@ -1,9 +1,13 @@
 "use client";
+import { CookiesProvider, useCookies } from "react-cookie";
 import styled from "@emotion/styled";
 import { atom, useAtomValue, useSetAtom } from "jotai";
 import { useEffect, useRef, useState } from "react";
 import { maskingAtom } from "./DetailContents";
 import { selectedAtom } from "./TopContents";
+import axios from "axios";
+import { useParams } from "next/navigation";
+import Pagination from "../Pagination";
 
 const Container = styled.div`
   width: 1200px;
@@ -82,6 +86,10 @@ const TabContainer = styled.ul`
   }
 `;
 
+const CardContainer = styled.div`
+  margin-bottom: 40px;
+`;
+
 const QnACard = styled.div`
   padding: 24px;
   border-bottom: 1px solid #e5e5e5;
@@ -100,7 +108,12 @@ const CardHeader = styled.div`
     font-weight: 500;
     letter-spacing: -0.8px;
   }
+  .no_answer {
+    color: #5f5f5f;
+  }
   .title {
+    display: flex;
+    align-items: center;
     width: 880px;
     height: 23px;
     font-size: 15px;
@@ -109,8 +122,21 @@ const CardHeader = styled.div`
     text-overflow: ellipsis;
     white-space: nowrap;
 
+    img {
+      display: none;
+    }
+
     &:hover {
       text-decoration: underline;
+    }
+  }
+  .secret {
+    color: #999;
+
+    img {
+      display: inline;
+      margin: 0 8px;
+      width: 14px;
     }
   }
 `;
@@ -152,14 +178,32 @@ const Contents = styled.div`
   }
 `;
 
+interface QnaItem {
+  sq: number;
+  state: string;
+  title: string;
+  content: string;
+  question_dttm: string;
+  answer: string;
+  answer_dttm: string;
+  is_secret: boolean;
+  account: { email: string };
+}
+
 export const qnaAtom = atom(0);
 export default function QnAContents() {
+  const sq = useParams().id;
   const qnaRef = useRef<HTMLDivElement>(null);
   const setqnaTop = useSetAtom(qnaAtom);
   const masking = useAtomValue(maskingAtom);
   const selArr = useAtomValue(selectedAtom);
   const [focus, setFocus] = useState("total");
+  const [qnas, setQnas] = useState<QnaItem[]>([]);
   const [display, setDisplay] = useState(0);
+  const [page, setPage] = useState(1);
+  const [total, setTotal] = useState(0);
+
+  const [cookies, setCookie, removeCookie] = useCookies(["sck"]);
 
   useEffect(() => {
     qnaRef.current && setqnaTop(qnaRef.current?.offsetTop - 120);
@@ -170,177 +214,117 @@ export default function QnAContents() {
     return date.toISOString().split("T")[0].replaceAll("-", ".");
   };
 
-  const qna = [
-    {
-      sq: 1,
-      state: "completed",
-      user_id: "westcoast",
-      timestamp: "Thu Jul 06 2023 10:23:29 GMT+0900",
-      title: "교환신청했는데요.",
-      contents: "안녕하세요. 오늘 교환신청을 했는데요. 언제 처리될까요?",
-      ans: "안녕하세요 고객님.",
-      ans_time: "Thu Jul 06 2023 10:23:29 GMT+0900",
-    },
-    {
-      sq: 2,
-      state: "no_ans",
-      user_id: "abcd1234",
-      timestamp: "Sat Dec 28 2022 10:23:29 GMT+0900",
-      title: "상품 문의드립니다. 1111",
-      contents:
-        "상품 문의드립니다. 1111상품 문의드립니다. 1111상품 문의드립니다. 1111상품 문의드립니다. 1111",
-    },
-    {
-      sq: 3,
-      state: "completed",
-      user_id: "croffle1111",
-      timestamp: "Mon Jul 03 2023 10:23:29 GMT+0900",
-      title: "빠른 배송 부탁드립니다.",
-      contents: "오늘 출고되나요? 오늘 출고 부탁드립니다!",
-      ans: "네 고객님~ 당일 3시 이전 주문완료 하신 상품은 당일 출고 됩니다. 이후건은 공휴일 제외 다음날 발송됩니다. 발송 후 택배사의 사정에 따라 약 1~4일 이후 수령이 가능하십니다. 혹시라도 품절 등으로 인해 당일발송이 어려운 경우 문자안내 드리겠습니다. 감사합니다.",
-      ans_time: "Mon Jul 03 2023 13:23:29 GMT+0900",
-    },
-    {
-      sq: 4,
-      state: "completed",
-      user_id: "testtest",
-      timestamp: "Thu Jul 06 2023 23:23:29 GMT+0900",
-      title: "상품 문의드립니다. abcd",
-      contents: "szdlkfslkmascszdlkfslkmascszdlkfslkmascszdlkfslkmasc",
-      ans: "안녕하세요 고객님.",
-      ans_time: "Fri Jul 07 2023 09:23:29 GMT+0900",
-    },
-    {
-      sq: 5,
-      state: "completed",
-      user_id: "abcdefg",
-      timestamp: "Wed Jul 05 2023 10:23:29 GMT+0900",
-      title: "상품 문의드립니다. zzzz",
-      contents:
-        "szdlkfslkmascszdlkfslkmascszdlkfslkmascszdlkfslkmascszdlkfslkmascszdlkfslkmascszdlkfslkmascszdlkfslkmascszdlkfslkmascszdlkfslkmasc",
-      ans: "안녕하세요 고객님.",
-      ans_time: "Wed Jul 05 2023 10:23:29 GMT+0900",
-    },
-    {
-      sq: 6,
-      state: "completed",
-      user_id: "helloworld",
-      timestamp: "Tue Jul 04 2023 10:23:29 GMT+0900",
-      title: "상품 문의드립니다.",
-      contents: "asd",
-      ans: "안녕하세요 고객님.",
-      ans_time: "Tue Jul 04 2023 10:23:29 GMT+0900",
-    },
-    {
-      sq: 7,
-      state: "completed",
-      user_id: "croffle",
-      timestamp: "Thu Jul 06 2023 10:23:29 GMT+0900",
-      title: "상품 문의드립니다.",
-      contents: "asd",
-      ans: "안녕하세요 고객님.",
-      ans_time: "Thu Jul 06 2023 10:23:29 GMT+0900",
-    },
-    {
-      sq: 8,
-      state: "completed",
-      user_id: "test",
-      timestamp: "Tue Jul 04 2023 10:23:29 GMT+0900",
-      title: "취소신청한거 언제처리되나요?",
-      contents:
-        "안녕하세요. 오늘 취소신청을 했는데요. 안녕하세요. 오늘 취소신청을 했는데요. 안녕하세요. 오늘 취소신청을 했는데요. 안녕하세요. 오늘 취소신청을 했는데요. 안녕하세요. 오늘 취소신청을 했는데요. 안녕하세요. 오늘 취소신청을 했는데요. 안녕하세요. 오늘 취소신청을 했는데요. 안녕하세요. 오늘 취소신청을 했는데요. 안녕하세요. 오늘 취소신청을 했는데요. 안녕하세요. 오늘 취소신청을 했는데요. 안녕하세요. 오늘 취소신청을 했는데요. 안녕하세요. 오늘 취소신청을 했는데요.",
-      ans: "안녕하세요. 고객님 취소처리 도와드렸습니다. 불편을 드려 죄송합니다. ",
-      ans_time: "Tue Jul 04 2023 10:23:29 GMT+0900",
-    },
-    {
-      sq: 9,
-      state: "completed",
-      user_id: "randomId",
-      timestamp: "Sat Jul 01 2023 18:23:29 GMT+0900",
-      title: "빠른 환불 부탁드립니다.",
-      contents: "asd",
-      ans: "안녕하세요 고객님.",
-      ans_time: "Mon Jul 03 2023 10:23:29 GMT+0900",
-    },
-    {
-      sq: 10,
-      state: "no_ans",
-      user_id: "hater",
-      timestamp: "Sun Jul 02 2023 10:23:29 GMT+0900",
-      title: "배송문의",
-      contents: "배송문의요 szdlkfslkmascszdlkf",
-      ans_time: "Mon Jul 03 2023 10:23:29 GMT+0900",
-    },
-  ];
+  const handleDisplay = (item: QnaItem) => {
+    if (item.title === "작성자만 볼 수 있습니다") return;
+    display === item.sq ? setDisplay(0) : setDisplay(item.sq);
+  };
+
+  const getQna = async () => {
+    const tk = localStorage.getItem("tk");
+    const res = await axios.get(
+      `/v1/products/${sq}/qnas?sort_type=STAR&page=${page}&size=10`,
+      {
+        headers: {
+          Authorization: `Bearer ${cookies.sck ? cookies.sck : tk ? tk : ""}`,
+        },
+      }
+    );
+
+    setQnas(res.data.data.list);
+    setTotal(res.data.data.total_count);
+  };
+
+  useEffect(() => {
+    getQna();
+  }, [page]);
 
   return (
-    <Container ref={qnaRef}>
-      <h1>상품Q&A</h1>
-      <QnAHeader>
-        <TabContainer>
-          <li
-            className={focus === "total" ? "focus" : ""}
-            onClick={() => setFocus("total")}
-          >
-            전체(59)
-          </li>
-          <li
-            className={focus === "completed" ? "focus" : ""}
-            onClick={() => setFocus("completed")}
-          >
-            답변완료(59)
-          </li>
-          <li
-            className={focus === "wating" ? "focus" : ""}
-            onClick={() => setFocus("wating")}
-          >
-            답변대기(0)
-          </li>
-        </TabContainer>
-        <QnABtn>
-          문의하기
-          <img src="/assets/img/option_arrow.svg" alt="qna_arrow" />
-        </QnABtn>
-      </QnAHeader>
-      {qna.map((item) => (
-        <QnACard key={item.sq}>
-          <CardHeader>
-            <div className="wrapper">
-              <div className="state">
-                {item.state === "completed" ? "답변완료" : "답변대기"}
-              </div>
-              <div
-                className="title"
-                onClick={() =>
-                  display === item.sq ? setDisplay(0) : setDisplay(item.sq)
-                }
-              >
-                {item.title}
-              </div>
-            </div>
-            <Info>
-              <span>{item.user_id.slice(0, 4)}*****</span>
-              <span>{handleDate(item.timestamp)}</span>
-            </Info>
-          </CardHeader>
-          {display === item.sq && (
-            <Contents>
-              <div className="container">
-                <div className="contents">{item.contents}</div>
-                {item.ans && (
-                  <div className="answer_wrapper">
-                    <div className="answer">{item.ans}</div>
-                    <Info>
-                      <span>판매자</span>
-                      <span>{handleDate(item.ans_time)}</span>
-                    </Info>
+    <CookiesProvider>
+      <Container ref={qnaRef}>
+        <h1>상품Q&A</h1>
+        <QnAHeader>
+          <TabContainer>
+            <li
+              className={focus === "total" ? "focus" : ""}
+              onClick={() => setFocus("total")}
+            >
+              전체(59)
+            </li>
+            <li
+              className={focus === "completed" ? "focus" : ""}
+              onClick={() => setFocus("completed")}
+            >
+              답변완료(59)
+            </li>
+            <li
+              className={focus === "wating" ? "focus" : ""}
+              onClick={() => setFocus("wating")}
+            >
+              답변대기(0)
+            </li>
+          </TabContainer>
+          <QnABtn>
+            문의하기
+            <img src="/assets/img/option_arrow.svg" alt="qna_arrow" />
+          </QnABtn>
+        </QnAHeader>
+        <CardContainer>
+          {qnas.map((item) => (
+            <QnACard key={item.sq}>
+              <CardHeader>
+                <div className="wrapper">
+                  <div
+                    className={`state ${
+                      item.state !== "ANSWER" ? "no_answer" : ""
+                    }`}
+                  >
+                    {item.state === "ANSWER" ? "답변완료" : "답변대기"}
                   </div>
-                )}
-              </div>
-            </Contents>
-          )}
-        </QnACard>
-      ))}
-    </Container>
+                  <div
+                    className={`title ${
+                      item.title === "작성자만 볼 수 있습니다" ? "secret" : ""
+                    }`}
+                    onClick={() => handleDisplay(item)}
+                  >
+                    <span>
+                      {item.title !== "작성자만 볼 수 있습니다"
+                        ? item.title
+                        : "비밀글입니다."}
+                    </span>
+
+                    <img src="/assets/img/lock.svg" alt="secret" />
+                  </div>
+                </div>
+                <Info>
+                  <span>{item.account.email.slice(0, 4)}*****</span>
+                  <span>{handleDate(item.question_dttm)}</span>
+                </Info>
+              </CardHeader>
+              {display === item.sq && (
+                <Contents>
+                  <div className="container">
+                    <div className="contents">{item.content}</div>
+                    {item.answer && (
+                      <div className="answer_wrapper">
+                        <div className="answer">{item.answer}</div>
+                        <Info>
+                          <span>판매자</span>
+                          <span>{handleDate(item.answer_dttm)}</span>
+                        </Info>
+                      </div>
+                    )}
+                  </div>
+                </Contents>
+              )}
+            </QnACard>
+          ))}
+        </CardContainer>
+        <Pagination
+          total_page={Math.ceil(total / 10)}
+          c_page={page}
+          setPage={setPage}
+        />
+      </Container>
+    </CookiesProvider>
   );
 }
