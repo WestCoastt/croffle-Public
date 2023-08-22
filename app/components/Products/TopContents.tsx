@@ -356,7 +356,7 @@ export default function TopContents() {
     );
     setImages(images);
     setMainImg(images[0]);
-    setReviews(review_res.data.data.list);
+    setReviews(review_res.data.data.total_count);
     console.log(res.data.data, opt_res.data.data, review_res.data.data);
   };
 

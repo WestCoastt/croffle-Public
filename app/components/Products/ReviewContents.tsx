@@ -1,14 +1,15 @@
 "use client";
 import styled from "@emotion/styled";
-import { atom, useAtomValue, useSetAtom } from "jotai";
+import { atom, useAtom, useAtomValue, useSetAtom } from "jotai";
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { maskingAtom } from "./DetailContents";
 import { reviewsAtom, selectedAtom } from "./TopContents";
 import Rating from "../Rating";
 import Pagination from "../Pagination";
-import { useParams, usePathname } from "next/navigation";
+import { useParams } from "next/navigation";
 import axios from "axios";
+import ImageModal from "./ImageModal";
 
 const Container = styled.div`
   width: 1200px;
@@ -210,7 +211,7 @@ const PhotoContainer = styled.div`
   }
 `;
 
-interface ReviewItem {
+export interface ReviewItem {
   account: { email: string };
   content: string;
   insert_dttm: string;
@@ -220,6 +221,7 @@ interface ReviewItem {
 }
 
 export const reviewAtom = atom(0);
+export const modalAtom = atom(false);
 export default function ReviewContents() {
   const sort_by = ["평점높은순", "평점낮은순", "최신순"];
   const detail = {
@@ -256,9 +258,7 @@ export default function ReviewContents() {
 
   const sq = useParams().id;
   const reviewRef = useRef<HTMLDivElement>(null);
-  // const reviews = useAtomValue(reviewsAtom);
   const [reviews, setReviews] = useState<ReviewItem[]>([]);
-  // const [pages, setPages] = useState(0);
   const [page, setPage] = useState(1);
   const [total, setTotal] = useState(0);
   const setReviewTop = useSetAtom(reviewAtom);
@@ -267,6 +267,8 @@ export default function ReviewContents() {
   const [dropdown, setDropdown] = useState(false);
   const [sort, setSort] = useState(sort_by[0]);
   const sortRef = useRef<HTMLDivElement>(null);
+  const [modal, setModal] = useAtom(modalAtom);
+  const [images, setImages] = useState({ idx: 0, items: [{ image_url: "" }] });
 
   useEffect(() => {
     reviewRef.current && setReviewTop(reviewRef.current?.offsetTop - 120);
@@ -294,6 +296,7 @@ export default function ReviewContents() {
 
   useEffect(() => {
     getReviews();
+    // reviewRef.current && window.scrollTo(0, reviewRef.current?.offsetTop - 60);
   }, [page]);
 
   const handleDate = (timestamp: string) => {
@@ -301,21 +304,33 @@ export default function ReviewContents() {
     return date.toISOString().split("T")[0].replaceAll("-", ".");
   };
 
+  const handleImage = (items: [{ image_url: string }], i: number) => {
+    setModal(true);
+    setImages({ idx: i, items: items });
+  };
+
+  useEffect(() => {
+    modal
+      ? (document.body.style.overflow = "hidden")
+      : (document.body.style.overflow = "unset");
+  }, [modal]);
+
   return (
     <Container ref={reviewRef}>
+      {modal && <ImageModal images={images} />}
       {/* <h1>고객리뷰({Number(reviews.length).toLocaleString()})</h1> */}
       <RateContainer>
         <div className="stars">{detail.stars}</div>
         <div className="wrapper">
           <Rating bk={true} stars={detail.stars} reviews={detail.reviews} />
-          {/* <p>총 {Number(reviews.length).toLocaleString()}건 리뷰</p> */}
+          <p>총 {total.toLocaleString()}건 리뷰</p>
         </div>
       </RateContainer>
 
       <div>
         <ReveiwsHeader>
-          <span className="title">포토&동영상 리뷰(12)</span>
-          <span className="more">더보기 {">"}</span>
+          {/* <span className="title">포토&동영상 리뷰(12)</span>
+          <span className="more">더보기 {">"}</span> */}
         </ReveiwsHeader>
 
         <ImageContainer>
@@ -429,6 +444,7 @@ export default function ReviewContents() {
                         alt="review image thumbnail"
                         width={120}
                         height={120}
+                        onClick={() => handleImage(item.review_image, i)}
                       />
                     ))}
                 </PhotoContainer>
