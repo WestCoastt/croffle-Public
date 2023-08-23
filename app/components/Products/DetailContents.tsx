@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { selectedAtom } from "./TopContents";
 import axios from "axios";
 import { useParams } from "next/navigation";
+import { tabMenuAtom } from "./TabMenu";
 
 const Container = styled.div`
   position: relative;
@@ -57,11 +58,16 @@ export default function DetailContents() {
   const [detailTop, setDetailTop] = useAtom(detailAtom);
   const [loaded, setLoaded] = useState(false);
   const [image, setImage] = useState("");
+  const tabMenu = useAtomValue(tabMenuAtom);
   const imgRef = useRef<HTMLImageElement>(null);
   const detailRef = useRef<HTMLDivElement>(null);
   const selArr = useAtomValue(selectedAtom);
 
   const params = useParams();
+
+  useEffect(() => {
+    tabMenu === "detail" && detailRef.current?.scrollIntoView();
+  }, [tabMenu]);
 
   const getContent = async () => {
     const res = await axios.get(`/v1/products/${params.id}/contents`);

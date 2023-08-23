@@ -8,6 +8,7 @@ import { selectedAtom } from "./TopContents";
 import axios from "axios";
 import { useParams } from "next/navigation";
 import Pagination from "../Pagination";
+import { tabMenuAtom } from "./TabMenu";
 
 const Container = styled.div`
   width: 1200px;
@@ -194,6 +195,7 @@ export const qnaAtom = atom(0);
 export default function QnAContents() {
   const sq = useParams().id;
   const qnaRef = useRef<HTMLDivElement>(null);
+  const tabMenu = useAtomValue(tabMenuAtom);
   const setqnaTop = useSetAtom(qnaAtom);
   const masking = useAtomValue(maskingAtom);
   const selArr = useAtomValue(selectedAtom);
@@ -202,8 +204,32 @@ export default function QnAContents() {
   const [display, setDisplay] = useState(0);
   const [page, setPage] = useState(1);
   const [total, setTotal] = useState(0);
+  const [count, setCount] = useState({ total: 0, ans: 0, que: 0 });
 
   const [cookies, setCookie, removeCookie] = useCookies(["sck"]);
+
+  useEffect(() => {
+    tabMenu === "qna" && qnaRef.current?.scrollIntoView();
+  }, [tabMenu]);
+
+  const tk = localStorage.getItem("tk");
+  const auth = {
+    Authorization: `Bearer ${cookies.sck ? cookies.sck : tk ? tk : ""}`,
+  };
+
+  const url = `/v1/products/${sq}/qnas?sort_type=STAR&page=${page}&size=10`;
+
+  const getCount = async () => {
+    const res = await axios.get(url, { headers: auth });
+    const response = await axios.get(url + `&state=ANSWER`, { headers: auth });
+    const t = res.data.data.total_count;
+    const a = response.data.data.total_count;
+    setCount({ total: t, ans: a, que: t - a });
+  };
+
+  useEffect(() => {
+    getCount();
+  }, []);
 
   useEffect(() => {
     qnaRef.current && setqnaTop(qnaRef.current?.offsetTop - 120);
@@ -220,23 +246,23 @@ export default function QnAContents() {
   };
 
   const getQna = async () => {
-    const tk = localStorage.getItem("tk");
     const res = await axios.get(
-      `/v1/products/${sq}/qnas?sort_type=STAR&page=${page}&size=10`,
-      {
-        headers: {
-          Authorization: `Bearer ${cookies.sck ? cookies.sck : tk ? tk : ""}`,
-        },
-      }
+      url + `${focus !== "total" ? "&state=" + focus : ""}`,
+      { headers: auth }
     );
-
     setQnas(res.data.data.list);
     setTotal(res.data.data.total_count);
   };
 
+  const handleFocus = (state: string) => {
+    setPage(1);
+    setFocus(state);
+  };
+
   useEffect(() => {
     getQna();
-  }, [page]);
+    qnaRef.current?.scrollIntoView();
+  }, [page, focus]);
 
   return (
     <CookiesProvider>
@@ -246,21 +272,21 @@ export default function QnAContents() {
           <TabContainer>
             <li
               className={focus === "total" ? "focus" : ""}
-              onClick={() => setFocus("total")}
+              onClick={() => handleFocus("total")}
             >
-              전체(59)
+              전체({count.total})
             </li>
             <li
-              className={focus === "completed" ? "focus" : ""}
-              onClick={() => setFocus("completed")}
+              className={focus === "ANSWER" ? "focus" : ""}
+              onClick={() => handleFocus("ANSWER")}
             >
-              답변완료(59)
+              답변완료({count.ans})
             </li>
             <li
-              className={focus === "wating" ? "focus" : ""}
-              onClick={() => setFocus("wating")}
+              className={focus === "QUESTION" ? "focus" : ""}
+              onClick={() => handleFocus("QUESTION")}
             >
-              답변대기(0)
+              답변대기({count.que})
             </li>
           </TabContainer>
           <QnABtn>

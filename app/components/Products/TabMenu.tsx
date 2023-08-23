@@ -1,6 +1,6 @@
 "use client";
 import styled from "@emotion/styled";
-import { useAtomValue } from "jotai";
+import { atom, useAtomValue, useSetAtom } from "jotai";
 import { useEffect, useRef, useState } from "react";
 import { reviewAtom } from "./ReviewContents";
 import { detailAtom } from "./DetailContents";
@@ -50,6 +50,7 @@ const Container = styled.ul<{ fixed: boolean }>`
   }
 `;
 
+export const tabMenuAtom = atom("");
 export default function TabMenu() {
   const [fixed, setFixed] = useState(false);
   const [tab, setTab] = useState("detail");
@@ -59,6 +60,7 @@ export default function TabMenu() {
   const reviewTop = useAtomValue(reviewAtom);
   const reviews = useAtomValue(reviewsAtom);
   const qnaTop = useAtomValue(qnaAtom);
+  const setTabMenu = useSetAtom(tabMenuAtom);
 
   const handleScroll = () => {
     if (window.scrollY < reviewTop) setTab("detail");
@@ -78,28 +80,31 @@ export default function TabMenu() {
     };
   }, [defaultTop, reviewTop]);
 
-  const handleTab = (top: number) => {
-    window.scrollTo(0, top);
-  };
+  // const handleTab = (top: number) => {
+  //   window.scrollTo(0, top);
+  // };
 
   return (
     <Container fixed={fixed} ref={tabRef}>
       <li
         className={tab === "detail" ? "underline" : ""}
-        onClick={() => handleTab(detailTop)}
+        // onClick={() => handleTab(detailTop)}
+        onClick={() => setTabMenu("detail")}
       >
         상품 상세정보
       </li>
       <li
         className={tab === "review" ? "underline" : ""}
-        onClick={() => handleTab(reviewTop)}
+        // onClick={() => handleTab(reviewTop)}
+        onClick={() => setTabMenu("review")}
       >
         {/* {reviews ? `리뷰(${Number(reviews.length).toLocaleString()})` : "리뷰"} */}
         {reviews ? `리뷰(${reviews.toLocaleString()})` : "리뷰"}
       </li>
       <li
         className={tab === "qna" ? "underline" : ""}
-        onClick={() => handleTab(qnaTop)}
+        // onClick={() => handleTab(qnaTop)}
+        onClick={() => setTabMenu("qna")}
       >
         Q&A
       </li>

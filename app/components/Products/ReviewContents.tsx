@@ -10,6 +10,7 @@ import Pagination from "../Pagination";
 import { useParams } from "next/navigation";
 import axios from "axios";
 import ImageModal from "./ImageModal";
+import { tabMenuAtom } from "./TabMenu";
 
 const Container = styled.div`
   width: 1200px;
@@ -258,6 +259,7 @@ export default function ReviewContents() {
 
   const sq = useParams().id;
   const reviewRef = useRef<HTMLDivElement>(null);
+  const tabMenu = useAtomValue(tabMenuAtom);
   const [reviews, setReviews] = useState<ReviewItem[]>([]);
   const [page, setPage] = useState(1);
   const [total, setTotal] = useState(0);
@@ -265,6 +267,7 @@ export default function ReviewContents() {
   const masking = useAtomValue(maskingAtom);
   const selArr = useAtomValue(selectedAtom);
   const [dropdown, setDropdown] = useState(false);
+  const imgRef = useRef<HTMLDivElement>(null);
   const [sort, setSort] = useState(sort_by[0]);
   const sortRef = useRef<HTMLDivElement>(null);
   const [modal, setModal] = useAtom(modalAtom);
@@ -273,6 +276,10 @@ export default function ReviewContents() {
   useEffect(() => {
     reviewRef.current && setReviewTop(reviewRef.current?.offsetTop - 120);
   }, [reviewRef, masking, selArr]);
+
+  useEffect(() => {
+    tabMenu === "review" && reviewRef.current?.scrollIntoView();
+  }, [tabMenu]);
 
   useEffect(() => {
     const clickOutside = (e: any) => {
@@ -296,6 +303,7 @@ export default function ReviewContents() {
 
   useEffect(() => {
     getReviews();
+    imgRef.current?.scrollIntoView();
     // reviewRef.current && window.scrollTo(0, reviewRef.current?.offsetTop - 60);
   }, [page]);
 
@@ -333,7 +341,7 @@ export default function ReviewContents() {
           <span className="more">더보기 {">"}</span> */}
         </ReveiwsHeader>
 
-        <ImageContainer>
+        <ImageContainer ref={imgRef}>
           <Image
             src="https://github.com/westcoast-dev/RNCourse-Game/assets/117972001/55e8c950-06b6-45fd-8abd-cd8e23628eb9"
             alt="review"
