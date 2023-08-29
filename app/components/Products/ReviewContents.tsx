@@ -11,6 +11,7 @@ import { useParams } from "next/navigation";
 import axios from "axios";
 import ImageModal from "./ImageModal";
 import { tabMenuAtom } from "./TabMenu";
+import AllImage from "./AllImage";
 
 const Container = styled.div`
   width: 1200px;
@@ -68,10 +69,27 @@ const ReveiwsHeader = styled.div`
 
 const ImageContainer = styled.div`
   width: 100%;
+  height: 146px;
   display: flex;
-  justify-content: space-between;
-
+  gap: 11px;
+  justify-content: flex-start;
+  overflow: hidden;
   img {
+    cursor: pointer;
+  }
+
+  .more::before {
+    content: "+ 더보기";
+    color: #fff;
+    position: absolute;
+    z-index: 9;
+    top: 0;
+    left: 0;
+    width: 162px;
+    height: 146px;
+    padding-top: 64px;
+    text-align: center;
+    background: rgba(17, 17, 17, 0.65);
     cursor: pointer;
   }
 
@@ -223,8 +241,13 @@ export interface ReviewItem {
 
 export const reviewAtom = atom(0);
 export const modalAtom = atom(false);
+export const imageReview = atom(false);
+export const allImageAtom = atom(false);
 export default function ReviewContents() {
-  const sort_by = ["평점높은순", "평점낮은순", "최신순"];
+  const sort_by = [
+    { name: "평점높은순", type: "STAR" },
+    { name: "최신순", type: "DATE" },
+  ];
   const detail = {
     product_id: 6,
     name: "탬버린즈 퍼퓸 솝 비누",
@@ -271,7 +294,10 @@ export default function ReviewContents() {
   const [sort, setSort] = useState(sort_by[0]);
   const sortRef = useRef<HTMLDivElement>(null);
   const [modal, setModal] = useAtom(modalAtom);
+  const [imageReview, setImageReview] = useAtom(allImageAtom);
+  const [allImage, setAllImage] = useAtom(allImageAtom);
   const [images, setImages] = useState({ idx: 0, items: [{ image_url: "" }] });
+  const [imgReviews, setImgReviews] = useState([]);
 
   useEffect(() => {
     reviewRef.current && setReviewTop(reviewRef.current?.offsetTop - 120);
@@ -295,17 +321,37 @@ export default function ReviewContents() {
 
   const getReviews = async () => {
     const res = await axios.get(
-      `/v1/products/${sq}/reviews?sort_type=STAR&page=${page}&size=10`
+      `/v1/products/${sq}/reviews?sort_type=${sort.type}&page=${page}&size=10`
     );
     setReviews(res.data.data.list);
     setTotal(res.data.data.total_count);
   };
 
+  const getImageReviews = async () => {
+    const res = await axios.get(
+      `/v1/products/${sq}/reviews?sort_type=STAR&page=1&size=10&is_image=true`
+    );
+    const a = res.data.data.list.map((item: any) =>
+      item.review_image.map((el: any) => ({
+        id: item.account,
+        content: item.content,
+        insert_dttm: item.insert_dttm,
+        img: el.image_url,
+      }))
+    );
+    setImgReviews(a.flat());
+    // console.log(res.data.data.list);
+  };
+
+  useEffect(() => {
+    getImageReviews();
+  }, []);
+
   useEffect(() => {
     getReviews();
     imgRef.current?.scrollIntoView();
     // reviewRef.current && window.scrollTo(0, reviewRef.current?.offsetTop - 60);
-  }, [page]);
+  }, [page, sort]);
 
   const handleDate = (timestamp: string) => {
     const date = new Date(timestamp);
@@ -317,15 +363,33 @@ export default function ReviewContents() {
     setImages({ idx: i, items: items });
   };
 
+  // const handleImageReview = () => {
+  //   setImageReview(true);
+  // };
+
+  // const handleAllImage = () => {
+  //   setAllImage(true);
+  // };
+
+  const handleImages = (i: number) => {
+    i < 6 && console.log("wait...");
+    i === 6 && setAllImage(true);
+  };
+
   useEffect(() => {
     modal
       ? (document.body.style.overflow = "hidden")
       : (document.body.style.overflow = "unset");
-  }, [modal]);
+
+    allImage
+      ? (document.body.style.overflow = "hidden")
+      : (document.body.style.overflow = "unset");
+  }, [modal, allImage]);
 
   return (
     <Container ref={reviewRef}>
       {modal && <ImageModal images={images} />}
+      {allImage && <AllImage sq={sq} page={page} />}
       {/* <h1>고객리뷰({Number(reviews.length).toLocaleString()})</h1> */}
       <RateContainer>
         <div className="stars">{detail.stars}</div>
@@ -342,53 +406,17 @@ export default function ReviewContents() {
         </ReveiwsHeader>
 
         <ImageContainer ref={imgRef}>
-          <Image
-            src="https://github.com/westcoast-dev/RNCourse-Game/assets/117972001/55e8c950-06b6-45fd-8abd-cd8e23628eb9"
-            alt="review"
-            width={162}
-            height={146}
-          />
-          <Image
-            src="https://github.com/westcoast-dev/RNCourse-Game/assets/117972001/55e8c950-06b6-45fd-8abd-cd8e23628eb9"
-            alt="review"
-            width={162}
-            height={146}
-          />
-          <Image
-            src="https://github.com/westcoast-dev/RNCourse-Game/assets/117972001/55e8c950-06b6-45fd-8abd-cd8e23628eb9"
-            alt="review"
-            width={162}
-            height={146}
-          />
-          <Image
-            src="https://github.com/westcoast-dev/RNCourse-Game/assets/117972001/55e8c950-06b6-45fd-8abd-cd8e23628eb9"
-            alt="review"
-            width={162}
-            height={146}
-          />
-          <Image
-            src="https://github.com/westcoast-dev/RNCourse-Game/assets/117972001/55e8c950-06b6-45fd-8abd-cd8e23628eb9"
-            alt="review"
-            width={162}
-            height={146}
-          />
-          <Image
-            src="https://github.com/westcoast-dev/RNCourse-Game/assets/117972001/55e8c950-06b6-45fd-8abd-cd8e23628eb9"
-            alt="review"
-            width={162}
-            height={146}
-          />
-          <div>
-            <Image
-              src="https://github.com/westcoast-dev/RNCourse-Game/assets/117972001/55e8c950-06b6-45fd-8abd-cd8e23628eb9"
-              alt="review"
-              width={162}
-              height={146}
-            />
-            <div className="more_img">
-              <span>+ 더보기</span>
+          {imgReviews.slice(0, 7).map((item: any, i: number) => (
+            <div
+              className={`wrapper ${i === 6 ? "more" : ""}`}
+              key={item.img + i}
+              onClick={() => {
+                handleImages(i);
+              }}
+            >
+              <Image src={item.img} alt="review" width={162} height={146} />
             </div>
-          </div>
+          ))}
         </ImageContainer>
 
         <SortContainer>
@@ -399,7 +427,7 @@ export default function ReviewContents() {
                 setDropdown(!dropdown);
               }}
             >
-              <span>{sort}</span>
+              <span>{sort.name}</span>
               <img
                 className={dropdown ? "up" : ""}
                 src="/assets/img/option_arrow.svg"
@@ -408,15 +436,15 @@ export default function ReviewContents() {
             </div>
             {dropdown && (
               <ul>
-                {sort_by.map((item: string) => (
+                {sort_by.map((item: { name: string; type: string }) => (
                   <li
-                    key={item}
+                    key={item.name}
                     onClick={() => {
                       setSort(item);
                       setDropdown(false);
                     }}
                   >
-                    {item}
+                    {item.name}
                   </li>
                 ))}
               </ul>
