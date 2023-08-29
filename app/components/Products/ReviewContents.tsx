@@ -235,7 +235,7 @@ export interface ReviewItem {
   content: string;
   insert_dttm: string;
   product_option: any;
-  review_image: [{ image_url: string }];
+  review_image: { image_url: string }[];
   star: number;
 }
 
@@ -296,7 +296,17 @@ export default function ReviewContents() {
   const [modal, setModal] = useAtom(modalAtom);
   const [imageReview, setImageReview] = useAtom(allImageAtom);
   const [allImage, setAllImage] = useAtom(allImageAtom);
-  const [images, setImages] = useState({ idx: 0, items: [{ image_url: "" }] });
+  const [images, setImages] = useState({
+    idx: 0,
+    item: {
+      account: { email: "" },
+      content: "",
+      insert_dttm: "",
+      product_option: "",
+      review_image: [{ image_url: "" }],
+      star: 0,
+    },
+  });
   const [imgReviews, setImgReviews] = useState([]);
 
   useEffect(() => {
@@ -358,18 +368,10 @@ export default function ReviewContents() {
     return date.toISOString().split("T")[0].replaceAll("-", ".");
   };
 
-  const handleImage = (items: [{ image_url: string }], i: number) => {
+  const handleImage = (item: ReviewItem, i: number) => {
     setModal(true);
-    setImages({ idx: i, items: items });
+    setImages({ idx: i, item: item });
   };
-
-  // const handleImageReview = () => {
-  //   setImageReview(true);
-  // };
-
-  // const handleAllImage = () => {
-  //   setAllImage(true);
-  // };
 
   const handleImages = (i: number) => {
     i < 6 && console.log("wait...");
@@ -388,7 +390,7 @@ export default function ReviewContents() {
 
   return (
     <Container ref={reviewRef}>
-      {modal && <ImageModal images={images} />}
+      {modal && <ImageModal data={images} />}
       {allImage && <AllImage sq={sq} page={page} />}
       {/* <h1>고객리뷰({Number(reviews.length).toLocaleString()})</h1> */}
       <RateContainer>
@@ -480,7 +482,7 @@ export default function ReviewContents() {
                         alt="review image thumbnail"
                         width={120}
                         height={120}
-                        onClick={() => handleImage(item.review_image, i)}
+                        onClick={() => handleImage(item, i)}
                       />
                     ))}
                 </PhotoContainer>

@@ -1,9 +1,9 @@
 "use client";
 import { useEffect, useState } from "react";
-import styled from "styled-components";
 import { ReviewItem, modalAtom } from "./ReviewContents";
 import { useSetAtom } from "jotai";
 import Image from "next/image";
+import styled from "@emotion/styled";
 
 const Container = styled.div`
   position: fixed;
@@ -23,19 +23,25 @@ const Container = styled.div`
     background-color: rgba(0, 0, 0, 0.5);
   }
   .modal {
-    width: 710px;
+    // width: 710px;
+    width: 950px;
     height: fit-content;
     background-color: #fff;
     border-radius: 12px;
   }
+
+  .flex {
+    display: flex;
+    padding: 16px 16px;
+  }
   .contents {
-    padding: 16px 0;
+    // padding: 16px 0;
   }
 
   h3 {
     display: flex;
     justify-content: space-between;
-    margin: 30px 30px 20px;
+    margin: 24px 30px 8px;
     font-size: 24px;
     font-weight: 500;
     letter-spacing: -0.5px;
@@ -58,13 +64,14 @@ const ImageContainer = styled.div`
 
   div {
     position: relative;
-    width: 570px;
+    // width: 570px;
+    width: 475px;
     height: 440px;
   }
 
   .arrow {
-    width: 52px;
-    height: 52px;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
     border: none;
     cursor: pointer;
@@ -81,16 +88,17 @@ const ImageContainer = styled.div`
 `;
 
 const ImageList = styled.div`
-  width: 570px;
+  // width: 570px;
+  width: 475px;
   margin: auto;
-  padding: 24px 0;
+  padding: 16px 0;
   display: grid;
-  grid-template-columns: repeat(auto-fill, 58px);
-  gap: 6px;
+  grid-template-columns: repeat(auto-fill, 55px);
+  gap: 5px;
 
   div {
     position: relative;
-    height: 58px;
+    height: 55px;
     cursor: pointer;
   }
   .selected {
@@ -98,16 +106,75 @@ const ImageList = styled.div`
   }
 `;
 
+const ReviewContainer = styled.div`
+  width: 100%;
+  font-size: 14px;
+
+  p {
+    margin: 0;
+    margin-bottom: 4px;
+    font-size: 15px;
+    font-weight: 500;
+  }
+
+  .option {
+    font-size: 12px;
+    color: #999999;
+  }
+
+  .content {
+    margin-top: 12px;
+    word-break: break-word;
+    white-space: pre-wrap;
+    color: #333333;
+  }
+  .dttm {
+    padding-top: 14px;
+    line-height: 32px;
+    font-size: 12px;
+    color: #999999;
+  }
+`;
+
+const Header = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: fit-content;
+  margin-bottom: 8px;
+
+  .star {
+    display: flex;
+    align-items: center;
+    padding-right: 12px;
+    font-size: 16px;
+    font-weight: 500;
+    letter-spacing: -0.8px;
+
+    img {
+      width: 18px;
+      height: 18px;
+      margin-right: 4px;
+    }
+  }
+  .label {
+    width: 90px;
+    padding: 0 12px;
+    height: 18px;
+    border-left: 1px solid #eeeeee;
+  }
+`;
+
 interface ImageModalProps {
-  images: {
+  data: {
     idx: number;
-    items: { image_url: string }[];
+    item: ReviewItem;
   };
 }
 
-export default function ImageModal({ images }: ImageModalProps) {
+export default function ImageModal({ data }: ImageModalProps) {
   const setModal = useSetAtom(modalAtom);
-  const [index, setIndex] = useState(images.idx);
+  const [index, setIndex] = useState(data.idx);
 
   const handleClose = () => {
     setModal(false);
@@ -121,7 +188,7 @@ export default function ImageModal({ images }: ImageModalProps) {
     if (dir === "left") {
       index > 0 && setIndex(index - 1);
     } else {
-      index + 1 < images.items.length && setIndex(index + 1);
+      index + 1 < data.item.review_image.length && setIndex(index + 1);
     }
   };
 
@@ -137,45 +204,66 @@ export default function ImageModal({ images }: ImageModalProps) {
               onClick={handleClose}
             />
           </h3>
-          <div className="contents">
-            <ImageContainer>
-              <button
-                className={`arrow left ${index === 0 ? "hide" : ""}`}
-                onClick={() => {
-                  handleNavigate("left");
-                }}
-              />
-              <div>
-                <Image
-                  src={images.items[index].image_url}
-                  alt={`image ${images.idx}`}
-                  fill={true}
+          <div className="flex">
+            <div className="contents">
+              <ImageContainer>
+                <button
+                  className={`arrow left ${index === 0 ? "hide" : ""}`}
+                  onClick={() => {
+                    handleNavigate("left");
+                  }}
                 />
-              </div>
-              <button
-                className={`arrow right ${
-                  index + 1 === images.items.length ? "hide" : ""
-                }`}
-                onClick={() => {
-                  handleNavigate("right");
-                }}
-              />
-            </ImageContainer>
-
-            <ImageList>
-              {images.items.map((item: { image_url: string }, i: number) => (
-                <div className={`${index === i ? "selected" : ""}`} key={i}>
+                <div>
                   <Image
-                    src={item.image_url}
-                    alt={`image ${i}`}
+                    src={data.item.review_image[index].image_url}
+                    alt={`image ${data.idx}`}
                     fill={true}
-                    onClick={() => {
-                      handleIndex(i);
-                    }}
                   />
                 </div>
-              ))}
-            </ImageList>
+                <button
+                  className={`arrow right ${
+                    index + 1 === data.item.review_image.length ? "hide" : ""
+                  }`}
+                  onClick={() => {
+                    handleNavigate("right");
+                  }}
+                />
+              </ImageContainer>
+
+              <ImageList>
+                {data.item.review_image.map(
+                  (item: { image_url: string }, i: number) => (
+                    <div className={`${index === i ? "selected" : ""}`} key={i}>
+                      <Image
+                        src={item.image_url}
+                        alt={`image ${i}`}
+                        fill={true}
+                        onClick={() => {
+                          handleIndex(i);
+                        }}
+                      />
+                    </div>
+                  )
+                )}
+              </ImageList>
+            </div>
+            <ReviewContainer>
+              {/* <p>{data.item.account.email.slice(0, 4)}*****</p> */}
+              <Header>
+                <div className="star">
+                  <img src="/assets/img/star_bk_fill.svg" alt="star" />
+                  {data.item.star}
+                </div>
+                <span className="label">
+                  {data.item.account.email.slice(0, 4)}*****
+                </span>
+              </Header>
+              <div className="option">{data.item.product_option.name}</div>
+              <div className="content">{data.item.content}</div>
+              <div className="dttm">
+                {data.item.insert_dttm.split("T")[0].replaceAll("-", ".")}
+              </div>
+            </ReviewContainer>
           </div>
         </div>
       </div>

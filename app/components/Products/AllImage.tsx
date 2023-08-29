@@ -3,8 +3,8 @@ import axios from "axios";
 import { useAtom, useSetAtom } from "jotai";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { styled } from "styled-components";
 import { allImageAtom } from "./ReviewContents";
+import styled from "@emotion/styled";
 
 const Container = styled.div`
   position: fixed;
