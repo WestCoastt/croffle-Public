@@ -1,13 +1,13 @@
 "use client";
 import { useEffect, useState } from "react";
-import { ReviewItem, modalAtom } from "./ReviewContents";
-import { useSetAtom } from "jotai";
+import { ReviewItem, allImageAtom, modalAtom } from "./ReviewContents";
+import { useAtom, useSetAtom } from "jotai";
 import Image from "next/image";
 import styled from "@emotion/styled";
 
 const Container = styled.div`
   position: fixed;
-  z-index: 101;
+  z-index: 102;
   top: 0;
   left: 0;
   width: 100%;
@@ -32,10 +32,10 @@ const Container = styled.div`
 
   .flex {
     display: flex;
-    padding: 16px 16px;
+    padding: 16px 24px 16px 16px;
   }
-  .contents {
-    // padding: 16px 0;
+  .review {
+    width: 100%;
   }
 
   h3 {
@@ -108,6 +108,7 @@ const ImageList = styled.div`
 
 const ReviewContainer = styled.div`
   width: 100%;
+  height: 440px;
   font-size: 14px;
 
   p {
@@ -123,10 +124,15 @@ const ReviewContainer = styled.div`
   }
 
   .content {
+    max-height: 338px;
+    overflow-y: scroll;
     margin-top: 12px;
     word-break: break-word;
     white-space: pre-wrap;
     color: #333333;
+  }
+  .content::-webkit-scrollbar {
+    display: none;
   }
   .dttm {
     padding-top: 14px;
@@ -165,6 +171,20 @@ const Header = styled.div`
   }
 `;
 
+const ListBtn = styled.button`
+  display: block;
+  margin: auto;
+  margin-top: 24px;
+  padding: 12px 36px;
+  border: 1px solid rgb(221, 221, 221);
+  border-radius: 3px;
+  background: #fff;
+  color: #333333;
+  font-weight: 500;
+  font-size: 16px;
+  cursor: pointer;
+`;
+
 interface ImageModalProps {
   data: {
     idx: number;
@@ -173,10 +193,14 @@ interface ImageModalProps {
 }
 
 export default function ImageModal({ data }: ImageModalProps) {
-  const setModal = useSetAtom(modalAtom);
+  const [allImage, setAllImage] = useAtom(allImageAtom);
+  const [modal, setModal] = useAtom(modalAtom);
   const [index, setIndex] = useState(data.idx);
 
   const handleClose = () => {
+    if (allImage && modal) {
+      setAllImage(false);
+    }
     setModal(false);
   };
 
@@ -247,23 +271,30 @@ export default function ImageModal({ data }: ImageModalProps) {
                 )}
               </ImageList>
             </div>
-            <ReviewContainer>
-              {/* <p>{data.item.account.email.slice(0, 4)}*****</p> */}
-              <Header>
-                <div className="star">
-                  <img src="/assets/img/star_bk_fill.svg" alt="star" />
-                  {data.item.star}
+            <div className="review">
+              <ReviewContainer>
+                {/* <p>{data.item.account.email.slice(0, 4)}*****</p> */}
+                <Header>
+                  <div className="star">
+                    <img src="/assets/img/star_bk_fill.svg" alt="star" />
+                    {data.item.star}
+                  </div>
+                  <span className="label">
+                    {data.item.account?.email.slice(0, 4)}*****
+                  </span>
+                </Header>
+                <div className="option">{data.item.product_option.name}</div>
+                <div className="content">{data.item.content}</div>
+                <div className="dttm">
+                  {data.item.insert_dttm.split("T")[0].replaceAll("-", ".")}
                 </div>
-                <span className="label">
-                  {data.item.account.email.slice(0, 4)}*****
-                </span>
-              </Header>
-              <div className="option">{data.item.product_option.name}</div>
-              <div className="content">{data.item.content}</div>
-              <div className="dttm">
-                {data.item.insert_dttm.split("T")[0].replaceAll("-", ".")}
-              </div>
-            </ReviewContainer>
+              </ReviewContainer>
+              {allImage && modal && (
+                <ListBtn onClick={() => setModal(false)}>
+                  사진 목록 보기
+                </ListBtn>
+              )}
+            </div>
           </div>
         </div>
       </div>

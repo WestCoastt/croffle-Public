@@ -3,12 +3,18 @@ import axios from "axios";
 import { useAtom, useSetAtom } from "jotai";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { allImageAtom } from "./ReviewContents";
+import {
+  ReviewItem,
+  allImageAtom,
+  imagesAtom,
+  modalAtom,
+} from "./ReviewContents";
 import styled from "@emotion/styled";
 
-const Container = styled.div`
+const Container = styled.div<{ dp: boolean }>`
+  display: ${(props) => props.dp && "none"};
   position: fixed;
-  z-index: 102;
+  z-index: 101;
   top: 0;
   left: 0;
   width: 100%;
@@ -21,8 +27,8 @@ const Container = styled.div`
     padding: 0 8px;
     cursor: pointer;
 
-    top: 30px;
-    right: 30px;
+    top: 40px;
+    right: 40px;
   }
   .bg {
     position: fixed;
@@ -56,8 +62,10 @@ const ImageContainer = styled.div`
 `;
 
 export default function AllImage(props: { sq: string; page: number }) {
-  const setAllImage = useSetAtom(allImageAtom);
   const [list, setList] = useState([]);
+  const setImages = useSetAtom(imagesAtom);
+  const [allImage, setAllImage] = useAtom(allImageAtom);
+  const [modal, setModal] = useAtom(modalAtom);
 
   const getList = async () => {
     const res = await axios.get(
@@ -68,9 +76,14 @@ export default function AllImage(props: { sq: string; page: number }) {
         id: item.account,
         content: item.content,
         insert_dttm: item.insert_dttm,
+        review_image: item.review_image,
+        product_option: item.product_option,
         img: el.image_url,
+        order: el.order - 1,
       }))
     );
+
+    console.log(res.data.data);
     setList(list.flat());
     // console.log(res.data.data.list);
   };
@@ -79,12 +92,17 @@ export default function AllImage(props: { sq: string; page: number }) {
     getList();
   }, []);
 
+  const handleClick = (order: number, item: ReviewItem) => {
+    setModal(true);
+    setImages({ idx: order, item: item });
+  };
+
   const handleClose = () => {
     setAllImage(false);
   };
 
   return (
-    <Container>
+    <Container dp={allImage && modal}>
       <img
         className="close"
         src="/assets/img/close.svg"
@@ -102,6 +120,7 @@ export default function AllImage(props: { sq: string; page: number }) {
                 alt="review"
                 width={140}
                 height={140}
+                onClick={() => handleClick(item.order, item)}
               />
             ))}
           </ImageContainer>

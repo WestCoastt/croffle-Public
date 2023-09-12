@@ -243,6 +243,17 @@ export const reviewAtom = atom(0);
 export const modalAtom = atom(false);
 export const imageReview = atom(false);
 export const allImageAtom = atom(false);
+export const imagesAtom = atom({
+  idx: 0,
+  item: {
+    account: { email: "" },
+    content: "",
+    insert_dttm: "",
+    product_option: "",
+    review_image: [{ image_url: "" }],
+    star: 0,
+  },
+});
 export default function ReviewContents() {
   const sort_by = [
     { name: "평점높은순", type: "STAR" },
@@ -296,17 +307,7 @@ export default function ReviewContents() {
   const [modal, setModal] = useAtom(modalAtom);
   const [imageReview, setImageReview] = useAtom(allImageAtom);
   const [allImage, setAllImage] = useAtom(allImageAtom);
-  const [images, setImages] = useState({
-    idx: 0,
-    item: {
-      account: { email: "" },
-      content: "",
-      insert_dttm: "",
-      product_option: "",
-      review_image: [{ image_url: "" }],
-      star: 0,
-    },
-  });
+  const [images, setImages] = useAtom(imagesAtom);
   const [imgReviews, setImgReviews] = useState([]);
 
   useEffect(() => {
@@ -346,11 +347,14 @@ export default function ReviewContents() {
         id: item.account,
         content: item.content,
         insert_dttm: item.insert_dttm,
+        review_image: item.review_image,
+        product_option: item.product_option,
         img: el.image_url,
+        order: el.order - 1,
       }))
     );
     setImgReviews(a.flat());
-    // console.log(res.data.data.list);
+    console.log(res.data.data.list);
   };
 
   useEffect(() => {
@@ -373,20 +377,24 @@ export default function ReviewContents() {
     setImages({ idx: i, item: item });
   };
 
-  const handleImages = (i: number) => {
-    i < 6 && console.log("wait...");
-    i === 6 && setAllImage(true);
+  const handleImages = (i: number, order: number, item: ReviewItem) => {
+    if (i < 6) {
+      setModal(true);
+      setImages({ idx: order, item: item });
+    }
+    if (i === 6) setAllImage(true);
   };
 
   useEffect(() => {
     modal
       ? (document.body.style.overflow = "hidden")
       : (document.body.style.overflow = "unset");
-
+  }, [modal]);
+  useEffect(() => {
     allImage
       ? (document.body.style.overflow = "hidden")
       : (document.body.style.overflow = "unset");
-  }, [modal, allImage]);
+  }, [allImage]);
 
   return (
     <Container ref={reviewRef}>
@@ -412,9 +420,7 @@ export default function ReviewContents() {
             <div
               className={`wrapper ${i === 6 ? "more" : ""}`}
               key={item.img + i}
-              onClick={() => {
-                handleImages(i);
-              }}
+              onClick={() => handleImages(i, item.order, item)}
             >
               <Image src={item.img} alt="review" width={162} height={146} />
             </div>
