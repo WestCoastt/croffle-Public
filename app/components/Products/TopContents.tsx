@@ -245,14 +245,6 @@ const ZoomLens = styled.div<{ left: number; top: number }>`
   height: 250px;
 `;
 
-// const images = [
-//   "https://github.com/westcoast-dev/RNCourse-Game/assets/117972001/55e8c950-06b6-45fd-8abd-cd8e23628eb9",
-//   "https://github.com/westcoast-dev/RNCourse-Game/assets/117972001/e41bf8d5-cd5b-44cd-8988-fe591ae58cc7",
-//   "https://github.com/westcoast-dev/RNCourse-Game/assets/117972001/4f2ce1f0-2c51-47ed-b34b-550e6aa55579",
-//   "https://github.com/westcoast-dev/RNCourse-Game/assets/117972001/b9c976d9-27b4-4c5f-bace-7088b21fca9d",
-//   "https://github.com/westcoast-dev/RNCourse-Game/assets/117972001/69c51164-00b5-485c-b83d-626695886b8e",
-// ];
-
 interface Option {
   name: string;
   price: number;
@@ -270,47 +262,8 @@ interface Detail {
 export const reviewsAtom = atom("");
 export const selectedAtom = atom<Option[]>([]);
 export default function TopContents() {
-  // const detail = {
-  //   product_id: 6,
-  //   name: "탬버린즈 퍼퓸 솝 비누",
-  //   regular_price: 49290,
-  //   total_price: 36700,
-  //   stars: 3.4,
-  //   reviews: 6178,
-  //   src: "https://github.com/westcoast-dev/nextjs-course/assets/117972001/fde3989f-bc08-4909-8298-ed4322be612d",
-  //   shipping_fee: 3000,
-  //   estimated_time: "Thu Aug 10 2023",
-  //   option: [
-  //     {
-  //       name: "옵션1. 훌라훌라 훌라춤을 춘다 탬버린 비누",
-  //       price: 32000,
-  //       qty: 1,
-  //     },
-  //     { name: "옵션2. 손 세정제", price: 7900, qty: 1 },
-  //     { name: "옵션3. 탬버린즈 버블버블 액션빔", price: 18900, qty: 1 },
-  //     { name: "옵션4. 핸드크림", price: 11400, qty: 1 },
-  //     {
-  //       name: "옵션5. 딥디크 시그니엘 시그니쳐 어메니티 세트",
-  //       price: 179000,
-  //       qty: 1,
-  //     },
-  //     {
-  //       name: "옵션6. 짱구는 못말려 부리부리부리부리 대마왕의 자라나라 머리머리 머머리 탈모 방지 샴푸",
-  //       price: 338400,
-  //       qty: 1,
-  //     },
-  //   ],
-  // };
-
   const [details, setDetails] = useState<Detail>();
 
-  // const getETA = () => {
-  //   const days = ["일", "월", "화", "수", "목", "금", "토"];
-  //   const date = new Date(detail.estimated_time).toLocaleString().split(". ");
-  //   const day = new Date(detail.estimated_time).getDay();
-  //   const eta = `${date[1] + "/" + date[2]}` + `(${days[day]})`;
-  //   return eta;
-  // };
   const id = useParams().id;
   const sq = usePathname().split("/")[2];
   const [images, setImages] = useState([]);
@@ -328,8 +281,6 @@ export default function TopContents() {
   const zoomRef = useRef<HTMLDivElement>(null);
 
   const handleCoordinate = (e: MouseEvent<HTMLDivElement>) => {
-    // console.log("x:", e.pageX, "y:", e.pageY);
-    // console.log("offset:", zoomRef.current?.offsetLeft);
     if (zoomRef.current)
       setCoord({
         cursorX: e.pageX - zoomRef.current.offsetLeft - 125,
@@ -357,7 +308,7 @@ export default function TopContents() {
     setImages(images);
     setMainImg(images[0]);
     setReviews(review_res.data.data.total_count);
-    console.log(res.data.data, opt_res.data.data, review_res.data.data);
+    // console.log(res.data.data, opt_res.data.data, review_res.data.data);
   };
 
   useEffect(() => {
@@ -373,10 +324,6 @@ export default function TopContents() {
       document.removeEventListener("click", clickOutside);
     };
   }, [optionRef, dropdown]);
-
-  // useEffect(() => {
-  //   setEta(getETA());
-  // }, [detail]);
 
   return (
     <Container>
@@ -463,7 +410,6 @@ export default function TopContents() {
           </div>
         </ShippingContainer>
 
-        {/* {detail.option &&} */}
         <SelectBox ref={optionRef} dropdown={dropdown}>
           <div
             className="select"
@@ -517,7 +463,6 @@ export default function TopContents() {
             <Quantity key={item.name} item={item} idx={i} />
           ))}
 
-        {/* 옵션없는 상품이면 && <수량선택/> */}
         <TPContainer opt={selArr.length}>
           <TotalPrice>
             <span>합계</span>
@@ -534,7 +479,6 @@ export default function TopContents() {
             </span>
           </TotalPrice>
 
-          {/* 옵션없는 상품이면 위치 조정 필요*/}
           <BtnContainer>
             <HeartBtn
               like={like}

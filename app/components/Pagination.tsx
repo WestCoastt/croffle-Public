@@ -76,13 +76,6 @@ export default function Pagination({
 
   return (
     <Container>
-      {/* <button>
-        <img
-          className="left"
-          src="/assets/img/option_arrow.svg"
-          alt="pagination_left"
-        />
-      </button> */}
       <PageNumbers>
         {pathname.split("/")[1] === ("search" || "categories")
           ? [...Array(total_page)].map((item, i) => (
@@ -101,13 +94,7 @@ export default function Pagination({
                 {i + 1}
               </button>
             ))}
-        {/* {[...Array(total_page)].map((item, i) => (
-        <Link key={i + 1} href={`/page?=${i + 1}`}>
-          <button className={page === i + 1 ? "focus" : ""}>{i + 1}</button>
-        </Link>
-      ))} */}
       </PageNumbers>
-      {/* 11페이지로 이동 기능 */}
       {total_page > 10 && (
         <button>
           <img

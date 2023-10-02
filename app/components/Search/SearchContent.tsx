@@ -61,7 +61,7 @@ export default function SearchContent() {
         page ? `${page}` : "1"
       }&size=20${sort_type ? `&sort_type=${sort_type}` : "&sort_type=RANKING"}`
     );
-    console.log(res.data.data);
+    // console.log(res.data.data);
     setItemList(res.data.data.list);
     setTotalPage(Math.ceil(res.data.data.total_count / 20));
   };

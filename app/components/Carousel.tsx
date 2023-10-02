@@ -6,7 +6,6 @@ import Link from "next/link";
 const Container = styled.div<{ url: string }>`
   position: relative;
   background-color: #ebe9e9;
-  // height: 500px;
   height: 450px;
 
   .banner {

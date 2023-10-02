@@ -12,7 +12,6 @@ const Container = styled.div`
   width: 1200px;
   margin: auto;
   margin-top: 40px;
-  // margin-bottom: 60px;
 `;
 
 const ImageContainer = styled.div<{ hgt: boolean; dp: boolean }>`
@@ -27,10 +26,8 @@ const ImageContainer = styled.div<{ hgt: boolean; dp: boolean }>`
 `;
 
 const ShowMore = styled.div<{ hgt: boolean }>`
-  // position: absolute;
   display: flex;
   justify-content: center;
-  // bottom: ${(props) => (props.hgt ? "26px" : "-60px")};
   z-index: 20;
   width: 100%;
 

@@ -4,10 +4,8 @@ import { useAtom } from "jotai";
 import { ChangeEvent, useState } from "react";
 
 const QuantityContainer = styled.div`
-  // background: #fafafa;
   border-radius: 5px;
   margin-top: 12px;
-  // padding: 20px 18px;
 
   div {
     display: flex;
@@ -65,7 +63,6 @@ const QuantityContainer = styled.div`
 `;
 
 export default function Quantity() {
-  // export default function Quantity({ item, idx }: QuantityProps) {
   const [qty, setQty] = useState(1);
 
   return (
@@ -73,7 +70,6 @@ export default function Quantity() {
       <div className="QuantityBox">
         <div className="qty">
           <button
-            // className="dec_blocked"
             className={qty === 1 ? "dec_blocked" : "dec"}
             onClick={() => {
               if (qty === 1) return;

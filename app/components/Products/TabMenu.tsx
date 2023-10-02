@@ -80,30 +80,22 @@ export default function TabMenu() {
     };
   }, [defaultTop, reviewTop]);
 
-  // const handleTab = (top: number) => {
-  //   window.scrollTo(0, top);
-  // };
-
   return (
     <Container fixed={fixed} ref={tabRef}>
       <li
         className={tab === "detail" ? "underline" : ""}
-        // onClick={() => handleTab(detailTop)}
         onClick={() => setTabMenu("detail")}
       >
         상품 상세정보
       </li>
       <li
         className={tab === "review" ? "underline" : ""}
-        // onClick={() => handleTab(reviewTop)}
         onClick={() => setTabMenu("review")}
       >
-        {/* {reviews ? `리뷰(${Number(reviews.length).toLocaleString()})` : "리뷰"} */}
         {reviews ? `리뷰(${reviews.toLocaleString()})` : "리뷰"}
       </li>
       <li
         className={tab === "qna" ? "underline" : ""}
-        // onClick={() => handleTab(qnaTop)}
         onClick={() => setTabMenu("qna")}
       >
         Q&A

@@ -73,7 +73,7 @@ export default function AllImage(props: { sq: string; page: number }) {
     );
     const list = res.data.data.list.map((item: any) =>
       item.review_image.map((el: any) => ({
-        id: item.account,
+        account: item.account,
         content: item.content,
         insert_dttm: item.insert_dttm,
         review_image: item.review_image,
@@ -83,9 +83,7 @@ export default function AllImage(props: { sq: string; page: number }) {
       }))
     );
 
-    console.log(res.data.data);
     setList(list.flat());
-    // console.log(res.data.data.list);
   };
 
   useEffect(() => {

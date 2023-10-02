@@ -344,7 +344,7 @@ export default function ReviewContents() {
     );
     const a = res.data.data.list.map((item: any) =>
       item.review_image.map((el: any) => ({
-        id: item.account,
+        account: item.account,
         content: item.content,
         insert_dttm: item.insert_dttm,
         review_image: item.review_image,
@@ -354,7 +354,7 @@ export default function ReviewContents() {
       }))
     );
     setImgReviews(a.flat());
-    console.log(res.data.data.list);
+    // console.log(res.data.data.list);
   };
 
   useEffect(() => {
@@ -364,7 +364,6 @@ export default function ReviewContents() {
   useEffect(() => {
     getReviews();
     imgRef.current?.scrollIntoView();
-    // reviewRef.current && window.scrollTo(0, reviewRef.current?.offsetTop - 60);
   }, [page, sort]);
 
   const handleDate = (timestamp: string) => {
@@ -400,7 +399,7 @@ export default function ReviewContents() {
     <Container ref={reviewRef}>
       {modal && <ImageModal data={images} />}
       {allImage && <AllImage sq={sq} page={page} />}
-      {/* <h1>고객리뷰({Number(reviews.length).toLocaleString()})</h1> */}
+
       <RateContainer>
         <div className="stars">{detail.stars}</div>
         <div className="wrapper">
@@ -410,10 +409,7 @@ export default function ReviewContents() {
       </RateContainer>
 
       <div>
-        <ReveiwsHeader>
-          {/* <span className="title">포토&동영상 리뷰(12)</span>
-          <span className="more">더보기 {">"}</span> */}
-        </ReveiwsHeader>
+        <ReveiwsHeader></ReveiwsHeader>
 
         <ImageContainer ref={imgRef}>
           {imgReviews.slice(0, 7).map((item: any, i: number) => (

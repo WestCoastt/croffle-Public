@@ -5,7 +5,6 @@ import SearchHeader from "../components/Search/SearchHeader";
 export default function Search() {
   return (
     <>
-      {/* <SearchHeader /> */}
       <div style={{ width: "1200px", display: "flex", margin: "auto" }}>
         <SearchFilter />
         <SearchContent />

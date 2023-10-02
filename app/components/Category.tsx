@@ -57,7 +57,6 @@ const Container = styled.div<{ hover: boolean }>`
   }
 `;
 
-// const SecondDepth = styled.ul<{ display?: string }>`
 const SecondDepth = styled.ul<{ dp?: boolean }>`
   display: ${(props) => (props.dp ? "block" : "none")};
   position: absolute;

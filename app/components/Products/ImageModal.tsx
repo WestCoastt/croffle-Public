@@ -23,7 +23,6 @@ const Container = styled.div`
     background-color: rgba(0, 0, 0, 0.5);
   }
   .modal {
-    // width: 710px;
     width: 950px;
     height: fit-content;
     background-color: #fff;
@@ -64,7 +63,6 @@ const ImageContainer = styled.div`
 
   div {
     position: relative;
-    // width: 570px;
     width: 475px;
     height: 440px;
   }
@@ -88,7 +86,6 @@ const ImageContainer = styled.div`
 `;
 
 const ImageList = styled.div`
-  // width: 570px;
   width: 475px;
   margin: auto;
   padding: 16px 0;
@@ -273,7 +270,6 @@ export default function ImageModal({ data }: ImageModalProps) {
             </div>
             <div className="review">
               <ReviewContainer>
-                {/* <p>{data.item.account.email.slice(0, 4)}*****</p> */}
                 <Header>
                   <div className="star">
                     <img src="/assets/img/star_bk_fill.svg" alt="star" />

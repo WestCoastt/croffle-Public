@@ -77,7 +77,6 @@ const SelectBox = styled.div`
 const SearchBox = styled.div`
   display: flex;
   align-items: center;
-  // width: 400px;
   width: 500px;
   height: 48px;
   margin: 14px;
@@ -214,7 +213,6 @@ export default function Nav() {
               onClick={() => {
                 document.cookie = "sck=; expires=Sat, 01 Jan 1972 00:00:00 GMT";
                 setSck("");
-                // router.refresh;
                 location.reload();
               }}
             >

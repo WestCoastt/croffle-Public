@@ -66,8 +66,6 @@ const Changed = styled.div`
 `;
 
 export default function Result(props: { params: { slug: string } }) {
-  //find페이지에서 api호출로 setAtom(true)로 상태 저장하고 success페이지에서 useAtom으로 상태불러왔을때 true가 아니면 url로 직접 접근한 것으로 보고 홈으로 redirect
-
   if (props.params.slug === "id") {
     return (
       <Container>
