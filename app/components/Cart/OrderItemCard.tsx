@@ -2,6 +2,11 @@
 import styled from "@emotion/styled";
 import Image from "next/image";
 import Quantity from "./Quantity";
+import { useState } from "react";
+import axios from "axios";
+import { useCookies } from "react-cookie";
+import { useSetAtom } from "jotai";
+import { deleteItemAtom } from "./Items";
 
 const Container = styled.div`
   width: 100%;
@@ -26,6 +31,11 @@ const Container = styled.div`
       color: #000;
       font-size: 16px;
       letter-spacing: -0.8px;
+
+      p {
+        margin: 6px 0 0;
+        color: #000;
+      }
     }
     p {
       color: #888;
@@ -38,7 +48,7 @@ const Container = styled.div`
 
   .pd {
     width: 100%;
-    padding: 25px 30px;
+    padding: 25px;
     border-left: 1px solid #e5e5e5;
     font-weight: 500;
     letter-spacing: -0.7px;
@@ -50,7 +60,21 @@ const Container = styled.div`
     max-width: 133px;
   }
   .price {
+    position: relative;
     max-width: 214px;
+  }
+  .fw {
+    margin-top: 24px;
+    color: #000;
+    font-size: 24px;
+    font-weight: 500;
+    letter-spacing: -1.2px;
+
+    span {
+      font-size: 14px;
+      font-weight: 500;
+      letter-spacing: -0.7px;
+    }
   }
 
   .price_bar {
@@ -90,43 +114,99 @@ const Container = styled.div`
   }
 `;
 
-export default function OrderItemCard() {
+const DeleteBtn = styled.button`
+  position: absolute;
+  top: 12px;
+  right: 2px;
+  background: #fff;
+  border: none;
+  cursor: pointer;
+
+  img {
+    width: 16px;
+    height: 16px;
+  }
+`;
+
+export default function OrderItemCard({ data }: any) {
+  const [qty, setQty] = useState(data.quantity);
+  const setDelete = useSetAtom(deleteItemAtom);
+  const [cookies, setCookie, removeCookie] = useCookies(["sck"]);
+  const tk = localStorage.getItem("tk");
+  const auth = {
+    Authorization: `Bearer ${cookies.sck ? cookies.sck : tk ? tk : ""}`,
+  };
+
+  const price =
+    (data.product.total_price + data.product_option.add_price) * qty;
+  const fee = 3000;
+
+  // console.log(data);
+
+  const deleteItem = async () => {
+    const res = await axios.delete(`/v1/carts/${data.sq}`, {
+      headers: auth,
+    });
+    // console.log(res.data);
+    setDelete(true);
+  };
+
   return (
     <Container>
       <div className="content">
         <div className="title">
           <input type="checkbox" name="product" />
           <Image
-            src="https://github.com/westcoast-dev/RNCourse-Game/assets/117972001/55e8c950-06b6-45fd-8abd-cd8e23628eb9"
+            src={data.product.product_image[0].image_url}
             alt="상품"
             width={110}
             height={110}
           />
           <div>
-            <div className="name">탬버린즈 퍼퓸 솝 비누</div>
+            <div className="name">
+              <div>{data.product.name}</div>
+              <p>{data.product_option.name}</p>
+            </div>
             <p className="eta">8/19(토) 도착 예정</p>
           </div>
         </div>
         <div className="qty pd">
           <div>수량</div>
           <div>
-            <Quantity />
+            <Quantity quantity={qty} setQuantity={setQty} sq={data.sq} />
           </div>
         </div>
-        <div className="fee pd">배송비</div>
-        <div className="price pd">상품가격</div>
+        <div className="fee pd">
+          <div>배송비</div>
+          <div className="fw">
+            {fee.toLocaleString()}
+            <span>원</span>
+          </div>
+        </div>
+        <div className="price pd">
+          <div>상품가격</div>
+          <div className="fw">
+            {price.toLocaleString()}
+            <span>원</span>
+          </div>
+
+          <DeleteBtn onClick={deleteItem}>
+            <img src="/assets/img/delete.svg" alt="delete" />
+          </DeleteBtn>
+        </div>
       </div>
       <div className="price_bar">
         <div>
           <span>상품금액</span>
-          <span className="fw">32,000원</span>
+          <span className="fw">{price.toLocaleString()}원</span>
           <span className="plus">+</span>
           <span>배송비</span>
-          <span className="fw">3,000원</span>
+          <span className="fw">{fee.toLocaleString()}원</span>
         </div>
 
         <div className="order_price">
-          <span className="order">주문금액 :</span>35,000원
+          <span className="order">주문금액 :</span>
+          {(price + fee).toLocaleString()}원
         </div>
       </div>
     </Container>
