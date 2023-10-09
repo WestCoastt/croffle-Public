@@ -4,7 +4,8 @@ import OrderItemCard from "./OrderItemCard";
 import axios from "axios";
 import { useCookies } from "react-cookie";
 import { useEffect, useState } from "react";
-import { atom, useAtom } from "jotai";
+import { atom, useAtom, useAtomValue, useSetAtom } from "jotai";
+import { cartAtom } from "../Nav";
 
 const Container = styled.div`
   width: 1200px;
@@ -99,21 +100,30 @@ const TotalContainer = styled.div`
   }
 `;
 
+interface OrderItem {
+  sq: number;
+  fee: number;
+  price: number;
+}
+
 export const deleteItemAtom = atom(false);
+export const orderListAtom = atom<OrderItem[]>([]);
 export default function Items() {
   const [cookies, setCookie, removeCookie] = useCookies(["sck"]);
   const [itemList, setItemList] = useState([]);
+  const orderList = useAtomValue(orderListAtom);
   const [deleteItem, setDeleteItem] = useAtom(deleteItemAtom);
-
-  const tk = localStorage.getItem("tk");
-  const auth = {
-    Authorization: `Bearer ${cookies.sck ? cookies.sck : tk ? tk : ""}`,
-  };
+  const setCart = useSetAtom(cartAtom);
 
   const getCartList = async () => {
+    const tk = localStorage.getItem("tk");
+    const auth = {
+      Authorization: `Bearer ${cookies.sck ? cookies.sck : tk ? tk : ""}`,
+    };
     const res = await axios.get(`/v1/carts`, {
       headers: auth,
     });
+    setCart(res.data.data.list.length);
     setItemList(res.data.data.list);
     setDeleteItem(false);
   };
@@ -121,6 +131,10 @@ export default function Items() {
   useEffect(() => {
     getCartList();
   }, [deleteItem]);
+
+  useEffect(() => {
+    console.log(orderList);
+  }, [orderList]);
 
   return (
     <Container>
@@ -140,18 +154,39 @@ export default function Items() {
       <TotalContainer>
         <div>
           <span>총 상품금액</span>
-          {/* <span className="fw">{price.toLocaleString()}원</span> */}
-          <span className="fw">0원</span>
+          <span className="fw">
+            {orderList.length > 0
+              ? orderList
+                  .map((item) => item.price)
+                  .reduce((a, b) => a + b)
+                  .toLocaleString()
+              : 0}
+            원
+          </span>
           <span className="plus">+</span>
           <span>총 배송비</span>
-          {/* <span className="fw">{fee.toLocaleString()}원</span> */}
-          <span className="fw">0원</span>
+          <span className="fw">
+            {orderList.length > 0
+              ? orderList
+                  .map((item) => item.fee)
+                  .reduce((a, b) => a + b)
+                  .toLocaleString()
+              : 0}
+            원
+          </span>
         </div>
 
         <div className="order_price">
           <span className="order">총 주문금액 :</span>
-          <span className="red">0원</span>
-          {/* {(price + fee).toLocaleString()}원 */}
+          <span className="red">
+            {orderList.length > 0
+              ? orderList
+                  .map((item) => item.fee + item.price)
+                  .reduce((a, b) => a + b)
+                  .toLocaleString()
+              : 0}
+            원
+          </span>
         </div>
       </TotalContainer>
     </Container>

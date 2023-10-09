@@ -1,12 +1,13 @@
 "use client";
 import styled from "@emotion/styled";
 import Image from "next/image";
+import Link from "next/link";
 import Quantity from "./Quantity";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import { useCookies } from "react-cookie";
-import { useSetAtom } from "jotai";
-import { deleteItemAtom } from "./Items";
+import { useAtom, useSetAtom } from "jotai";
+import { deleteItemAtom, orderListAtom } from "./Items";
 
 const Container = styled.div`
   width: 100%;
@@ -31,6 +32,14 @@ const Container = styled.div`
       color: #000;
       font-size: 16px;
       letter-spacing: -0.8px;
+
+      a {
+        text-decoration: none;
+        color: inherit;
+      }
+      a:hover {
+        text-decoration: underline;
+      }
 
       p {
         margin: 6px 0 0;
@@ -131,11 +140,9 @@ const DeleteBtn = styled.button`
 export default function OrderItemCard({ data }: any) {
   const [qty, setQty] = useState(data.quantity);
   const setDelete = useSetAtom(deleteItemAtom);
+  const [orderList, setOrderList] = useAtom(orderListAtom);
+  const [check, setCheck] = useState(false);
   const [cookies, setCookie, removeCookie] = useCookies(["sck"]);
-  const tk = localStorage.getItem("tk");
-  const auth = {
-    Authorization: `Bearer ${cookies.sck ? cookies.sck : tk ? tk : ""}`,
-  };
 
   const price =
     (data.product.total_price + data.product_option.add_price) * qty;
@@ -144,27 +151,69 @@ export default function OrderItemCard({ data }: any) {
   // console.log(data);
 
   const deleteItem = async () => {
+    const tk = localStorage.getItem("tk");
+    const auth = {
+      Authorization: `Bearer ${cookies.sck ? cookies.sck : tk ? tk : ""}`,
+    };
     const res = await axios.delete(`/v1/carts/${data.sq}`, {
       headers: auth,
     });
     // console.log(res.data);
     setDelete(true);
+
+    const newArr = orderList.filter((el) => el.sq !== data.sq);
+    setOrderList(newArr);
   };
+
+  useEffect(() => {
+    const newArr = orderList.filter((el) => el.sq !== data.sq);
+
+    check &&
+      setOrderList([...orderList, { sq: data.sq, fee: fee, price: price }]);
+
+    !check && setOrderList(newArr);
+  }, [check]);
+
+  useEffect(() => {
+    setQty(data.quantity);
+  }, [data]);
+
+  useEffect(() => {
+    let ord_list = [...orderList];
+
+    ord_list.find((el) => {
+      if (el.sq === data.sq)
+        el.price =
+          (data.product.total_price + data.product_option.add_price) * qty;
+    });
+
+    setOrderList(ord_list);
+  }, [qty]);
 
   return (
     <Container>
       <div className="content">
         <div className="title">
-          <input type="checkbox" name="product" />
-          <Image
-            src={data.product.product_image[0].image_url}
-            alt="상품"
-            width={110}
-            height={110}
+          <input
+            type="checkbox"
+            name="product"
+            checked={orderList.find((el) => el.sq === data.sq) ? true : false}
+            onChange={() => setCheck(!check)}
           />
+
+          <Link href={`/products/${data.product_sq}`}>
+            <Image
+              src={data.product.product_image[0].image_url}
+              alt="상품"
+              width={110}
+              height={110}
+            />
+          </Link>
           <div>
             <div className="name">
-              <div>{data.product.name}</div>
+              <Link href={`/products/${data.product_sq}`}>
+                <div>{data.product.name}</div>
+              </Link>
               <p>{data.product_option.name}</p>
             </div>
             <p className="eta">8/19(토) 도착 예정</p>

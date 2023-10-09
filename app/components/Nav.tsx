@@ -5,6 +5,9 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { atom, useAtom, useSetAtom } from "jotai";
 import Category from "./Category";
+import axios from "axios";
+import { useCookies } from "react-cookie";
+import { refreshCartAtom } from "./Products/TopContents";
 
 const NavBar = styled.div`
   display: flex;
@@ -77,6 +80,7 @@ const SelectBox = styled.div`
 const SearchBox = styled.div`
   display: flex;
   align-items: center;
+  // width: 400px;
   width: 500px;
   height: 48px;
   margin: 14px;
@@ -120,17 +124,35 @@ const BtnContainer = styled.div`
 `;
 
 const BtnBox = styled.div`
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   cursor: pointer;
   font-size: 14px;
   letter-spacing: -0.5px;
+
+  span {
+    position: absolute;
+    top: -6px;
+    right: 2px;
+    min-width: 20px;
+    height: 20px;
+    padding: 1px 5px;
+    border-radius: 10px;
+    background: #009c89;
+    text-align: center;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: -0.7px;
+  }
 `;
 
 export const depthAtom = atom([0, 0]);
 export const ltkAtom = atom("");
 export const sckAtom = atom("");
+export const cartAtom = atom(0);
 export default function Nav() {
   const router = useRouter();
   const searchParams = useSearchParams().get("keyword");
@@ -141,6 +163,9 @@ export default function Nav() {
   const [keyword, setKeyword] = useState(searchParams ? searchParams : "");
   const selectRef = useRef<HTMLDivElement>(null);
   const setDepth = useSetAtom(depthAtom);
+  const [cookies, setCookie, removeCookie] = useCookies(["sck"]);
+  const [cart, setCart] = useAtom(cartAtom);
+  const [refreshCart, setRefreshCart] = useAtom(refreshCartAtom);
 
   useEffect(() => {
     const clickOutside = (e: any) => {
@@ -162,6 +187,24 @@ export default function Nav() {
     setSck(document.cookie);
     setLtk(localStorage.getItem("tk"));
   }, []);
+
+  const getCartList = async () => {
+    const tk = localStorage.getItem("tk");
+    if (!sck && !ltk) return;
+
+    const auth = {
+      Authorization: `Bearer ${sck ? sck.replace("sck=", "") : tk ? tk : ""}`,
+    };
+    const res = await axios.get(`/v1/carts`, {
+      headers: auth,
+    });
+    setCart(res.data.data.list.length);
+    setRefreshCart(false);
+  };
+
+  useEffect(() => {
+    getCartList();
+  }, [refreshCart, sck, ltk]);
 
   return (
     <NavBar>
@@ -213,6 +256,7 @@ export default function Nav() {
               onClick={() => {
                 document.cookie = "sck=; expires=Sat, 01 Jan 1972 00:00:00 GMT";
                 setSck("");
+                // router.refresh;
                 location.reload();
               }}
             >
@@ -249,6 +293,7 @@ export default function Nav() {
           </Link>
           <Link href={sck || ltk ? "/cart" : "/login"}>
             <BtnBox>
+              {cart !== 0 && <span>{cart > 99 ? "+99" : cart}</span>}
               <img src="/assets/img/bag.svg" alt="cart" />
               <div>장바구니</div>
             </BtnBox>

@@ -1,15 +1,16 @@
 "use client";
 import styled from "@emotion/styled";
 import Image from "next/image";
-import { useState, useEffect, useRef, MouseEvent } from "react";
+import { useState, useEffect, useRef, MouseEvent, use } from "react";
 import { atom, useAtom, useSetAtom } from "jotai";
 import Rating from "../Rating";
 import Quantity from "./Quantity";
-import Button from "../Button";
+import Button, { Btn } from "../Button";
 import ZoomViewer from "./ZoomViewer";
 import Link from "next/link";
 import axios from "axios";
 import { useParams, usePathname } from "next/navigation";
+import { useCookies } from "react-cookie";
 
 const Container = styled.div`
   width: 1200px;
@@ -204,9 +205,62 @@ const TotalPrice = styled.div`
 `;
 
 const BtnContainer = styled.div`
+  position: relative;
   display: flex;
   justify-content: space-between;
   margin-top: 20px;
+`;
+
+const Tooltip = styled.div`
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 32px;
+  bottom: 62px;
+  left: 34px;
+  border: 1px solid #999999;
+  background-color: #fff;
+
+  a {
+    text-decoration: none;
+  }
+  div {
+    color: #666;
+    font-size: 14px;
+  }
+
+  &::after {
+    content: "";
+    position: absolute;
+    top: 87px;
+    left: 107px;
+    width: 14px;
+    height: 14px;
+    background-color: #fff;
+    border-top: none;
+    border-left: none;
+    border-right: 1px solid #999999;
+    border-bottom: 1px solid #999999;
+    transform: rotate(45deg);
+  }
+`;
+
+const GotoCartBtn = styled(Btn)`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  height: 32px;
+  border-radius: 0;
+  font-size: 12px;
+  letter-spacing: -0.7px;
+
+  img {
+    width: 11px;
+    height: 11px;
+  }
 `;
 
 const HeartBtn = styled.button<{ like: boolean }>`
@@ -232,6 +286,8 @@ const HeartBtn = styled.button<{ like: boolean }>`
   cursor: pointer;
 `;
 
+const CartBtn = styled(Btn)``;
+
 const ZoomLens = styled.div<{ left: number; top: number }>`
   border: 1.5px solid rgb(255, 255, 255);
   background-color: rgba(255, 255, 255, 0.4);
@@ -248,6 +304,7 @@ const ZoomLens = styled.div<{ left: number; top: number }>`
 interface Option {
   name: string;
   price: number;
+  option_sq: number;
   qty: number;
 }
 
@@ -261,9 +318,9 @@ interface Detail {
 
 export const reviewsAtom = atom("");
 export const selectedAtom = atom<Option[]>([]);
+export const refreshCartAtom = atom(false);
 export default function TopContents() {
   const [details, setDetails] = useState<Detail>();
-
   const id = useParams().id;
   const sq = usePathname().split("/")[2];
   const [images, setImages] = useState([]);
@@ -279,6 +336,13 @@ export default function TopContents() {
   const [zoom, setZoom] = useState(false);
   const [coord, setCoord] = useState({ cursorX: 0, cursorY: 0 });
   const zoomRef = useRef<HTMLDivElement>(null);
+  const [cookies, setCookie, removeCookie] = useCookies(["sck"]);
+  const setRefreshCart = useSetAtom(refreshCartAtom);
+  const [tooltip, setTooltip] = useState(false);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  });
 
   const handleCoordinate = (e: MouseEvent<HTMLDivElement>) => {
     if (zoomRef.current)
@@ -308,7 +372,7 @@ export default function TopContents() {
     setImages(images);
     setMainImg(images[0]);
     setReviews(review_res.data.data.total_count);
-    // console.log(res.data.data, opt_res.data.data, review_res.data.data);
+    console.log(res.data.data, opt_res.data.data, review_res.data.data);
   };
 
   useEffect(() => {
@@ -324,6 +388,40 @@ export default function TopContents() {
       document.removeEventListener("click", clickOutside);
     };
   }, [optionRef, dropdown]);
+
+  const addToCart = async () => {
+    const tk = localStorage.getItem("tk");
+    const auth = {
+      Authorization: `Bearer ${cookies.sck ? cookies.sck : tk ? tk : ""}`,
+    };
+
+    const body = {
+      option_sq: selArr[0].option_sq,
+      quantity: selArr[0].qty,
+    };
+
+    const res = await axios.post(`/v1/products/${id}/carts`, body, {
+      headers: auth,
+    });
+    setTooltip(true);
+    setRefreshCart(true);
+  };
+
+  useEffect(() => {
+    if (!tooltip) return;
+
+    const tooltipTimer = setTimeout(() => {
+      setTooltip(false);
+    }, 2000);
+
+    return () => {
+      clearTimeout(tooltipTimer);
+    };
+  }, [tooltip]);
+
+  // useEffect(() => {
+  //   setEta(getETA());
+  // }, [detail]);
 
   return (
     <Container>
@@ -410,6 +508,7 @@ export default function TopContents() {
           </div>
         </ShippingContainer>
 
+        {/* {detail.option &&} */}
         <SelectBox ref={optionRef} dropdown={dropdown}>
           <div
             className="select"
@@ -427,33 +526,37 @@ export default function TopContents() {
 
           {dropdown && (
             <ul className="list">
-              {option.map((item: { name: string; add_price: number }) => (
-                <li
-                  key={item.name}
-                  onClick={() => {
-                    setSelected(item.name);
-                    if (selArr.map((el) => el.name).includes(item.name)) {
-                      alert("이미 선택한 옵션입니다.");
-                      return;
-                    }
-                    setSelArr([
-                      ...selArr,
-                      {
-                        name: item.name,
-                        price:
-                          item.add_price + (details ? details?.total_price : 0),
-                        qty: 1,
-                      },
-                    ]);
-                    setDropdown(false);
-                  }}
-                >
-                  {item.name}{" "}
-                  {item.add_price > 0 && (
-                    <span>{` (+${item.add_price}원)`}</span>
-                  )}
-                </li>
-              ))}
+              {option.map(
+                (item: { name: string; add_price: number; order: number }) => (
+                  <li
+                    key={item.name}
+                    onClick={() => {
+                      setSelected(item.name);
+                      if (selArr.map((el) => el.name).includes(item.name)) {
+                        alert("이미 선택한 옵션입니다.");
+                        return;
+                      }
+                      setSelArr([
+                        ...selArr,
+                        {
+                          name: item.name,
+                          option_sq: item.order,
+                          price:
+                            item.add_price +
+                            (details ? details?.total_price : 0),
+                          qty: 1,
+                        },
+                      ]);
+                      setDropdown(false);
+                    }}
+                  >
+                    {item.name}{" "}
+                    {item.add_price > 0 && (
+                      <span>{` (+${item.add_price}원)`}</span>
+                    )}
+                  </li>
+                )
+              )}
             </ul>
           )}
         </SelectBox>
@@ -462,7 +565,6 @@ export default function TopContents() {
           selArr.map((item, i) => (
             <Quantity key={item.name} item={item} idx={i} />
           ))}
-
         <TPContainer opt={selArr.length}>
           <TotalPrice>
             <span>합계</span>
@@ -478,20 +580,35 @@ export default function TopContents() {
               원
             </span>
           </TotalPrice>
-
           <BtnContainer>
+            {tooltip && (
+              <Tooltip>
+                <div>상품이 장바구니에 담겼습니다.</div>
+                <Link href="/cart">
+                  <GotoCartBtn clr="var(--primary)" wd="120px" bg="#fff">
+                    장바구니로 가기
+                    <img
+                      src="/assets/img/arrow_right_blue.svg"
+                      alt="go_to_cart"
+                    />
+                  </GotoCartBtn>
+                </Link>
+              </Tooltip>
+            )}
             <HeartBtn
               like={like}
               onClick={() => {
                 setLike(!like);
               }}
             />
-            <Button
+            <CartBtn
               clr="var(--primary)"
               wd="185px"
-              content="장바구니 담기"
               bg="#fff"
-            />
+              onClick={addToCart}
+            >
+              장바구니 담기
+            </CartBtn>
             <Link href="/order">
               <Button bg="var(--primary)" wd="275px" content="바로구매" />
             </Link>
